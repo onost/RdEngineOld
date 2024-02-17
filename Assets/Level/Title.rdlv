@@ -1,0 +1,1726 @@
+{
+    "Actor": [
+        {
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        10.0,
+                        10.0,
+                        10.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Is Visible": true,
+                    "Model": "Skydome.obj",
+                    "Order": 100,
+                    "Shader Type": 1,
+                    "Texture": "Assets/Model/Skydome/incskies_014_8k.png",
+                    "Type": 6
+                }
+            ],
+            "Name": "Skydome",
+            "Order": 80,
+            "State": 0,
+            "Type": 0
+        },
+        {
+            "Children": [
+                {
+                    "Components": [
+                        {
+                            "Position": [
+                                0.0,
+                                -50.0,
+                                0.0
+                            ],
+                            "Rotation": [
+                                1.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Type": 10
+                        },
+                        {
+                            "Attribute": 1,
+                            "Axis X": [
+                                1.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Axis Y": [
+                                0.0,
+                                1.0,
+                                0.0
+                            ],
+                            "Axis Z": [
+                                0.0,
+                                0.0,
+                                1.0
+                            ],
+                            "Center": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Response Attr": 7,
+                            "Size": [
+                                100.0,
+                                10.0,
+                                100.0
+                            ],
+                            "Type": 3
+                        }
+                    ],
+                    "Name": "Abyss",
+                    "Order": 100,
+                    "State": 0,
+                    "Type": 0
+                },
+                {
+                    "Children": [
+                        {
+                            "Components": [
+                                {
+                                    "Position": [
+                                        -19.0,
+                                        9.0,
+                                        0.0
+                                    ],
+                                    "Rotation": [
+                                        1.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "Scale": [
+                                        1.0,
+                                        8.0,
+                                        20.0
+                                    ],
+                                    "Type": 10
+                                },
+                                {
+                                    "Is Visible": true,
+                                    "Model": "Ground.obj",
+                                    "Order": 100,
+                                    "Shader Type": 0,
+                                    "Texture": "Assets/Texture/Default.png",
+                                    "Type": 6
+                                },
+                                {
+                                    "Attribute": 1,
+                                    "Axis X": [
+                                        1.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "Axis Y": [
+                                        0.0,
+                                        1.0,
+                                        0.0
+                                    ],
+                                    "Axis Z": [
+                                        0.0,
+                                        0.0,
+                                        1.0
+                                    ],
+                                    "Center": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "Response Attr": 7,
+                                    "Size": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ],
+                                    "Type": 3
+                                }
+                            ],
+                            "Name": "Wall_L",
+                            "Order": 100,
+                            "State": 0,
+                            "Type": 0
+                        },
+                        {
+                            "Components": [
+                                {
+                                    "Position": [
+                                        19.0,
+                                        9.0,
+                                        0.0
+                                    ],
+                                    "Rotation": [
+                                        1.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "Scale": [
+                                        1.0,
+                                        8.0,
+                                        20.0
+                                    ],
+                                    "Type": 10
+                                },
+                                {
+                                    "Is Visible": true,
+                                    "Model": "Ground.obj",
+                                    "Order": 100,
+                                    "Shader Type": 0,
+                                    "Texture": "Assets/Texture/Default.png",
+                                    "Type": 6
+                                },
+                                {
+                                    "Attribute": 1,
+                                    "Axis X": [
+                                        1.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "Axis Y": [
+                                        0.0,
+                                        1.0,
+                                        0.0
+                                    ],
+                                    "Axis Z": [
+                                        0.0,
+                                        0.0,
+                                        1.0
+                                    ],
+                                    "Center": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "Response Attr": 7,
+                                    "Size": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ],
+                                    "Type": 3
+                                }
+                            ],
+                            "Name": "Wall_R",
+                            "Order": 100,
+                            "State": 0,
+                            "Type": 0
+                        },
+                        {
+                            "Components": [
+                                {
+                                    "Position": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "Rotation": [
+                                        1.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "Scale": [
+                                        20.0,
+                                        1.0,
+                                        20.0
+                                    ],
+                                    "Type": 10
+                                },
+                                {
+                                    "Is Visible": true,
+                                    "Model": "Ground.obj",
+                                    "Order": 100,
+                                    "Shader Type": 0,
+                                    "Texture": "Assets/Texture/Default.png",
+                                    "Type": 6
+                                },
+                                {
+                                    "Attribute": 1,
+                                    "Model": "Ground.obj",
+                                    "Response Attr": 7,
+                                    "Type": 9
+                                }
+                            ],
+                            "Name": "Ground",
+                            "Order": 100,
+                            "State": 0,
+                            "Type": 0
+                        },
+                        {
+                            "Components": [
+                                {
+                                    "Position": [
+                                        0.0,
+                                        9.0,
+                                        19.0
+                                    ],
+                                    "Rotation": [
+                                        1.0,
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "Scale": [
+                                        18.0,
+                                        8.0,
+                                        1.0
+                                    ],
+                                    "Type": 10
+                                },
+                                {
+                                    "Is Visible": true,
+                                    "Model": "Ground.obj",
+                                    "Order": 100,
+                                    "Shader Type": 0,
+                                    "Texture": "Assets/Texture/Default.png",
+                                    "Type": 6
+                                },
+                                {
+                                    "Attribute": 1,
+                                    "Axis X": [
+                                        1.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "Axis Y": [
+                                        0.0,
+                                        1.0,
+                                        0.0
+                                    ],
+                                    "Axis Z": [
+                                        0.0,
+                                        0.0,
+                                        1.0
+                                    ],
+                                    "Center": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "Response Attr": 7,
+                                    "Size": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ],
+                                    "Type": 3
+                                }
+                            ],
+                            "Name": "Wall_B",
+                            "Order": 100,
+                            "State": 0,
+                            "Type": 0
+                        }
+                    ],
+                    "Components": [
+                        {
+                            "Position": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Rotation": [
+                                1.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Type": 10
+                        }
+                    ],
+                    "Name": "Walls",
+                    "Order": 100,
+                    "State": 0,
+                    "Type": 0
+                },
+                {
+                    "Components": [
+                        {
+                            "Position": [
+                                -10.0,
+                                6.0,
+                                10.0
+                            ],
+                            "Rotation": [
+                                1.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                5.0,
+                                0.30000001192092896,
+                                5.0
+                            ],
+                            "Type": 10
+                        },
+                        {
+                            "Is Visible": true,
+                            "Model": "Ground.obj",
+                            "Order": 100,
+                            "Shader Type": 0,
+                            "Texture": "Assets/Texture/Default.png",
+                            "Type": 6
+                        },
+                        {
+                            "Attribute": 1,
+                            "Axis X": [
+                                1.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Axis Y": [
+                                0.0,
+                                1.0,
+                                0.0
+                            ],
+                            "Axis Z": [
+                                0.0,
+                                0.0,
+                                1.0
+                            ],
+                            "Center": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Response Attr": 7,
+                            "Size": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Type": 3
+                        }
+                    ],
+                    "Name": "Scaffold01",
+                    "Order": 100,
+                    "State": 0,
+                    "Type": 0
+                },
+                {
+                    "Components": [
+                        {
+                            "Position": [
+                                0.0,
+                                11.0,
+                                10.0
+                            ],
+                            "Rotation": [
+                                1.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                5.0,
+                                0.30000001192092896,
+                                5.0
+                            ],
+                            "Type": 10
+                        },
+                        {
+                            "Is Visible": true,
+                            "Model": "Ground.obj",
+                            "Order": 100,
+                            "Shader Type": 0,
+                            "Texture": "Assets/Texture/Default.png",
+                            "Type": 6
+                        },
+                        {
+                            "Attribute": 1,
+                            "Axis X": [
+                                1.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Axis Y": [
+                                0.0,
+                                1.0,
+                                0.0
+                            ],
+                            "Axis Z": [
+                                0.0,
+                                0.0,
+                                1.0
+                            ],
+                            "Center": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Response Attr": 7,
+                            "Size": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Type": 3
+                        }
+                    ],
+                    "Name": "Scaffold02",
+                    "Order": 100,
+                    "State": 0,
+                    "Type": 0
+                },
+                {
+                    "Components": [
+                        {
+                            "Position": [
+                                21.600000381469727,
+                                -5.0,
+                                13.0
+                            ],
+                            "Rotation": [
+                                0.9659256339073181,
+                                -0.2588197886943817,
+                                -1.3044035185316716e-08,
+                                -3.4951483929290816e-09
+                            ],
+                            "Scale": [
+                                15.0,
+                                15.0,
+                                15.0
+                            ],
+                            "Type": 10
+                        },
+                        {
+                            "Is Visible": true,
+                            "Model": "Ground.obj",
+                            "Order": 100,
+                            "Shader Type": 0,
+                            "Texture": "Assets/Texture/Default.png",
+                            "Type": 6
+                        },
+                        {
+                            "Attribute": 1,
+                            "Axis X": [
+                                1.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Axis Y": [
+                                0.0,
+                                1.0,
+                                0.0
+                            ],
+                            "Axis Z": [
+                                0.0,
+                                0.0,
+                                1.0
+                            ],
+                            "Center": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Response Attr": 7,
+                            "Size": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Type": 3
+                        }
+                    ],
+                    "Name": "Slope",
+                    "Order": 100,
+                    "State": 0,
+                    "Type": 0
+                },
+                {
+                    "Components": [
+                        {
+                            "Position": [
+                                0.0,
+                                0.0,
+                                -50.0
+                            ],
+                            "Rotation": [
+                                1.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                3.0,
+                                3.0,
+                                3.0
+                            ],
+                            "Type": 10
+                        },
+                        {
+                            "Is Visible": true,
+                            "Model": "terrain.obj",
+                            "Order": 100,
+                            "Shader Type": 0,
+                            "Texture": "Assets/Model/terrain/grass.png",
+                            "Type": 6
+                        },
+                        {
+                            "Attribute": 1,
+                            "Model": "terrain.obj",
+                            "Response Attr": 0,
+                            "Type": 9
+                        }
+                    ],
+                    "Name": "Test_Field",
+                    "Order": 100,
+                    "State": 0,
+                    "Type": 0
+                }
+            ],
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                }
+            ],
+            "Name": "Terrains",
+            "Order": 90,
+            "State": 0,
+            "Type": 0
+        },
+        {
+            "Children": [
+                {
+                    "Components": [
+                        {
+                            "Position": [
+                                0.0,
+                                -0.5,
+                                -1.5
+                            ],
+                            "Rotation": [
+                                1.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Type": 10
+                        },
+                        {
+                            "Amount": 3,
+                            "Blend": 1,
+                            "Box Max": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Box Min": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Delay": 0.0,
+                            "Frequency": 0.30000001192092896,
+                            "Init Accel Max": [
+                                0.0,
+                                0.10000000149011612,
+                                0.0
+                            ],
+                            "Init Accel Min": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Init EColor Max": [
+                                1.0,
+                                1.0,
+                                1.0,
+                                0.0
+                            ],
+                            "Init EColor Min": [
+                                1.0,
+                                0.7843137383460999,
+                                0.5882353186607361,
+                                0.0
+                            ],
+                            "Init ERot Max": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Init ERot Min": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Init EScale Max": 0.0,
+                            "Init EScale Min": 0.0,
+                            "Init Life Max": 1.0,
+                            "Init Life Min": 0.5,
+                            "Init SColor Max": [
+                                1.0,
+                                0.7843137383460999,
+                                0.5882353186607361,
+                                0.49803921580314636
+                            ],
+                            "Init SColor Min": [
+                                1.0,
+                                0.7843137383460999,
+                                0.5882353186607361,
+                                0.24705882370471954
+                            ],
+                            "Init SRot Max": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Init SRot Min": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Init SScale Max": 2.0,
+                            "Init SScale Min": 1.0,
+                            "Init Vel Max": [
+                                0.5,
+                                0.5,
+                                0.5
+                            ],
+                            "Init Vel Min": [
+                                -0.5,
+                                -0.5,
+                                -0.5
+                            ],
+                            "Is Billboard": true,
+                            "Is Loop": true,
+                            "Is Visible": true,
+                            "Life": 0.30000001192092896,
+                            "Order": 100,
+                            "Radius": 0.75,
+                            "Shape": 2,
+                            "Texture": "Assets/Model/Plane/Effect01.png",
+                            "Type": 8
+                        }
+                    ],
+                    "Name": "Sand Smoker",
+                    "Order": 100,
+                    "State": 0,
+                    "Type": 0
+                }
+            ],
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        2.0,
+                        -15.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Is Visible": true,
+                    "Model": "Player.obj",
+                    "Order": 100,
+                    "Shader Type": 0,
+                    "Texture": "Assets/Texture/Default.png",
+                    "Type": 6
+                },
+                {
+                    "Attribute": 2,
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 1.0,
+                    "Response Attr": 5,
+                    "Type": 4
+                }
+            ],
+            "Gravity": 1.0,
+            "Init Cooldown": 0.10000000149011612,
+            "Jump Power": 30.0,
+            "Max Slope": 30.0,
+            "Name": "Demo Player",
+            "Order": 100,
+            "State": 0,
+            "Type": 3
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        18.0,
+                        10.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.5,
+                        1.5,
+                        1.5
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Is Visible": true,
+                    "Model": "Player.obj",
+                    "Order": 100,
+                    "Shader Type": 0,
+                    "Texture": "Assets/Texture/Default.png",
+                    "Type": 6
+                },
+                {
+                    "Attribute": 4,
+                    "Axis X": [
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Axis Y": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    "Axis Z": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Response Attr": 4294967295,
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 3
+                }
+            ],
+            "Name": "Enemy01",
+            "Order": 100,
+            "State": 0,
+            "Type": 5
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
+                        -10.0,
+                        13.0,
+                        10.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.5,
+                        1.5,
+                        1.5
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Is Visible": true,
+                    "Model": "Player.obj",
+                    "Order": 100,
+                    "Shader Type": 0,
+                    "Texture": "Assets/Texture/Default.png",
+                    "Type": 6
+                },
+                {
+                    "Attribute": 4,
+                    "Axis X": [
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Axis Y": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    "Axis Z": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Response Attr": 4294967295,
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 3
+                }
+            ],
+            "Name": "Enemy02",
+            "Order": 100,
+            "State": 0,
+            "Type": 5
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        10.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Amount": 10,
+                    "Box Max": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Box Min": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Delay": 0.0,
+                    "Frequency": 0.25,
+                    "Init Accel Max": [
+                        0.5,
+                        0.5,
+                        0.5
+                    ],
+                    "Init Accel Min": [
+                        -0.5,
+                        -0.5,
+                        -0.5
+                    ],
+                    "Init EColor Max": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Init EColor Min": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Init ERot Max": [
+                        6.2831854820251465,
+                        6.2831854820251465,
+                        6.2831854820251465
+                    ],
+                    "Init ERot Min": [
+                        -6.2831854820251465,
+                        -6.2831854820251465,
+                        -6.2831854820251465
+                    ],
+                    "Init EScale Max": 0.0,
+                    "Init EScale Min": 0.0,
+                    "Init Life Max": 1.0,
+                    "Init Life Min": 0.5,
+                    "Init SColor Max": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Init SColor Min": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Init SRot Max": [
+                        6.2831854820251465,
+                        6.2831854820251465,
+                        6.2831854820251465
+                    ],
+                    "Init SRot Min": [
+                        -6.2831854820251465,
+                        -6.2831854820251465,
+                        -6.2831854820251465
+                    ],
+                    "Init SScale Max": 1.0,
+                    "Init SScale Min": 1.0,
+                    "Init Vel Max": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "Init Vel Min": [
+                        -2.0,
+                        -2.0,
+                        -2.0
+                    ],
+                    "Is Billboard": false,
+                    "Is Loop": true,
+                    "Is Visible": true,
+                    "Life": 10.0,
+                    "Model": "Ground.obj",
+                    "Order": 100,
+                    "Radius": 2.5,
+                    "Shader Type": 0,
+                    "Shape": 2,
+                    "Type": 11
+                }
+            ],
+            "Name": "Effect_Box",
+            "Order": 120,
+            "State": 0,
+            "Type": 0
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
+                        -10.0,
+                        5.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Amount": 3,
+                    "Blend": 2,
+                    "Box Max": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Box Min": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Delay": 0.0,
+                    "Frequency": 0.15000000596046448,
+                    "Init Accel Max": [
+                        0.5,
+                        0.5,
+                        0.5
+                    ],
+                    "Init Accel Min": [
+                        -0.5,
+                        -0.5,
+                        -0.5
+                    ],
+                    "Init EColor Max": [
+                        0.49803921580314636,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Init EColor Min": [
+                        0.49803921580314636,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Init ERot Max": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init ERot Min": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init EScale Max": 0.20000000298023224,
+                    "Init EScale Min": 0.20000000298023224,
+                    "Init Life Max": 0.5,
+                    "Init Life Min": 0.25,
+                    "Init SColor Max": [
+                        1.0,
+                        0.49803921580314636,
+                        0.49803921580314636,
+                        1.0
+                    ],
+                    "Init SColor Min": [
+                        1.0,
+                        0.49803921580314636,
+                        0.49803921580314636,
+                        1.0
+                    ],
+                    "Init SRot Max": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init SRot Min": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init SScale Max": 2.0,
+                    "Init SScale Min": 1.0,
+                    "Init Vel Max": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "Init Vel Min": [
+                        -2.0,
+                        -2.0,
+                        -2.0
+                    ],
+                    "Is Billboard": true,
+                    "Is Loop": true,
+                    "Is Visible": true,
+                    "Life": 10.0,
+                    "Order": 100,
+                    "Radius": 0.0,
+                    "Shape": 0,
+                    "Texture": "Assets/Model/Plane/Effect01.png",
+                    "Type": 8
+                }
+            ],
+            "Name": "Effect_R",
+            "Order": 120,
+            "State": 0,
+            "Type": 0
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        5.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Amount": 3,
+                    "Blend": 2,
+                    "Box Max": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Box Min": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Delay": 0.0,
+                    "Frequency": 0.15000000596046448,
+                    "Init Accel Max": [
+                        0.5,
+                        0.5,
+                        0.5
+                    ],
+                    "Init Accel Min": [
+                        -0.5,
+                        -0.5,
+                        -0.5
+                    ],
+                    "Init EColor Max": [
+                        0.0,
+                        0.49803921580314636,
+                        0.0,
+                        1.0
+                    ],
+                    "Init EColor Min": [
+                        0.0,
+                        0.49803921580314636,
+                        0.0,
+                        1.0
+                    ],
+                    "Init ERot Max": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init ERot Min": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init EScale Max": 0.20000000298023224,
+                    "Init EScale Min": 0.20000000298023224,
+                    "Init Life Max": 0.5,
+                    "Init Life Min": 0.25,
+                    "Init SColor Max": [
+                        0.49803921580314636,
+                        1.0,
+                        0.49803921580314636,
+                        1.0
+                    ],
+                    "Init SColor Min": [
+                        0.49803921580314636,
+                        1.0,
+                        0.49803921580314636,
+                        1.0
+                    ],
+                    "Init SRot Max": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init SRot Min": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init SScale Max": 2.0,
+                    "Init SScale Min": 1.0,
+                    "Init Vel Max": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "Init Vel Min": [
+                        -2.0,
+                        -2.0,
+                        -2.0
+                    ],
+                    "Is Billboard": true,
+                    "Is Loop": true,
+                    "Is Visible": true,
+                    "Life": 10.0,
+                    "Order": 100,
+                    "Radius": 0.0,
+                    "Shape": 0,
+                    "Texture": "Assets/Model/Plane/Effect01.png",
+                    "Type": 8
+                }
+            ],
+            "Name": "Effect_G",
+            "Order": 120,
+            "State": 0,
+            "Type": 0
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
+                        10.0,
+                        5.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Amount": 3,
+                    "Blend": 2,
+                    "Box Max": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Box Min": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Delay": 0.0,
+                    "Frequency": 0.15000000596046448,
+                    "Init Accel Max": [
+                        0.5,
+                        0.5,
+                        0.5
+                    ],
+                    "Init Accel Min": [
+                        -0.5,
+                        -0.5,
+                        -0.5
+                    ],
+                    "Init EColor Max": [
+                        0.0,
+                        0.0,
+                        0.49803921580314636,
+                        1.0
+                    ],
+                    "Init EColor Min": [
+                        0.0,
+                        0.0,
+                        0.49803921580314636,
+                        1.0
+                    ],
+                    "Init ERot Max": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init ERot Min": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init EScale Max": 0.20000000298023224,
+                    "Init EScale Min": 0.20000000298023224,
+                    "Init Life Max": 0.5,
+                    "Init Life Min": 0.25,
+                    "Init SColor Max": [
+                        0.49803921580314636,
+                        0.49803921580314636,
+                        1.0,
+                        1.0
+                    ],
+                    "Init SColor Min": [
+                        0.49803921580314636,
+                        0.49803921580314636,
+                        1.0,
+                        1.0
+                    ],
+                    "Init SRot Max": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init SRot Min": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init SScale Max": 2.0,
+                    "Init SScale Min": 1.0,
+                    "Init Vel Max": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "Init Vel Min": [
+                        -2.0,
+                        -2.0,
+                        -2.0
+                    ],
+                    "Is Billboard": true,
+                    "Is Loop": true,
+                    "Is Visible": true,
+                    "Life": 10.0,
+                    "Order": 100,
+                    "Radius": 0.0,
+                    "Shape": 0,
+                    "Texture": "Assets/Model/Plane/Effect01.png",
+                    "Type": 8
+                }
+            ],
+            "Name": "Effect_B",
+            "Order": 120,
+            "State": 0,
+            "Type": 0
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        5.090169906616211,
+                        -24.51056671142578
+                    ],
+                    "Rotation": [
+                        0.9876883625984192,
+                        0.15643447637557983,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "FarZ": 2000.0,
+                    "Fov": 1.5707963705062866,
+                    "Is Main": true,
+                    "NearZ": 0.10000000149011612,
+                    "Order": 100,
+                    "Type": 0
+                }
+            ],
+            "Name": "Demo Camera",
+            "Order": 300,
+            "State": 0,
+            "Type": 4
+        }
+    ],
+    "Renderer": {
+        "Directional Light": [
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Direction": [
+                    1.0,
+                    -5.0,
+                    0.0
+                ],
+                "Intensity": 0.800000011920929
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Intensity": 0.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Intensity": 0.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Intensity": 0.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Intensity": 0.0
+            }
+        ],
+        "Point Light": [
+            {
+                "Color": [
+                    1.0,
+                    0.49803921580314636,
+                    0.49803921580314636,
+                    1.0
+                ],
+                "Decay": 3.0,
+                "Intensity": 0.800000011920929,
+                "Position": [
+                    -10.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 50.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 3.0,
+                "Intensity": 0.0,
+                "Position": [
+                    -5.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 30.0
+            },
+            {
+                "Color": [
+                    0.49803921580314636,
+                    1.0,
+                    0.49803921580314636,
+                    1.0
+                ],
+                "Decay": 3.0,
+                "Intensity": 0.800000011920929,
+                "Position": [
+                    0.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 50.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 3.0,
+                "Intensity": 0.0,
+                "Position": [
+                    5.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 30.0
+            },
+            {
+                "Color": [
+                    0.49803921580314636,
+                    0.49803921580314636,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 3.0,
+                "Intensity": 0.800000011920929,
+                "Position": [
+                    10.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 50.0
+            }
+        ],
+        "Spot Light": [
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 20.0,
+                "Intensity": 0.0,
+                "Outer": 30.0,
+                "Position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Radius": 10.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 20.0,
+                "Intensity": 0.0,
+                "Outer": 30.0,
+                "Position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Radius": 10.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 20.0,
+                "Intensity": 0.0,
+                "Outer": 30.0,
+                "Position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Radius": 10.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 20.0,
+                "Intensity": 0.0,
+                "Outer": 30.0,
+                "Position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Radius": 10.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 20.0,
+                "Intensity": 0.0,
+                "Outer": 30.0,
+                "Position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Radius": 10.0
+            }
+        ]
+    }
+}

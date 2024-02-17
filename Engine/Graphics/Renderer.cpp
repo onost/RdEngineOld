@@ -1,0 +1,538 @@
+#include "Renderer.h"
+#include "Component/CameraComponent.h"
+#include "Component/SpriteRenderer.h"
+#include "Component/MeshParticleRenderer.h"
+#include "Component/MeshRenderer.h"
+#include "Component/ParticleRenderer.h"
+#include "Component/SkinnedMeshRenderer.h"
+#include "Editor.h"
+#include "Loader/ObjLoader.h"
+#include "Model/ModelCommon.h"
+#include "Particle/ParticleCommon.h"
+#include "RdEngine.h"
+#include "Sprite/SpriteCommon.h"
+#include "Window.h"
+
+void Renderer::Load()
+{
+	GetModel("Plane.obj");
+}
+
+void Renderer::Initialize()
+{
+	// スプライト
+	SpriteCommon::Initialize(this);
+	// モデル
+	ModelCommon::Initialize(this);
+	// パーティクル
+	ParticleCommon::Initialize(this);
+	// デバッグカメラ
+	mDebugCamera = std::make_unique<DebugCamera>();
+	// ライト管理
+	mLightManager = std::make_unique<LightManager>();
+	mLightManager->Initialize();
+	// プリミティブ
+	mPrimitive = std::make_unique<Primitive>();
+	mPrimitive->Initialize(this);
+
+	// メインレンダーターゲット
+	mMainRt = std::make_unique<RenderTarget>();
+	mMainRt->Create();
+	// 最終レンダーターゲット
+	mFinalRt = std::make_unique<RenderTarget>();
+	mFinalRt->Create();
+	mFinalSprite = std::make_unique<Sprite>();
+	mFinalSprite->Create();
+
+	// ガウシアンブラー
+	mGaussianBlur = std::make_unique<GaussianBlur>();
+	mGaussianBlur->Initialize(mMainRt->GetTexture(), this);
+
+	// モデル用関数テーブル
+	//mModelFuncs["obj"] = &Renderer::GetModelFromObj;// .obj
+	//mModelFuncs["fbx"] = &Renderer::GetModelFromFbx;// .fbx
+
+	Load();
+}
+
+/*void Renderer::Terminate()
+{
+
+}*/
+
+// シーン描画前
+void Renderer::PreRendering(ID3D12GraphicsCommandList* cmdList)
+{
+	mMainRt->PreRendering(cmdList);
+}
+
+// シーン描画後
+void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
+{
+	mMainRt->PostRendering(cmdList);
+
+	// ==================================================
+	// ポストエフェクト
+	// ==================================================
+
+	SpriteCommon::PreRendering(cmdList);
+	// ガウシアンブラー
+	Texture* texture = nullptr;
+	if (mIsGaussianBlur)
+	{
+		mGaussianBlur->Execute(cmdList, mGaussianPower);
+		texture = mGaussianBlur->GetTexture();
+	}
+	else
+	{
+		texture = mMainRt->GetTexture();
+	}
+	SpriteCommon::PostRendering();
+
+
+
+	if (gEngine->GetState() == RdEngine::State::kDev)
+	{
+		// ImGuiへ描画
+		ImGui::Begin("Game");
+		ImVec2 size = ImGui::GetWindowSize();
+		ImGui::Image(
+			ImTextureID(texture->GetDescHandle().ptr),
+			ImVec2(size.x, Window::kHeight * size.x / Window::kWidth));
+		ImGui::End();
+	}
+	else
+	{
+		// スプライトへテクスチャをセット
+		mFinalSprite->SetTexture(texture);
+	}
+}
+
+// シーン描画
+void Renderer::DrawScene(ID3D12GraphicsCommandList* cmdList)
+{
+	// ==================================================
+	// 前処理
+	// ==================================================
+
+	// カメラ
+	if (mIsDebugCamera &&
+		gEngine->GetState() == RdEngine::State::kDev)
+	{
+		mCurrCamera = mDebugCamera->GetCamera();
+	}
+	else if (mGameCamera)
+	{
+		mCurrCamera = mGameCamera->GetCamera();
+	}
+	if (mCurrCamera)
+	{
+		// ビュープロジェクション行列を更新
+		mCurrCamera->UpdateViewProj();
+	}
+
+	// ライト管理
+	//mLightManager->Update();
+
+	// ==================================================
+	// レンダリング
+	// ==================================================
+
+	// 背景スプライト
+	SpriteCommon::PreRendering(cmdList);
+	for (auto& renderer : mBackground)
+	{
+		renderer->Draw();
+	}
+	SpriteCommon::PostRendering();
+
+	// メッシュ
+	ModelCommon::PreRendering(cmdList);
+	for (auto& renderer : mMeshes)
+	{
+		renderer->Draw();
+	}
+	for (auto& renderer : mSkinnedMeshes)
+	{
+		renderer->Draw();
+	}
+	ModelCommon::PostRendering();
+
+	// パーティクル
+	ParticleCommon::PreRendering(cmdList);
+	for (auto& renderer : mMeshParticles)
+	{
+		renderer->Draw();
+	}
+	// 深度を書かない
+	for (auto& renderer : mParticles)
+	{
+		renderer->Draw();
+	}
+	ParticleCommon::PostRendering();
+
+	// 前景スプライト
+	SpriteCommon::PreRendering(cmdList);
+	for (auto& renderer : mForeground)
+	{
+		renderer->Draw();
+	}
+	SpriteCommon::PostRendering();
+}
+
+void Renderer::DrawFinalSprite(ID3D12GraphicsCommandList* cmdList)
+{
+	if (gEngine->GetState() == RdEngine::State::kDev)
+	{
+		// エディタ上に表示
+		Editor::Draw(cmdList);
+	}
+	else
+	{
+		SpriteCommon::PreRendering(cmdList);
+		// ビューポートをセットし直す
+		D3D12_VIEWPORT viewport = {};
+		viewport.TopLeftX = 0.0f;
+		viewport.TopLeftY = 0.0f;
+		viewport.Width = FLOAT(Window::kWidth);
+		viewport.Height = FLOAT(Window::kHeight);
+		viewport.MinDepth = 0.0f;
+		viewport.MaxDepth = 1.0f;
+		cmdList->RSSetViewports(1, &viewport);
+		mFinalSprite->Draw(Vector2(float(Window::kWidth), float(Window::kHeight)));
+		SpriteCommon::PostRendering();
+	}
+}
+
+// スプライトをソート
+void Renderer::SortSprites(SpriteRenderer* sprite)
+{
+	uint32_t order = sprite->GetDrawOrder();
+	auto it = std::find(mForeground.begin(), mForeground.end(), sprite);
+	if (it != mForeground.end())
+	{
+		if (order < 100)
+		{
+			mForeground.erase(it);
+			AddSprite(sprite);
+		}
+		else
+		{
+			std::sort(mForeground.begin(), mForeground.end(),
+				[](SpriteRenderer* a, SpriteRenderer* b)
+				{
+					return a->GetDrawOrder() < b->GetDrawOrder();
+				}
+			);
+		}
+		return;
+	}
+	it = std::find(mBackground.begin(), mBackground.end(), sprite);
+	if (it != mBackground.end())
+	{
+		if (order >= 100)
+		{
+			mBackground.erase(it);
+			AddSprite(sprite);
+		}
+		else
+		{
+			std::sort(mBackground.begin(), mBackground.end(),
+				[](SpriteRenderer* a, SpriteRenderer* b)
+				{
+					return a->GetDrawOrder() < b->GetDrawOrder();
+				}
+			);
+		}
+	}
+}
+
+// ==================================================
+// アセット
+// ==================================================
+
+// テクスチャ
+Texture* Renderer::GetTexture(const std::string& filePath)
+{
+	Texture* texture = mTextures.Get(filePath);
+	if (!texture)
+	{
+		texture = new Texture();
+		texture->Create(filePath);
+		mTextures.Add(filePath, texture);
+	}
+	return texture;
+}
+
+// モデル
+Model* Renderer::GetModel(const std::string& filePath)
+{
+	Model* model = mModels.Get(filePath);
+	if (!model)
+	{
+		model = ObjLoader::Load(filePath);
+		mModels.Add(filePath, model);
+	}
+	return model;
+}
+
+// 頂点シェーダ
+Shader* Renderer::GetVs(const std::string& filePath)
+{
+	Shader* shader = mShaders.Get(filePath);
+	if (!shader)
+	{
+		shader = new Shader();
+		shader->LoadVs(filePath);
+		mShaders.Add(filePath, shader);
+	}
+	return shader;
+}
+
+// ジオメトリシェーダ
+Shader* Renderer::GetGs(const std::string& filePath)
+{
+	Shader* shader = mShaders.Get(filePath);
+	if (!shader)
+	{
+		shader = new Shader();
+		shader->LoadGs(filePath);
+		mShaders.Add(filePath, shader);
+	}
+	return shader;
+}
+
+// ピクセルシェーダ
+Shader* Renderer::GetPs(const std::string& filePath)
+{
+	Shader* shader = mShaders.Get(filePath);
+	if (!shader)
+	{
+		shader = new Shader();
+		shader->LoadPs(filePath);
+		mShaders.Add(filePath, shader);
+	}
+	return shader;
+}
+
+Skeleton* Renderer::GetMaterial(const std::string&) { return nullptr; }
+Skeleton* Renderer::GetSkeleton(const std::string&) { return nullptr; }
+Animation* Renderer::GetAnimation(const std::string&) { return nullptr; }
+
+// ==================================================
+// レンダラーコンポーネント
+// ==================================================
+
+// Add
+void Renderer::AddSprite(SpriteRenderer* sprite)
+{
+	uint32_t order = sprite->GetDrawOrder();
+	if (order < 100)
+	{
+		auto it = mBackground.begin();
+		for (; it != mBackground.end(); ++it)
+		{
+			if (order < (*it)->GetDrawOrder())
+			{
+				break;
+			}
+		}
+		mBackground.insert(it, sprite);
+	}
+	else
+	{
+		auto it = mForeground.begin();
+		for (; it != mForeground.end(); ++it)
+		{
+			if (order < (*it)->GetDrawOrder())
+			{
+				break;
+			}
+		}
+		mForeground.insert(it, sprite);
+	}
+}
+
+void Renderer::AddMesh(MeshRenderer* mesh)
+{
+	mMeshes.emplace_back(mesh);
+}
+
+void Renderer::AddSkinnedMesh(SkinnedMeshRenderer* skinnedMesh)
+{
+	mSkinnedMeshes.emplace_back(skinnedMesh);
+}
+
+void Renderer::AddParticle(ParticleRenderer* particle)
+{
+	mParticles.emplace_back(particle);
+}
+
+void Renderer::AddMeshParticle(MeshParticleRenderer* meshParticle)
+{
+	mMeshParticles.emplace_back(meshParticle);
+}
+
+// Remove
+void Renderer::RemoveSprite(SpriteRenderer* sprite)
+{
+	auto it = std::find(mBackground.begin(), mBackground.end(), sprite);
+	if (it != mBackground.end())
+	{
+		mBackground.erase(it);
+		return;
+	}
+	it = std::find(mForeground.begin(), mForeground.end(), sprite);
+	if (it != mForeground.end())
+	{
+		mForeground.erase(it);
+	}
+}
+
+void Renderer::RemoveMesh(MeshRenderer* mesh)
+{
+	auto it = std::find(mMeshes.begin(), mMeshes.end(), mesh);
+	if (it != mMeshes.end())
+	{
+		mMeshes.erase(it);
+	}
+}
+
+void Renderer::RemoveSkinnedMesh(SkinnedMeshRenderer* skinnedMesh)
+{
+	auto it = std::find(mSkinnedMeshes.begin(), mSkinnedMeshes.end(), skinnedMesh);
+	if (it != mSkinnedMeshes.end())
+	{
+		mSkinnedMeshes.erase(it);
+	}
+}
+
+void Renderer::RemoveParticle(ParticleRenderer* particle)
+{
+	auto it = std::find(mParticles.begin(), mParticles.end(), particle);
+	if (it != mParticles.end())
+	{
+		mParticles.erase(it);
+	}
+}
+
+void Renderer::RemoveMeshParticle(MeshParticleRenderer* meshParticle)
+{
+	auto it = std::find(mMeshParticles.begin(), mMeshParticles.end(), meshParticle);
+	if (it != mMeshParticles.end())
+	{
+		mMeshParticles.erase(it);
+	}
+}
+
+// ==================================================
+// 開発用
+// ==================================================
+
+void Renderer::UpdateForDev()
+{
+	ImGui::Begin("Renderer", nullptr, ImGuiWindowFlags_NoMove);
+	mLightManager->UpdateForDev();
+	// ガウシアンブラー
+	ImGui::Checkbox("Is Gaussian", &mIsGaussianBlur);
+	ImGui::DragFloat("Power", &mGaussianPower, 0.01f, 0.01f, 100.0f);
+	ImGui::End();
+
+	// ==================================================
+	// アセットウィンドウ
+	// ==================================================
+	auto fileTex = GetTexture("Assets/Texture/File.png");
+	auto size = ImVec2(82.0f / 2.0f, 111.0f / 2.0f);
+
+	// テクスチャ
+	ImGui::Begin("Texture", nullptr, ImGuiWindowFlags_NoMove);
+	uint32_t i = 0;
+	for (auto& texture : mTextures.GetResources())
+	{
+		Texture* t = texture.second.get();
+		if (t)
+		{
+			if (i > 0)
+			{
+				ImGui::SameLine(0.0f, 20.0f);
+			}
+			// Group
+			ImGui::BeginGroup();
+			ImGui::Image((void*)(intptr_t)t->GetDescHandle().ptr, ImVec2(40.0f, 40.0f));
+			auto texName = Helper::GetFileName(t->GetPath());
+			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))// ドラッグ
+			{
+				ImGui::SetDragDropPayload("TEXTURE_PAYLOAD", &t, sizeof(t));
+				ImGui::Text(texName.c_str());
+				ImGui::EndDragDropSource();
+			}
+			// 文字列が長い
+			if (texName.length() >= 10)
+			{
+				texName[7] = texName[8] = texName[9] = '.';
+				texName[10] = '\0';
+			}
+			ImGui::Text(texName.c_str());
+			ImGui::EndGroup();
+			++i;
+		}
+	}
+	ImGui::End();
+
+	// モデル
+	ImGui::Begin("Model", nullptr, ImGuiWindowFlags_NoMove);
+	i = 0;
+	for (auto& model : mModels.GetResources())
+	{
+		Model* m = model.second.get();
+		if (m)
+		{
+			if (i > 0)
+			{
+				ImGui::SameLine(0.0f, 20.0f);
+			}
+			// Group
+			ImGui::BeginGroup();
+			ImGui::Image((void*)(intptr_t)fileTex->GetDescHandle().ptr, size);
+			auto modelName = m->GetName();
+			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))// ドラッグ
+			{
+				ImGui::SetDragDropPayload("MODEL_PAYLOAD", &m, sizeof(m));
+				ImGui::Text(modelName.c_str());
+				ImGui::EndDragDropSource();
+			}
+			if (modelName.length() >= 10)
+			{
+				modelName[7] = modelName[8] = modelName[9] = '.';
+				modelName[10] = '\0';
+			}
+			ImGui::Text(modelName.c_str());
+			ImGui::EndGroup();
+			++i;
+		}
+	}
+	ImGui::End();
+}
+
+void Renderer::RenderForDev()
+{
+	mPrimitive->DrawGrid();
+}
+
+// ==================================================
+// ヘルパー関数
+// ==================================================
+
+void Renderer::SetGameCamera(CameraComponent* camera)
+{
+	if (!camera)
+	{
+		return;
+	}
+	if (mGameCamera)
+	{
+		mGameCamera->SetIsMain(false);
+	}
+	mGameCamera = camera;
+	mGameCamera->SetIsMain(true);
+}
