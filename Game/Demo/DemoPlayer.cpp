@@ -145,6 +145,11 @@ void DemoPlayer::ActorUpdate(float deltaTime)
 	// 地面
 	mIsGround = false;
 	Ray ray = Ray(mTransform->mPosition, mTransform->mPosition + Vector3(0.0f, -1.0f, 0.0f));// 下へ
+	if (mVelocity.y < 0.0f)
+	{
+		// 落下中は少し上から
+		ray.mStart.y += -mVelocity.y * deltaTime;
+	}
 	RaycastHit info = {};
 	Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
 	if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
@@ -164,8 +169,11 @@ void DemoPlayer::ActorUpdate(float deltaTime)
 				mIsGround = true;
 				mVelocity.y = 0.0f;
 			}
-			// 押し戻し
-			mTransform->mPosition = info.mPoint + Vector3(0.0f, mRadius, 0.0f);
+			//if (mVelocity.y >= 0.0f)
+			{
+				// 押し戻し
+				mTransform->mPosition = info.mPoint + Vector3(0.0f, mRadius, 0.0f);
+			}
 
 			// 奈落
 			if (info.mActor->GetName() == "Abyss")
@@ -198,8 +206,20 @@ void DemoPlayer::OnCollision(Actor* /*other*/, CollisionInfo* info)
 		mVelocity = Vector3::kZero;
 	}*/
 
-	// 押し戻し
-	mTransform->mPosition = mTransform->mPosition + info->mNormal * info->mDepth;
+	float maxCos = cosf(MyMath::ToRadians(45.0f));
+	//Helper::WriteToConsole(std::format("{}\n", MyMath::ToDegrees(acosf(info->mNormal.y))));
+	if (info->mNormal.y >= maxCos)
+	{
+		mIsGround = true;
+		mVelocity.y = 0.0f;
+		// 押し戻し
+		mTransform->mPosition = mTransform->mPosition + Vector3(0.0f, 1.0f, 0.0f) * info->mDepth;
+	}
+	else
+	{
+		// 押し戻し
+		mTransform->mPosition = mTransform->mPosition + info->mNormal * info->mDepth;
+	}
 	//Console::Log("Hit!");
 	mTransform->UpdateWorld(mParent ? mParent->mTransform : nullptr);
 }
@@ -216,7 +236,7 @@ void DemoPlayer::ActorUpdateForDev()
 	ImGui::DragFloat("Gravity", &mGravity, 0.01f, 0.0f, 100.0f);
 	ImGui::DragFloat("Init Cooldown", &mInitCooldown, 0.001f, 0.0f, 1.0f);
 	ImGui::DragFloat("Ground Dist", &mGroundDist, 0.001f, 0.0f, 100.0f);
-	ImGui::DragFloat("Max Slope", &mMaxSlope, 0.001f, 1.0f, 180.0f);
+	//ImGui::DragFloat("Max Slope", &mMaxSlope, 0.001f, 1.0f, 180.0f);
 }
 
 // ==================================================

@@ -65,6 +65,12 @@ void DemoCamera::ActorUpdate(float deltaTime)
 			}
 		}
 	}
+
+	Actor* skydome = mScene->GetActor("Skydome");
+	if (skydome)
+	{
+		skydome->mTransform->mPosition = mTransform->mPosition;
+	}
 }
 
 // ==================================================
