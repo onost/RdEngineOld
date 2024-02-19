@@ -31,6 +31,7 @@ void MeshRenderer::Draw()
 		ModelCommon::SetPso(mShaderType);
 		for (auto& mesh : mModel->GetMeshes())
 		{
+			mOwner->mTransform->SetWorld(mesh->GetLocal() * mOwner->mTransform->GetWorld());
 			mOwner->mTransform->Bind(ModelCommon::mCmdList, 0);
 			mesh->Draw(ModelCommon::mCmdList, 2, 3);
 		}

@@ -930,73 +930,8 @@
             "Components": [
                 {
                     "Position": [
-                        0.0,
-                        2.0,
-                        0.0
-                    ],
-                    "Rotation": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Type": 10
-                },
-                {
-                    "Is Visible": true,
-                    "Model": "RedBox.gltf",
-                    "Order": 100,
-                    "Shader Type": 0,
-                    "Texture": "Assets/Texture/Default.png",
-                    "Type": 6
-                },
-                {
-                    "Attribute": 1,
-                    "Axis X": [
-                        1.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Axis Y": [
-                        0.0,
-                        1.0,
-                        0.0
-                    ],
-                    "Axis Z": [
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Response Attr": 7,
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Type": 3
-                }
-            ],
-            "Name": "Red Box",
-            "Order": 100,
-            "State": 0,
-            "Type": 0
-        },
-        {
-            "Components": [
-                {
-                    "Position": [
-                        0.0,
                         10.0,
+                        5.0,
                         0.0
                     ],
                     "Rotation": [
@@ -1013,7 +948,8 @@
                     "Type": 10
                 },
                 {
-                    "Amount": 10,
+                    "Amount": 3,
+                    "Blend": 2,
                     "Box Max": [
                         0.0,
                         0.0,
@@ -1025,7 +961,7 @@
                         0.0
                     ],
                     "Delay": 0.0,
-                    "Frequency": 0.25,
+                    "Frequency": 0.15000000596046448,
                     "Init Accel Max": [
                         0.5,
                         0.5,
@@ -1037,54 +973,54 @@
                         -0.5
                     ],
                     "Init EColor Max": [
-                        1.0,
-                        1.0,
-                        1.0,
+                        0.0,
+                        0.0,
+                        0.49803921580314636,
                         1.0
                     ],
                     "Init EColor Min": [
-                        1.0,
-                        1.0,
-                        1.0,
+                        0.0,
+                        0.0,
+                        0.49803921580314636,
                         1.0
                     ],
                     "Init ERot Max": [
-                        6.2831854820251465,
-                        6.2831854820251465,
-                        6.2831854820251465
+                        0.0,
+                        0.0,
+                        0.0
                     ],
                     "Init ERot Min": [
-                        -6.2831854820251465,
-                        -6.2831854820251465,
-                        -6.2831854820251465
+                        0.0,
+                        0.0,
+                        0.0
                     ],
-                    "Init EScale Max": 0.0,
-                    "Init EScale Min": 0.0,
-                    "Init Life Max": 1.0,
-                    "Init Life Min": 0.5,
+                    "Init EScale Max": 0.20000000298023224,
+                    "Init EScale Min": 0.20000000298023224,
+                    "Init Life Max": 0.5,
+                    "Init Life Min": 0.25,
                     "Init SColor Max": [
-                        1.0,
-                        1.0,
+                        0.49803921580314636,
+                        0.49803921580314636,
                         1.0,
                         1.0
                     ],
                     "Init SColor Min": [
-                        1.0,
-                        1.0,
+                        0.49803921580314636,
+                        0.49803921580314636,
                         1.0,
                         1.0
                     ],
                     "Init SRot Max": [
-                        6.2831854820251465,
-                        6.2831854820251465,
-                        6.2831854820251465
+                        0.0,
+                        0.0,
+                        0.0
                     ],
                     "Init SRot Min": [
-                        -6.2831854820251465,
-                        -6.2831854820251465,
-                        -6.2831854820251465
+                        0.0,
+                        0.0,
+                        0.0
                     ],
-                    "Init SScale Max": 1.0,
+                    "Init SScale Max": 2.0,
                     "Init SScale Min": 1.0,
                     "Init Vel Max": [
                         2.0,
@@ -1096,19 +1032,140 @@
                         -2.0,
                         -2.0
                     ],
-                    "Is Billboard": false,
+                    "Is Billboard": true,
                     "Is Loop": true,
                     "Is Visible": true,
                     "Life": 10.0,
-                    "Model": "Ground.obj",
                     "Order": 100,
-                    "Radius": 2.5,
-                    "Shader Type": 0,
-                    "Shape": 2,
-                    "Type": 11
+                    "Radius": 0.0,
+                    "Shape": 0,
+                    "Texture": "Assets/Model/Plane/Effect01.png",
+                    "Type": 8
                 }
             ],
-            "Name": "Effect_Box",
+            "Name": "Effect_B",
+            "Order": 120,
+            "State": 0,
+            "Type": 0
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        5.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Amount": 3,
+                    "Blend": 2,
+                    "Box Max": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Box Min": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Delay": 0.0,
+                    "Frequency": 0.15000000596046448,
+                    "Init Accel Max": [
+                        0.5,
+                        0.5,
+                        0.5
+                    ],
+                    "Init Accel Min": [
+                        -0.5,
+                        -0.5,
+                        -0.5
+                    ],
+                    "Init EColor Max": [
+                        0.0,
+                        0.49803921580314636,
+                        0.0,
+                        1.0
+                    ],
+                    "Init EColor Min": [
+                        0.0,
+                        0.49803921580314636,
+                        0.0,
+                        1.0
+                    ],
+                    "Init ERot Max": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init ERot Min": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init EScale Max": 0.20000000298023224,
+                    "Init EScale Min": 0.20000000298023224,
+                    "Init Life Max": 0.5,
+                    "Init Life Min": 0.25,
+                    "Init SColor Max": [
+                        0.49803921580314636,
+                        1.0,
+                        0.49803921580314636,
+                        1.0
+                    ],
+                    "Init SColor Min": [
+                        0.49803921580314636,
+                        1.0,
+                        0.49803921580314636,
+                        1.0
+                    ],
+                    "Init SRot Max": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init SRot Min": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Init SScale Max": 2.0,
+                    "Init SScale Min": 1.0,
+                    "Init Vel Max": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "Init Vel Min": [
+                        -2.0,
+                        -2.0,
+                        -2.0
+                    ],
+                    "Is Billboard": true,
+                    "Is Loop": true,
+                    "Is Visible": true,
+                    "Life": 10.0,
+                    "Order": 100,
+                    "Radius": 0.0,
+                    "Shape": 0,
+                    "Texture": "Assets/Model/Plane/Effect01.png",
+                    "Type": 8
+                }
+            ],
+            "Name": "Effect_G",
             "Order": 120,
             "State": 0,
             "Type": 0
@@ -1240,129 +1297,7 @@
                 {
                     "Position": [
                         0.0,
-                        5.0,
-                        0.0
-                    ],
-                    "Rotation": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Type": 10
-                },
-                {
-                    "Amount": 3,
-                    "Blend": 2,
-                    "Box Max": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Box Min": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Delay": 0.0,
-                    "Frequency": 0.15000000596046448,
-                    "Init Accel Max": [
-                        0.5,
-                        0.5,
-                        0.5
-                    ],
-                    "Init Accel Min": [
-                        -0.5,
-                        -0.5,
-                        -0.5
-                    ],
-                    "Init EColor Max": [
-                        0.0,
-                        0.49803921580314636,
-                        0.0,
-                        1.0
-                    ],
-                    "Init EColor Min": [
-                        0.0,
-                        0.49803921580314636,
-                        0.0,
-                        1.0
-                    ],
-                    "Init ERot Max": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Init ERot Min": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Init EScale Max": 0.20000000298023224,
-                    "Init EScale Min": 0.20000000298023224,
-                    "Init Life Max": 0.5,
-                    "Init Life Min": 0.25,
-                    "Init SColor Max": [
-                        0.49803921580314636,
-                        1.0,
-                        0.49803921580314636,
-                        1.0
-                    ],
-                    "Init SColor Min": [
-                        0.49803921580314636,
-                        1.0,
-                        0.49803921580314636,
-                        1.0
-                    ],
-                    "Init SRot Max": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Init SRot Min": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Init SScale Max": 2.0,
-                    "Init SScale Min": 1.0,
-                    "Init Vel Max": [
-                        2.0,
-                        2.0,
-                        2.0
-                    ],
-                    "Init Vel Min": [
-                        -2.0,
-                        -2.0,
-                        -2.0
-                    ],
-                    "Is Billboard": true,
-                    "Is Loop": true,
-                    "Is Visible": true,
-                    "Life": 10.0,
-                    "Order": 100,
-                    "Radius": 0.0,
-                    "Shape": 0,
-                    "Texture": "Assets/Model/Plane/Effect01.png",
-                    "Type": 8
-                }
-            ],
-            "Name": "Effect_G",
-            "Order": 120,
-            "State": 0,
-            "Type": 0
-        },
-        {
-            "Components": [
-                {
-                    "Position": [
                         10.0,
-                        5.0,
                         0.0
                     ],
                     "Rotation": [
@@ -1379,8 +1314,7 @@
                     "Type": 10
                 },
                 {
-                    "Amount": 3,
-                    "Blend": 2,
+                    "Amount": 10,
                     "Box Max": [
                         0.0,
                         0.0,
@@ -1392,7 +1326,7 @@
                         0.0
                     ],
                     "Delay": 0.0,
-                    "Frequency": 0.15000000596046448,
+                    "Frequency": 0.25,
                     "Init Accel Max": [
                         0.5,
                         0.5,
@@ -1404,54 +1338,54 @@
                         -0.5
                     ],
                     "Init EColor Max": [
-                        0.0,
-                        0.0,
-                        0.49803921580314636,
+                        1.0,
+                        1.0,
+                        1.0,
                         1.0
                     ],
                     "Init EColor Min": [
-                        0.0,
-                        0.0,
-                        0.49803921580314636,
+                        1.0,
+                        1.0,
+                        1.0,
                         1.0
                     ],
                     "Init ERot Max": [
-                        0.0,
-                        0.0,
-                        0.0
+                        6.2831854820251465,
+                        6.2831854820251465,
+                        6.2831854820251465
                     ],
                     "Init ERot Min": [
-                        0.0,
-                        0.0,
-                        0.0
+                        -6.2831854820251465,
+                        -6.2831854820251465,
+                        -6.2831854820251465
                     ],
-                    "Init EScale Max": 0.20000000298023224,
-                    "Init EScale Min": 0.20000000298023224,
-                    "Init Life Max": 0.5,
-                    "Init Life Min": 0.25,
+                    "Init EScale Max": 0.0,
+                    "Init EScale Min": 0.0,
+                    "Init Life Max": 1.0,
+                    "Init Life Min": 0.5,
                     "Init SColor Max": [
-                        0.49803921580314636,
-                        0.49803921580314636,
+                        1.0,
+                        1.0,
                         1.0,
                         1.0
                     ],
                     "Init SColor Min": [
-                        0.49803921580314636,
-                        0.49803921580314636,
+                        1.0,
+                        1.0,
                         1.0,
                         1.0
                     ],
                     "Init SRot Max": [
-                        0.0,
-                        0.0,
-                        0.0
+                        6.2831854820251465,
+                        6.2831854820251465,
+                        6.2831854820251465
                     ],
                     "Init SRot Min": [
-                        0.0,
-                        0.0,
-                        0.0
+                        -6.2831854820251465,
+                        -6.2831854820251465,
+                        -6.2831854820251465
                     ],
-                    "Init SScale Max": 2.0,
+                    "Init SScale Max": 1.0,
                     "Init SScale Min": 1.0,
                     "Init Vel Max": [
                         2.0,
@@ -1463,18 +1397,19 @@
                         -2.0,
                         -2.0
                     ],
-                    "Is Billboard": true,
+                    "Is Billboard": false,
                     "Is Loop": true,
                     "Is Visible": true,
                     "Life": 10.0,
+                    "Model": "Ground.obj",
                     "Order": 100,
-                    "Radius": 0.0,
-                    "Shape": 0,
-                    "Texture": "Assets/Model/Plane/Effect01.png",
-                    "Type": 8
+                    "Radius": 2.5,
+                    "Shader Type": 0,
+                    "Shape": 2,
+                    "Type": 11
                 }
             ],
-            "Name": "Effect_B",
+            "Name": "Effect_Box",
             "Order": 120,
             "State": 0,
             "Type": 0

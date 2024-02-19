@@ -3,10 +3,6 @@
 #include "Graphics/Model/ModelCommon.h"
 #include <format>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 Model* ModelLoader::Load(const std::string& modelName)
 {
 	Helper::WriteToConsole(std::format("Create: \"{}\"\n", modelName.c_str()));
@@ -20,6 +16,7 @@ Model* ModelLoader::Load(const std::string& modelName)
 
 	Model* model = new Model();
 	std::vector<std::string> matNames;
+	auto node = ReadNode(scene->mRootNode);
 
 	// マテリアル
 	for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex)
@@ -99,6 +96,9 @@ Model* ModelLoader::Load(const std::string& modelName)
 				auto matIndex = mesh->mMaterialIndex;
 				auto name = matNames[matIndex];
 				myMesh->mMaterial = model->mMaterials[name];
+
+				// トランスフォーム
+				myMesh->mLocal = node.mLocal;
 			}
 		}
 		// 追加
@@ -106,4 +106,39 @@ Model* ModelLoader::Load(const std::string& modelName)
 	}
 	model->Create(modelName);
 	return model;
+}
+
+// ノードを解析
+ModelLoader::Node ModelLoader::ReadNode(aiNode* node)
+{
+	Node result = {};
+	// local
+	aiMatrix4x4 local = node->mTransformation;
+	//local.Transpose();
+	result.mLocal.m[0][0] = local[0][0];
+	result.mLocal.m[0][1] = local[1][0];
+	result.mLocal.m[0][2] = local[2][0];
+	result.mLocal.m[0][3] = local[3][0];
+	result.mLocal.m[1][0] = local[0][1];
+	result.mLocal.m[1][1] = local[1][1];
+	result.mLocal.m[1][2] = local[2][1];
+	result.mLocal.m[1][3] = local[3][1];
+	result.mLocal.m[2][0] = local[0][2];
+	result.mLocal.m[2][1] = local[1][2];
+	result.mLocal.m[2][2] = local[2][2];
+	result.mLocal.m[2][3] = local[3][2];
+	result.mLocal.m[3][0] = local[0][3];
+	result.mLocal.m[3][1] = local[1][3];
+	result.mLocal.m[3][2] = local[2][3];
+	result.mLocal.m[3][3] = local[3][3];
+	// name
+	result.mName = node->mName.C_Str();
+	// children
+	result.mChildren.resize(node->mNumChildren);
+	for (uint32_t childIndex = 0; childIndex < node->mNumChildren; ++childIndex)
+	{
+		// 再帰
+		result.mChildren[childIndex] = ReadNode(node->mChildren[childIndex]);
+	}
+	return result;
 }

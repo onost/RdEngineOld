@@ -1,0 +1,347 @@
+{
+    "Actor": [
+        {
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Is Visible": true,
+                    "Model": "Planet.gltf",
+                    "Order": 100,
+                    "Shader Type": 0,
+                    "Texture": "Assets/Texture/Default.png",
+                    "Type": 6
+                }
+            ],
+            "Name": "Planet",
+            "Order": 100,
+            "State": 0,
+            "Type": 0
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "FarZ": 10000.0,
+                    "Fov": 1.5707963705062866,
+                    "Is Main": true,
+                    "NearZ": 0.10000000149011612,
+                    "Order": 100,
+                    "Type": 0
+                }
+            ],
+            "Name": "Camera",
+            "Order": 200,
+            "State": 0,
+            "Type": 0
+        }
+    ],
+    "Renderer": {
+        "Directional Light": [
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Direction": [
+                    1.0,
+                    -5.0,
+                    0.0
+                ],
+                "Intensity": 0.800000011920929
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Intensity": 0.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Intensity": 0.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Intensity": 0.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Intensity": 0.0
+            }
+        ],
+        "Point Light": [
+            {
+                "Color": [
+                    1.0,
+                    0.49803921580314636,
+                    0.49803921580314636,
+                    1.0
+                ],
+                "Decay": 3.0,
+                "Intensity": 0.0,
+                "Position": [
+                    -10.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 50.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 3.0,
+                "Intensity": 0.0,
+                "Position": [
+                    -5.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 30.0
+            },
+            {
+                "Color": [
+                    0.49803921580314636,
+                    1.0,
+                    0.49803921580314636,
+                    1.0
+                ],
+                "Decay": 3.0,
+                "Intensity": 0.0,
+                "Position": [
+                    0.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 50.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 3.0,
+                "Intensity": 0.0,
+                "Position": [
+                    5.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 30.0
+            },
+            {
+                "Color": [
+                    0.49803921580314636,
+                    0.49803921580314636,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 3.0,
+                "Intensity": 0.0010000000474974513,
+                "Position": [
+                    10.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 50.0
+            }
+        ],
+        "Spot Light": [
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 20.0,
+                "Intensity": 0.0,
+                "Outer": 30.0,
+                "Position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Radius": 10.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 20.0,
+                "Intensity": 0.0,
+                "Outer": 30.0,
+                "Position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Radius": 10.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 20.0,
+                "Intensity": 0.0,
+                "Outer": 30.0,
+                "Position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Radius": 10.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 20.0,
+                "Intensity": 0.0,
+                "Outer": 30.0,
+                "Position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Radius": 10.0
+            },
+            {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 20.0,
+                "Intensity": 0.0,
+                "Outer": 30.0,
+                "Position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Radius": 10.0
+            }
+        ]
+    }
+}

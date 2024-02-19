@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/IndexBuffer.h"
 #include "Core/VertexBuffer.h"
+#include "Matrix4.h"
 #include "Vector2.h"
 #include "Vector3.h"
 #include <memory>
@@ -40,6 +41,7 @@ public:
 	std::vector<uint16_t>& GetIndices() { return mIndices; }
 	Material* GetMaterial() const { return mMaterial; }
 	bool GetIsSkinned() const { return mIsSkinned; }
+	const Matrix4 GetLocal() const { return mLocal; }
 	// Setter
 	void SetMaterial(Material* material) { mMaterial = material; }
 	//void SetIsSkinned(bool isSkinned) { mIsSkinned = isSkinned; }
@@ -51,4 +53,7 @@ private:
 	std::vector<uint16_t> mIndices;
 	Material* mMaterial;
 	bool mIsSkinned;
+
+	// トランスフォーム
+	Matrix4 mLocal;
 };
