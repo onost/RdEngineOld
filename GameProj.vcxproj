@@ -57,7 +57,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Engine;$(SolutionDir)External;$(SolutionDir)External/assimp/include;$(SolutionDir)Game;$(SolutionDir)Math;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)External\assimp\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc143-mdd.lib;%(AdditionalDependencies)</AdditionalDependencies>
