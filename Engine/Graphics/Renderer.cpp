@@ -6,7 +6,8 @@
 #include "Component/ParticleRenderer.h"
 #include "Component/SkinnedMeshRenderer.h"
 #include "Editor.h"
-#include "Loader/ObjLoader.h"
+//#include "Loader/ObjLoader.h"
+#include "Loader/ModelLoader.h"
 #include "Model/ModelCommon.h"
 #include "Particle/ParticleCommon.h"
 #include "RdEngine.h"
@@ -270,7 +271,8 @@ Model* Renderer::GetModel(const std::string& filePath)
 	Model* model = mModels.Get(filePath);
 	if (!model)
 	{
-		model = ObjLoader::Load(filePath);
+		//model = ObjLoader::Load(filePath);
+		model = ModelLoader::Load(filePath);
 		mModels.Add(filePath, model);
 	}
 	return model;

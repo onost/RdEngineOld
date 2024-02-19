@@ -11,6 +11,7 @@ class Material;
 class Mesh
 {
 	friend class ObjLoader;
+	friend class ModelLoader;
 public:
 	// 頂点
 	struct Vertex

@@ -931,6 +931,71 @@
                 {
                     "Position": [
                         0.0,
+                        2.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Is Visible": true,
+                    "Model": "RedBox.gltf",
+                    "Order": 100,
+                    "Shader Type": 0,
+                    "Texture": "Assets/Texture/Default.png",
+                    "Type": 6
+                },
+                {
+                    "Attribute": 1,
+                    "Axis X": [
+                        1.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Axis Y": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    "Axis Z": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Response Attr": 7,
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 3
+                }
+            ],
+            "Name": "Red Box",
+            "Order": 100,
+            "State": 0,
+            "Type": 0
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
                         10.0,
                         0.0
                     ],

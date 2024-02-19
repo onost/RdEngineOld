@@ -13,6 +13,7 @@ class Transform;
 class Model
 {
 	friend class ObjLoader;
+	friend class ModelLoader;
 public:
 	~Model();
 	void Create(const std::string& name);

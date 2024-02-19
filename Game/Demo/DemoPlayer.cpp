@@ -162,18 +162,23 @@ void DemoPlayer::ActorUpdate(float deltaTime)
 				info.mNormal.y,
 				info.mNormal.z));*/
 
-			//float maxCos = cosf(MyMath::ToRadians(mMaxSlope));
-			//Helper::WriteToConsole(std::format("{}\n", MyMath::ToDegrees(acosf(info.mNormal.y))));
-			//if (info.mNormal.y >= maxCos)
+			/*float maxCos = cosf(MyMath::ToRadians(mMaxSlope));
+			Helper::WriteToConsole(std::format("{}\n", MyMath::ToDegrees(acosf(info.mNormal.y))));
+			if (info.mNormal.y >= maxCos)
 			{
 				mIsGround = true;
 				mVelocity.y = 0.0f;
 			}
-			//if (mVelocity.y >= 0.0f)
+			if (mVelocity.y >= 0.0f)
 			{
 				// 押し戻し
 				mTransform->mPosition = info.mPoint + Vector3(0.0f, mRadius, 0.0f);
-			}
+			}*/
+
+			mIsGround = true;
+			mVelocity.y = 0.0f;
+			// 押し戻し
+			mTransform->mPosition = info.mPoint + Vector3(0.0f, mRadius, 0.0f);
 
 			// 奈落
 			if (info.mActor->GetName() == "Abyss")
@@ -206,8 +211,8 @@ void DemoPlayer::OnCollision(Actor* /*other*/, CollisionInfo* info)
 		mVelocity = Vector3::kZero;
 	}*/
 
-	float maxCos = cosf(MyMath::ToRadians(45.0f));
-	//Helper::WriteToConsole(std::format("{}\n", MyMath::ToDegrees(acosf(info->mNormal.y))));
+	float maxCos = cosf(MyMath::ToRadians(mMaxSlope));
+	Console::Log(std::format("{}\n", MyMath::ToDegrees(acosf(info->mNormal.y))));
 	if (info->mNormal.y >= maxCos)
 	{
 		mIsGround = true;
@@ -236,7 +241,7 @@ void DemoPlayer::ActorUpdateForDev()
 	ImGui::DragFloat("Gravity", &mGravity, 0.01f, 0.0f, 100.0f);
 	ImGui::DragFloat("Init Cooldown", &mInitCooldown, 0.001f, 0.0f, 1.0f);
 	ImGui::DragFloat("Ground Dist", &mGroundDist, 0.001f, 0.0f, 100.0f);
-	//ImGui::DragFloat("Max Slope", &mMaxSlope, 0.001f, 1.0f, 180.0f);
+	ImGui::DragFloat("Max Slope", &mMaxSlope, 0.01f, 1.0f, 180.0f);
 }
 
 // ==================================================

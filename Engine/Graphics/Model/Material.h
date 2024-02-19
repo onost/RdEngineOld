@@ -10,6 +10,7 @@ class Texture;
 class Material
 {
 	friend class ObjLoader;
+	friend class ModelLoader;
 private:
 	// 定数
 	struct Constant
