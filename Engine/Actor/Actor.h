@@ -30,7 +30,8 @@ public:
 		Tanuki02,//
 		DemoPlayer,
 		DemoCamera,
-		DemoEnemy
+		DemoEnemy,
+		Player
 		//
 	};
 

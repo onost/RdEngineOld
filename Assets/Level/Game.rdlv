@@ -28,6 +28,17 @@
                     "Shader Type": 0,
                     "Texture": "Assets/Texture/Default.png",
                     "Type": 6
+                },
+                {
+                    "Attribute": 1,
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 10.0,
+                    "Response Attr": 7,
+                    "Type": 4
                 }
             ],
             "Name": "Planet",
@@ -40,12 +51,60 @@
                 {
                     "Position": [
                         0.0,
-                        0.0,
+                        12.0,
                         0.0
                     ],
                     "Rotation": [
                         1.0,
                         0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Is Visible": true,
+                    "Model": "Player.obj",
+                    "Order": 100,
+                    "Shader Type": 0,
+                    "Texture": "Assets/Texture/Default.png",
+                    "Type": 6
+                },
+                {
+                    "Attribute": 2,
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 1.0,
+                    "Response Attr": 7,
+                    "Type": 4
+                }
+            ],
+            "Gravity": 1.0,
+            "Jump Power": 30.0,
+            "Name": "Player",
+            "Order": 100,
+            "State": 0,
+            "Type": 6
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        15.0,
+                        -20.0
+                    ],
+                    "Rotation": [
+                        0.965925931930542,
+                        0.2588190734386444,
                         0.0,
                         0.0
                     ],
