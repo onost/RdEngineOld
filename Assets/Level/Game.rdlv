@@ -88,6 +88,7 @@
                 }
             ],
             "Gravity": 1.0,
+            "Ground Dist": 0.10000000149011612,
             "Jump Power": 30.0,
             "Name": "Player",
             "Order": 100,

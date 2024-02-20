@@ -35,6 +35,9 @@ private:
 	bool mIsGround;
 	float mJumpPower;
 	float mGravity;
-	Vector3 mGravityDist;
+	float mGravityPower;
 	float mGroundDist;
+
+	// 法線
+	Vector3 mNormal;
 };
