@@ -15,6 +15,8 @@ public:
 	void UpdateWorld(Transform* parent = nullptr);
 	void Bind(ID3D12GraphicsCommandList* cmdList, uint32_t rootParamIdx);
 
+	void Copy(Matrix4 world);
+
 	// ==================================================
 	// json
 	// ==================================================
@@ -32,7 +34,7 @@ public:
 	Type GetType() const override { return Type::Transform; }
 	const Matrix4& GetLocal() const { return mLocal; }
 	const Matrix4& GetWorld() const { return mWorld; }
-	void SetWorld(const Matrix4& world) { mWorld = world; }
+	//void SetWorld(const Matrix4& world) { mWorld = world; }
 
 public:
 	Vector3 mScale;

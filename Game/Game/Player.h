@@ -36,8 +36,10 @@ private:
 	float mJumpPower;
 	float mGravity;
 	float mGravityPower;
+	Vector3 mGravityDir;
 	float mGroundDist;
 
-	// 法線
-	Vector3 mNormal;
+	float mMaxGround;
+	Vector3 mActualNorm;
+	Vector3 mIdealNorm;
 };

@@ -30,12 +30,18 @@ void Transform::UpdateWorld(Transform* parent)
 		// ワールド行列
 		mWorld *= parent->GetWorld();
 	}
+	mCBuff->Copy(mWorld);
 }
 
 void Transform::Bind(ID3D12GraphicsCommandList* cmdList, uint32_t rootParamIdx)
 {
-	mCBuff->Copy(mWorld);
+	//mCBuff->Copy(mWorld);
 	mCBuff->Bind(cmdList, rootParamIdx);
+}
+
+void Transform::Copy(Matrix4 world)
+{
+	mCBuff->Copy(world);
 }
 
 // ==================================================

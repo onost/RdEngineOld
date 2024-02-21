@@ -70,6 +70,10 @@ void MeshCollider::CreateTriangles()
 	{
 		auto& mesh = *it;
 		auto& vertices = mesh->GetVertices();
+		for (auto v : vertices)
+		{
+			v.mPos *= mesh->GetLocal();
+		}
 		auto& indices = mesh->GetIndices();
 		uint32_t size = uint32_t(indices.size() / 3);
 		mTriangles.resize(mTriangles.size() + size);
