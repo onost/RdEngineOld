@@ -18,7 +18,6 @@ public:
 		Terrain = 1 << 0,
 		Allies = 1 << 1,
 		Enemies = 1 << 2,
-		Planet = 1 << 3,
 
 		kAll = 0xFFFFFFFF
 	};
@@ -46,6 +45,9 @@ public:
 	// ==================================================
 	// ヘルパー関数
 	// ==================================================
+	bool GetIsTrigger() const { return mIsTrigger; }
+	void SetIsTrigger(bool isTrigger) { mIsTrigger = isTrigger; }
+	// Attribute
 	void SetAttr(Attribute attr) { mAttr = attr; }
 	void AddAttr(Attribute attr) { mAttr = Attribute(uint32_t(mAttr) | uint32_t(attr)); }
 	void RemoveAttr(Attribute attr) { mAttr = Attribute(uint32_t(mAttr) & uint32_t(~attr)); }

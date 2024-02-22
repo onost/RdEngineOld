@@ -111,7 +111,7 @@ void Player::ActorUpdate(float deltaTime)
 	Ray ray = Ray(mTransform->mPosition, mTransform->mPosition + downDir);
 	RaycastHit info = {};
 	Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
-	if (mScene->GetCollisionManager()->Raycast(ray, info, Collider::Planet))
+	if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
 	{
 		//float dist = Length(info.mPoint - ray.mStart);
 		float dot = Dot(upDir, info.mNormal);

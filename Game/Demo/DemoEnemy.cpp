@@ -66,16 +66,19 @@ void DemoEnemy::ActorUpdate(float deltaTime)
 	}
 }
 
-void DemoEnemy::OnCollision(Actor* other, CollisionInfo* info)
+// Collision
+void DemoEnemy::OnCollision(Actor* /*other*/, CollisionInfo* info)
+{
+	// 押し戻し
+	mTransform->mPosition = mTransform->mPosition + info->mNormal * info->mDepth;
+	mTransform->UpdateWorld(mParent ? mParent->mTransform : nullptr);
+}
+
+// Trigger
+void DemoEnemy::OnTrigger(Actor* other)
 {
 	if (other->GetName() == "Bullet")
 	{
 		--mHp;
-	}
-	else
-	{
-		// 押し戻し
-		mTransform->mPosition = mTransform->mPosition + info->mNormal * info->mDepth;
-		mTransform->UpdateWorld(mParent ? mParent->mTransform : nullptr);
 	}
 }

@@ -203,6 +203,8 @@ void DemoPlayer::ActorUpdate(float deltaTime)
 
 void DemoPlayer::OnCollision(Actor* /*other*/, CollisionInfo* info)
 {
+	//Console::Log("Hit!");
+
 	/*if (other->GetName() == "Abyss")
 	{
 		// リセット
@@ -217,15 +219,9 @@ void DemoPlayer::OnCollision(Actor* /*other*/, CollisionInfo* info)
 	{
 		mIsGround = true;
 		mVelocity.y = 0.0f;
-		// 押し戻し
-		mTransform->mPosition = mTransform->mPosition + Vector3(0.0f, 1.0f, 0.0f) * info->mDepth;
 	}
-	else
-	{
-		// 押し戻し
-		mTransform->mPosition = mTransform->mPosition + info->mNormal * info->mDepth;
-	}
-	//Console::Log("Hit!");
+	// 押し戻し
+	mTransform->mPosition = mTransform->mPosition + info->mNormal * info->mDepth;
 	mTransform->UpdateWorld(mParent ? mParent->mTransform : nullptr);
 }
 

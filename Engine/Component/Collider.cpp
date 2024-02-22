@@ -36,6 +36,7 @@ void Collider::Load(const nlohmann::json& json)
 	{
 		mResponseAttr = Attribute(responseAttr);
 	}
+	JsonHelper::GetBool(json, "Is Trigger", mIsTrigger);
 }
 
 void Collider::Save(nlohmann::json& json)
@@ -43,6 +44,7 @@ void Collider::Save(nlohmann::json& json)
 	Component::Load(json);
 	JsonHelper::SetUint(json, "Attribute", uint32_t(mAttr));
 	JsonHelper::SetUint(json, "Response Attr", uint32_t(mResponseAttr));
+	JsonHelper::SetBool(json, "Is Trigger", mIsTrigger);
 }
 
 // ==================================================

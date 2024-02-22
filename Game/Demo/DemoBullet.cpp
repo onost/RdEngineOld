@@ -21,6 +21,7 @@ DemoBullet::DemoBullet(Scene* scene)
 	sc->SetAttr(Collider::Allies);
 	sc->AddResponseAttr(Collider::Terrain);
 	sc->AddResponseAttr(Collider::Enemies);
+	sc->SetIsTrigger(true);
 }
 
 void DemoBullet::ActorUpdate(float deltaTime)
@@ -36,7 +37,7 @@ void DemoBullet::ActorUpdate(float deltaTime)
 	mTransform->mPosition += f * mSpeed * deltaTime;
 }
 
-void DemoBullet::OnCollision(Actor* /*other*/, CollisionInfo* /*info*/)
+void DemoBullet::OnTrigger(Actor* /*other*/)
 {
 	mState = State::kDead;
 }

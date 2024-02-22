@@ -105,7 +105,7 @@ void Scene::TestCollision()
 			a->OnCollision(b, info);
 			CollisionInfo i = *info;
 			i.mNormal *= -1.0f;// 反転
-			a->OnCollision(a, &i);
+			b->OnCollision(a, &i);
 		};
 	auto onTrigger =
 		[](Actor* a, Actor* b)
