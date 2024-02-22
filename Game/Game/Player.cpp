@@ -174,35 +174,30 @@ void Player::ActorUpdate(float deltaTime)
 	}
 }
 
-void Player::OnCollision(Actor* other, CollisionInfo* info)
+void Player::OnCollision(Actor* /*other*/, CollisionInfo* info)
 {
-	/*float maxCos = cosf(MyMath::ToRadians(45.0f));
+	//Console::Log("Hit!");
+
+	float maxCos = cosf(MyMath::ToRadians(mMaxGround));
 	//Console::Log(std::format("{}\n", MyMath::ToDegrees(acosf(info->mNormal.y))));
+	Vector3 pushBack = info->mNormal;
 	if (info->mNormal.y >= maxCos)
 	{
 		mIsGround = true;
 		mGravityPower = 0.0f;
-		// 押し戻し
-		mTransform->mPosition = mTransform->mPosition + Vector3(0.0f, 1.0f, 0.0f) * info->mDepth;
+		//pushBack = Vector3(0.0f, 1.0f, 0.0f);
 	}
-	else
-	{
-		// 押し戻し
-		mTransform->mPosition = mTransform->mPosition + info->mNormal * info->mDepth;
-	}*/
+	// 押し戻し
+	mTransform->mPosition = mTransform->mPosition + pushBack * info->mDepth;
+	mTransform->UpdateWorld(mParent ? mParent->mTransform : nullptr);
+}
 
+void Player::OnTrigger(Actor* other)
+{
 	if (other->GetName() == "Gravity Attractor")
 	{
 		mGravityAttractor = other;
 	}
-	else
-	{
-		// 押し戻し
-		mTransform->mPosition = mTransform->mPosition + info->mNormal * info->mDepth;
-	}
-
-	//Console::Log("Hit!");
-	mTransform->UpdateWorld(mParent ? mParent->mTransform : nullptr);
 }
 
 // ==================================================

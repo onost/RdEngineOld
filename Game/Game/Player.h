@@ -10,6 +10,7 @@ public:
 	void ActorInput(const Input::State& input) override;
 	void ActorUpdate(float deltaTime) override;
 	void OnCollision(Actor* other, CollisionInfo* info) override;
+	void OnTrigger(Actor* other) override;
 	void ActorUpdateForDev() override;
 
 	// ==================================================

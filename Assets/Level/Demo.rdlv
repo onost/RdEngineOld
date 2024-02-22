@@ -80,6 +80,7 @@
                                 0.0,
                                 0.0
                             ],
+                            "Is Trigger": false,
                             "Response Attr": 7,
                             "Size": [
                                 100.0,
@@ -147,6 +148,7 @@
                                         0.0,
                                         0.0
                                     ],
+                                    "Is Trigger": false,
                                     "Response Attr": 7,
                                     "Size": [
                                         1.0,
@@ -212,6 +214,7 @@
                                         0.0,
                                         0.0
                                     ],
+                                    "Is Trigger": false,
                                     "Response Attr": 7,
                                     "Size": [
                                         1.0,
@@ -257,6 +260,7 @@
                                 },
                                 {
                                     "Attribute": 1,
+                                    "Is Trigger": false,
                                     "Model": "Ground.obj",
                                     "Response Attr": 7,
                                     "Type": 9
@@ -318,6 +322,7 @@
                                         0.0,
                                         0.0
                                     ],
+                                    "Is Trigger": false,
                                     "Response Attr": 7,
                                     "Size": [
                                         1.0,
@@ -410,6 +415,7 @@
                                 0.0,
                                 0.0
                             ],
+                            "Is Trigger": false,
                             "Response Attr": 7,
                             "Size": [
                                 1.0,
@@ -475,6 +481,7 @@
                                 0.0,
                                 0.0
                             ],
+                            "Is Trigger": false,
                             "Response Attr": 7,
                             "Size": [
                                 1.0,
@@ -540,6 +547,7 @@
                                 0.0,
                                 0.0
                             ],
+                            "Is Trigger": false,
                             "Response Attr": 7,
                             "Size": [
                                 1.0,
@@ -585,6 +593,7 @@
                         },
                         {
                             "Attribute": 1,
+                            "Is Trigger": false,
                             "Model": "terrain.obj",
                             "Response Attr": 0,
                             "Type": 9
@@ -782,15 +791,16 @@
                         0.0,
                         0.0
                     ],
+                    "Is Trigger": false,
                     "Radius": 1.0,
                     "Response Attr": 5,
                     "Type": 4
                 }
             ],
-            "Gravity": 1.0,
-            "Init Cooldown": 0.10000000149011612,
+            "Cooldown": 0.10000000149011612,
+            "Gravity": 1.5,
             "Jump Power": 30.0,
-            "Max Slope": 30.0,
+            "Max Ground": 35.0,
             "Name": "Demo Player",
             "Order": 100,
             "State": 0,
@@ -847,6 +857,7 @@
                         0.0,
                         0.0
                     ],
+                    "Is Trigger": false,
                     "Response Attr": 4294967295,
                     "Size": [
                         1.0,
@@ -912,6 +923,7 @@
                         0.0,
                         0.0
                     ],
+                    "Is Trigger": false,
                     "Response Attr": 4294967295,
                     "Size": [
                         1.0,

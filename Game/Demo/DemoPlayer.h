@@ -39,7 +39,7 @@ private:
 	float mJumpPower;
 	float mGravity;
 	float mGroundDist;
-	float mMaxSlope;
+	float mMaxGround;
 	// 弾
 	float mInitCooldown;
 	float mCooldown;

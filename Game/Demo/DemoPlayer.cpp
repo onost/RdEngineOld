@@ -22,9 +22,10 @@ DemoPlayer::DemoPlayer(Scene* scene)
 	, mJumpPower(0.0f)
 	, mGravity(0.0f)
 	, mGroundDist(0.3f)
+	, mMaxGround(30.0f)
 	, mInitCooldown(0.1f)
-	, mMaxSlope(30.0f)
 	, mCooldown(0.1f)
+	, mSandSmoke(nullptr)
 {
 	// メッシュ
 	auto mr = new MeshRenderer(this);
@@ -162,7 +163,7 @@ void DemoPlayer::ActorUpdate(float deltaTime)
 				info.mNormal.y,
 				info.mNormal.z));*/
 
-			/*float maxCos = cosf(MyMath::ToRadians(mMaxSlope));
+			/*float maxCos = cosf(MyMath::ToRadians(mMaxGround));
 			Helper::WriteToConsole(std::format("{}\n", MyMath::ToDegrees(acosf(info.mNormal.y))));
 			if (info.mNormal.y >= maxCos)
 			{
@@ -213,15 +214,17 @@ void DemoPlayer::OnCollision(Actor* /*other*/, CollisionInfo* info)
 		mVelocity = Vector3::kZero;
 	}*/
 
-	float maxCos = cosf(MyMath::ToRadians(mMaxSlope));
-	Console::Log(std::format("{}\n", MyMath::ToDegrees(acosf(info->mNormal.y))));
+	float maxCos = cosf(MyMath::ToRadians(mMaxGround));
+	//Console::Log(std::format("{}\n", MyMath::ToDegrees(acosf(info->mNormal.y))));
+	Vector3 pushBack = info->mNormal;
 	if (info->mNormal.y >= maxCos)
 	{
 		mIsGround = true;
 		mVelocity.y = 0.0f;
+		pushBack = Vector3(0.0f, 1.0f, 0.0f);
 	}
 	// 押し戻し
-	mTransform->mPosition = mTransform->mPosition + info->mNormal * info->mDepth;
+	mTransform->mPosition = mTransform->mPosition + pushBack * info->mDepth;
 	mTransform->UpdateWorld(mParent ? mParent->mTransform : nullptr);
 }
 
@@ -235,9 +238,9 @@ void DemoPlayer::ActorUpdateForDev()
 	ImGui::Text(std::format("Is Ground: {}", mIsGround).c_str());
 	ImGui::DragFloat("Jump Power", &mJumpPower, 0.01f, 0.0f, 100.0f);
 	ImGui::DragFloat("Gravity", &mGravity, 0.01f, 0.0f, 100.0f);
-	ImGui::DragFloat("Init Cooldown", &mInitCooldown, 0.001f, 0.0f, 1.0f);
 	ImGui::DragFloat("Ground Dist", &mGroundDist, 0.001f, 0.0f, 100.0f);
-	ImGui::DragFloat("Max Slope", &mMaxSlope, 0.01f, 1.0f, 180.0f);
+	ImGui::DragFloat("Max Ground", &mMaxGround, 0.01f, 1.0f, 180.0f);
+	ImGui::DragFloat("Cooldown", &mInitCooldown, 0.001f, 0.0f, 1.0f);
 }
 
 // ==================================================
@@ -249,8 +252,9 @@ void DemoPlayer::Load(const nlohmann::json& json)
 	Actor::Load(json);
 	JsonHelper::GetFloat(json, "Jump Power", mJumpPower);
 	JsonHelper::GetFloat(json, "Gravity", mGravity);
-	JsonHelper::GetFloat(json, "Init Cooldown", mInitCooldown);
-	JsonHelper::GetFloat(json, "Max Slope", mMaxSlope);
+	JsonHelper::GetFloat(json, "Ground Dist", mGroundDist);
+	JsonHelper::GetFloat(json, "Max Ground", mMaxGround);
+	JsonHelper::GetFloat(json, "Cooldown", mInitCooldown);
 }
 
 void DemoPlayer::Save(nlohmann::json& json)
@@ -258,6 +262,7 @@ void DemoPlayer::Save(nlohmann::json& json)
 	Actor::Save(json);
 	JsonHelper::SetFloat(json, "Jump Power", mJumpPower);
 	JsonHelper::SetFloat(json, "Gravity", mGravity);
-	JsonHelper::SetFloat(json, "Init Cooldown", mInitCooldown);
-	JsonHelper::SetFloat(json, "Max Slope", mMaxSlope);
+	JsonHelper::GetFloat(json, "Ground Dist", mGroundDist);
+	JsonHelper::SetFloat(json, "Max Ground", mMaxGround);
+	JsonHelper::SetFloat(json, "Cooldown", mInitCooldown);
 }
