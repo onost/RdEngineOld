@@ -10,7 +10,7 @@ Player::Player(Scene* scene)
 	: Actor(scene)
 	, mRadius(1.0f)
 	, mVelocity(Vector3::kZero)
-	, mSpeed(5.0f)
+	, mSpeed(7.5f)
 	, mRotVel(0.0f)
 	, mRotSpeed(MyMath::kPiOver2)
 	, mIsGround(false)
@@ -19,8 +19,7 @@ Player::Player(Scene* scene)
 	, mGravityPower(0.0f)
 	, mGravityDir(Vector3::kZero)
 	, mMaxGround(60.0f)
-	, mActualNorm(Vector3::kZero)
-	, mIdealNorm(Vector3::kZero)
+	, mNormal(Vector3::kZero)
 {
 	// メッシュ
 	auto mr = new MeshRenderer(this);
@@ -112,42 +111,13 @@ void Player::ActorUpdate(float deltaTime)
 	Ray ray = Ray(mTransform->mPosition, mTransform->mPosition + downDir);
 	RaycastHit info = {};
 	Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
-	if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
+	if (mScene->GetCollisionManager()->Raycast(ray, info, Collider::Planet))
 	{
 		//float dist = Length(info.mPoint - ray.mStart);
 		float dot = Dot(upDir, info.mNormal);
 		if (acosf(dot) <= MyMath::ToRadians(mMaxGround))
 		{
-			mActualNorm = info.mNormal;
-		}
-		if (mIsGround)
-		{
-			mIdealNorm = mActualNorm;
-		}
-		else
-		{
-			// とりま0.1f
-			mIdealNorm = MyMath::Lerp(mIdealNorm, mActualNorm, 0.1f);
-			mIdealNorm.Normalize();
-		}
-	}
-
-	{
-		Console::Log(std::format("({:6.3f},{:6.3f},{:6.3f})\n",
-			mActualNorm.x,
-			mActualNorm.y,
-			mActualNorm.z));
-
-		// http://marupeke296.com/DXG_No16_AttitudeControl.html
-		//Vector3 axis = Cross(Vector3(0.0f, 1.0f, 0.0f), mActualNorm);
-		Vector3 axis = Cross(upDir, mIdealNorm);
-		if (Length(axis) > 0.001f)
-		{
-			axis.Normalize();
-			//float theta = acosf(Dot(Vector3(0.0f, 1.0f, 0.0f), mActualNorm));
-			float theta = acosf(Dot(upDir, mIdealNorm));
-			Quaternion q = Quaternion(axis, theta);
-			mTransform->mRotation *= q;
+			mNormal = info.mNormal;
 		}
 	}
 
@@ -158,7 +128,7 @@ void Player::ActorUpdate(float deltaTime)
 	{
 		mGravityPower += -mGravity;
 	}
-	Vector3 fallDir = Normalize(-mIdealNorm + mGravityDir);
+	Vector3 fallDir = Normalize(-mNormal + mGravityDir);
 	mTransform->mPosition += -fallDir * mGravityPower * deltaTime;
 
 	// 地面
@@ -173,11 +143,38 @@ void Player::ActorUpdate(float deltaTime)
 			mGravityPower = 0.0f;
 			// 押し戻し
 			mTransform->mPosition = info.mPoint + Vector3(0.0f, mRadius, 0.0f) * mTransform->mRotation;
+
+			mNormal = info.mNormal;
 		}
+	}
+
+	{
+		Console::Log(std::format("({:6.3f},{:6.3f},{:6.3f})\n",
+			mNormal.x,
+			mNormal.y,
+			mNormal.z));
+
+		// http://marupeke296.com/DXG_No16_AttitudeControl.html
+		//Vector3 axis = Cross(Vector3(0.0f, 1.0f, 0.0f), mActualNorm);
+		Vector3 axis = Cross(upDir, mNormal);
+		if (Length(axis) > 0.001f)
+		{
+			axis.Normalize();
+			//float theta = acosf(Dot(Vector3(0.0f, 1.0f, 0.0f), mActualNorm));
+			float theta = acosf(Dot(upDir, mNormal));
+			Quaternion q = Quaternion(axis, theta);
+			mTransform->mRotation *= q;
+		}
+	}
+
+	if (!mIsGround && mGravityAttractor)
+	{
+		Vector3 v = mGravityAttractor->mTransform->GetWorld().GetTranslation() - mTransform->mPosition;
+		mTransform->mPosition += Normalize(v) / 10.0f;
 	}
 }
 
-void Player::OnCollision(Actor* /*other*/, CollisionInfo* info)
+void Player::OnCollision(Actor* other, CollisionInfo* info)
 {
 	/*float maxCos = cosf(MyMath::ToRadians(45.0f));
 	//Console::Log(std::format("{}\n", MyMath::ToDegrees(acosf(info->mNormal.y))));
@@ -193,8 +190,17 @@ void Player::OnCollision(Actor* /*other*/, CollisionInfo* info)
 		// 押し戻し
 		mTransform->mPosition = mTransform->mPosition + info->mNormal * info->mDepth;
 	}*/
-	// 押し戻し
-	mTransform->mPosition = mTransform->mPosition + info->mNormal * info->mDepth;
+
+	if (other->GetName() == "Gravity Attractor")
+	{
+		mGravityAttractor = other;
+	}
+	else
+	{
+		// 押し戻し
+		mTransform->mPosition = mTransform->mPosition + info->mNormal * info->mDepth;
+	}
+
 	//Console::Log("Hit!");
 	mTransform->UpdateWorld(mParent ? mParent->mTransform : nullptr);
 }

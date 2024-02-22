@@ -1,4 +1,5 @@
 #include "CollisionManager.h"
+#include "Actor/Actor.h"
 #include "Component/BoxCollider.h"
 #include "Component/MeshCollider.h"
 #include "Component/SphereCollider.h"
@@ -26,6 +27,12 @@ void CollisionManager::TestAllCollider(
 				if (a->Dispatch(b, info))
 				{
 					func(a->GetOwner(), b->GetOwner(), &info);
+
+					if (a->mIsTrigger || b->mIsTrigger)
+					{
+						info.mNormal = Vector3::kZero;
+					}
+
 					//a->SetColor(Color::kRed);
 					//b->SetColor(Color::kRed);
 				}

@@ -9,6 +9,7 @@ Collider::Collider(Actor* owner)
 	: Component(owner)
 	, mAttr(Attribute(0))
 	, mResponseAttr(Attribute(0))
+	, mIsTrigger(false)
 {
 	mOwner->GetScene()->GetCollisionManager()->AddCollider(this);
 }
@@ -79,4 +80,6 @@ void Collider::UpdateForDev()
 		}
 		ImGui::TreePop();
 	}
+
+	ImGui::Checkbox("Is Trigger", &mIsTrigger);
 }

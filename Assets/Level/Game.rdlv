@@ -41,8 +41,8 @@
             "Components": [
                 {
                     "Position": [
-                        0.0,
-                        10.0,
+                        -4.837835311889648,
+                        2.604729413986206,
                         0.0
                     ],
                     "Rotation": [
@@ -73,6 +73,17 @@
                     "NearZ": -107374176.0,
                     "Order": 100,
                     "Type": 0
+                },
+                {
+                    "Attribute": 2,
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 1.0,
+                    "Response Attr": 15,
+                    "Type": 4
                 }
             ],
             "Gravity": 1.0,
@@ -113,7 +124,7 @@
                     "Type": 6
                 },
                 {
-                    "Attribute": 1,
+                    "Attribute": 8,
                     "Axis X": [
                         1.0,
                         0.0,
@@ -214,6 +225,46 @@
             "Type": 0
         },
         {
+            "Children": [
+                {
+                    "Components": [
+                        {
+                            "Position": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Rotation": [
+                                1.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Type": 10
+                        },
+                        {
+                            "Attribute": 1,
+                            "Center": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Radius": 20.0,
+                            "Response Attr": 15,
+                            "Type": 4
+                        }
+                    ],
+                    "Name": "Gravity Attractor",
+                    "Order": 100,
+                    "State": 0,
+                    "Type": 0
+                }
+            ],
             "Components": [
                 {
                     "Position": [
@@ -243,7 +294,7 @@
                     "Type": 6
                 },
                 {
-                    "Attribute": 1,
+                    "Attribute": 8,
                     "Center": [
                         0.0,
                         0.0,
@@ -255,6 +306,41 @@
                 }
             ],
             "Name": "Sphere",
+            "Order": 100,
+            "State": 0,
+            "Type": 0
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        10.0,
+                        10.0,
+                        10.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Is Visible": true,
+                    "Model": "Skydome.obj",
+                    "Order": 100,
+                    "Shader Type": 1,
+                    "Texture": "Assets/Model/Skydome/incskies_014_8k.png",
+                    "Type": 6
+                }
+            ],
+            "Name": "Skydome",
             "Order": 100,
             "State": 0,
             "Type": 0

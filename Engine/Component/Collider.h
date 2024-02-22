@@ -18,6 +18,7 @@ public:
 		Terrain = 1 << 0,
 		Allies = 1 << 1,
 		Enemies = 1 << 2,
+		Planet = 1 << 3,
 
 		kAll = 0xFFFFFFFF
 	};
@@ -56,6 +57,7 @@ public:
 protected:
 	Attribute mAttr;
 	Attribute mResponseAttr;
+	bool mIsTrigger;
 protected:
 	//Color mColor;// 開発用
 };

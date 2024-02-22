@@ -166,6 +166,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Demo\DemoCamera.cpp" />
     <ClCompile Include="Game\Demo\DemoEnemy.cpp" />
     <ClCompile Include="Game\Demo\DemoPlayer.cpp" />
+    <ClCompile Include="Game\Game\GravityAttractor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Math\Color.cpp" />
     <ClCompile Include="Math\Matrix3.cpp" />
@@ -258,6 +259,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Demo\DemoCamera.h" />
     <ClInclude Include="Game\Demo\DemoEnemy.h" />
     <ClInclude Include="Game\Demo\DemoPlayer.h" />
+    <ClInclude Include="Game\Game\GravityAttractor.h" />
     <ClInclude Include="Math\Color.h" />
     <ClInclude Include="Math\Matrix3.h" />
     <ClInclude Include="Math\Matrix4.h" />

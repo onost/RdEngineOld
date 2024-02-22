@@ -40,6 +40,7 @@ private:
 	float mGroundDist;
 
 	float mMaxGround;
-	Vector3 mActualNorm;
-	Vector3 mIdealNorm;
+	Vector3 mNormal;
+
+	Actor* mGravityAttractor;
 };
