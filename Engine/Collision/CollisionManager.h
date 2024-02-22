@@ -11,7 +11,8 @@ public:
 
 	// すべてのコライダーをテスト
 	void TestAllCollider(
-		std::function<void(Actor*, Actor*, CollisionInfo*)> func);
+		std::function<void(Actor*, Actor*, CollisionInfo*)> onCollision,
+		std::function<void(Actor*, Actor*)> onTrigger);
 	// レイキャスト
 	bool Raycast(const Ray& ray, RaycastHit& info,
 		Collider::Attribute attr = Collider::kAll);

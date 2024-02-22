@@ -6,7 +6,8 @@
 
 // すべてのコライダーをテスト
 void CollisionManager::TestAllCollider(
-	std::function<void(Actor*, Actor*, CollisionInfo*)> func)
+	std::function<void(Actor*, Actor*, CollisionInfo*)> onCollision,
+	std::function<void(Actor*, Actor*)> onTrigger)
 {
 	// 色を白へ
 	/*for (auto& c : mColliders)
@@ -26,11 +27,15 @@ void CollisionManager::TestAllCollider(
 				CollisionInfo info = {};
 				if (a->Dispatch(b, info))
 				{
-					func(a->GetOwner(), b->GetOwner(), &info);
-
+					// Trigger
 					if (a->mIsTrigger || b->mIsTrigger)
 					{
-						info.mNormal = Vector3::kZero;
+						onTrigger(a->GetOwner(), b->GetOwner());
+					}
+					// Collision
+					else
+					{
+						onCollision(a->GetOwner(), b->GetOwner(), &info);
 					}
 
 					//a->SetColor(Color::kRed);

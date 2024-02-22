@@ -99,17 +99,23 @@ void Scene::UpdateWorld()
 
 void Scene::TestCollision()
 {
-	// すべてのコライダーをテスト
-	mCollisionManager->TestAllCollider(
+	auto onCollision =
 		[](Actor* a, Actor* b, CollisionInfo* info)
 		{
 			a->OnCollision(b, info);
-			// 反転
 			CollisionInfo i = *info;
-			i.mNormal *= -1.0f;
-			b->OnCollision(a, &i);
-		}
-	);
+			i.mNormal *= -1.0f;// 反転
+			a->OnCollision(a, &i);
+		};
+	auto onTrigger =
+		[](Actor* a, Actor* b)
+		{
+			a->OnTrigger(b);
+			b->OnTrigger(a);
+		};
+
+	// すべてのコライダーをテスト
+	mCollisionManager->TestAllCollider(onCollision, onTrigger);
 }
 
 void Scene::AddActor(Actor* actor)

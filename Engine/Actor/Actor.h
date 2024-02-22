@@ -44,6 +44,7 @@ public:
 	void LastUpdate(float deltaTime);
 	void UpdateWorld(Actor* parent = nullptr);
 	virtual void OnCollision(Actor*, CollisionInfo*) {}
+	virtual void OnTrigger(Actor*) {}
 
 	// ==================================================
 	// json
