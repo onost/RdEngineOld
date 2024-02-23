@@ -23,6 +23,7 @@ Player::Player(Scene* scene)
 	, mGroundDist(0.3f)
 	, mMaxGround(60.0f)
 	, mNormal(Vector3::kZero)
+	, mCurrNorm(Vector3::kZero)
 	, mAttractor(nullptr)
 {
 	// メッシュ
@@ -132,10 +133,21 @@ void Player::ActorUpdate(float deltaTime)
 		Vector3 attractorPos = mAttractor->mTransform->GetWorld().GetTranslation();
 		mNormal = Normalize(mTransform->mPosition - attractorPos);
 		// ログ
-		Console::Log(std::format("({:6.3f},{:6.3f},{:6.3f})\n",
+		/*Console::Log(std::format("({:6.3f},{:6.3f},{:6.3f})\n",
 			mNormal.x,
 			mNormal.y,
-			mNormal.z));
+			mNormal.z));*/
+	}
+
+	if (!mIsGround)
+	{
+		const float kNormSpeed = 0.1f;
+		mCurrNorm = MyMath::Lerp<Vector3>(mCurrNorm, mNormal, kNormSpeed);
+		mCurrNorm.Normalize();
+	}
+	else
+	{
+		mCurrNorm = mNormal;
 	}
 
 	// ==================================================
@@ -169,15 +181,30 @@ void Player::ActorUpdate(float deltaTime)
 	}
 
 	// 姿勢を制御
-	// http://marupeke296.com/DXG_No16_AttitudeControl.html
-	Vector3 axis = Cross(upDir, mNormal);
-	if (Length(axis) > 0.001f)// assert出る
-	//if (axis != Vector3::kZero)
+	// 参考: http://marupeke296.com/DXG_No16_AttitudeControl.html
+	Vector3 axis = Cross(upDir, mCurrNorm);
+	float len = Length(axis);
+	Console::Log(std::format("Length: {}\n", len));
+	if (len > 0.01f)// ？
 	{
 		axis.Normalize();
-		float theta = acosf(Dot(upDir, mNormal));
+		float theta = acosf(Dot(upDir, mCurrNorm));
 		mTransform->mRotation *= Quaternion(axis, theta);
 	}
+	/*Vector3 axis = Cross(Vector3(0.0f, 1.0f, 0.0f), mCurrNorm);
+	if (Length(axis) > 0.001f)
+	{
+		axis.Normalize();
+		float theta = acosf(Dot(Vector3(0.0f, 1.0f, 0.0f), mCurrNorm));
+		Quaternion q = Quaternion(axis, theta);
+		q *= Quaternion(Vector3(0.0f, 1.0f, 0.0f) * q, mRotateY);
+		mTransform->mRotation = q;
+
+		Vector3 a = GetAxis(q);
+		float t = GetTheta(q);
+		Console::Log(std::format("({:6.3f},{:6.3f},{:6.3f}): {}\n",
+			a.x, a.y, a.z, t));
+	}*/
 }
 
 void Player::OnCollision(Actor* /*other*/, CollisionInfo* info)

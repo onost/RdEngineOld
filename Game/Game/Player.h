@@ -44,6 +44,7 @@ private:
 	float mMaxGround;
 
 	Vector3 mNormal;
+	Vector3 mCurrNorm;
 	// 重力源
 	Actor* mAttractor;
 };

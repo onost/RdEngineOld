@@ -437,7 +437,7 @@
                         {
                             "Position": [
                                 1.6200090314361093e-12,
-                                3.0,
+                                4.0,
                                 1.3589622540166602e-05
                             ],
                             "Rotation": [
@@ -454,7 +454,7 @@
                             "Type": 10
                         },
                         {
-                            "Amount": 3,
+                            "Amount": 1,
                             "Box Max": [
                                 0.0,
                                 0.0,
@@ -466,16 +466,16 @@
                                 0.0
                             ],
                             "Delay": 0.0,
-                            "Frequency": 1.0,
+                            "Frequency": 0.33000001311302185,
                             "Init Accel Max": [
-                                0.10000000149011612,
-                                0.10000000149011612,
-                                0.10000000149011612
+                                0.0,
+                                0.0,
+                                0.0
                             ],
                             "Init Accel Min": [
-                                -0.10000000149011612,
-                                -0.10000000149011612,
-                                -0.10000000149011612
+                                0.0,
+                                0.0,
+                                0.0
                             ],
                             "Init EColor Max": [
                                 1.0,
@@ -484,24 +484,24 @@
                                 1.0
                             ],
                             "Init EColor Min": [
-                                0.0,
-                                0.0,
-                                0.0,
+                                1.0,
+                                1.0,
+                                1.0,
                                 1.0
                             ],
                             "Init ERot Max": [
+                                1.5707963705062866,
                                 0.0,
-                                0.0,
-                                0.0
+                                1.5709999799728394
                             ],
                             "Init ERot Min": [
+                                1.5707963705062866,
                                 0.0,
-                                0.0,
-                                0.0
+                                -1.5709999799728394
                             ],
                             "Init EScale Max": 0.0,
                             "Init EScale Min": 0.0,
-                            "Init Life Max": 2.0,
+                            "Init Life Max": 3.0,
                             "Init Life Min": 1.0,
                             "Init SColor Max": [
                                 1.0,
@@ -510,23 +510,23 @@
                                 1.0
                             ],
                             "Init SColor Min": [
-                                0.0,
-                                0.0,
-                                0.0,
+                                1.0,
+                                1.0,
+                                1.0,
                                 1.0
                             ],
                             "Init SRot Max": [
+                                1.5707963705062866,
                                 0.0,
-                                0.0,
-                                0.0
+                                1.5709999799728394
                             ],
                             "Init SRot Min": [
+                                1.5707963705062866,
                                 0.0,
-                                0.0,
-                                0.0
+                                -1.5709999799728394
                             ],
-                            "Init SScale Max": 10.0,
-                            "Init SScale Min": 5.0,
+                            "Init SScale Max": 1.0,
+                            "Init SScale Min": 0.800000011920929,
                             "Init Vel Max": [
                                 1.0,
                                 1.0,
@@ -537,14 +537,14 @@
                                 -1.0,
                                 -1.0
                             ],
-                            "Is Billboard": false,
+                            "Is Billboard": true,
                             "Is Loop": true,
-                            "Is Visible": false,
+                            "Is Visible": true,
                             "Life": 10.0,
                             "Model": "Star.obj",
                             "Order": 100,
-                            "Radius": 3.0,
-                            "Shader Type": 0,
+                            "Radius": 2.200000047683716,
+                            "Shader Type": 1,
                             "Shape": 2,
                             "Type": 11
                         }
