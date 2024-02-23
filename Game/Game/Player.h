@@ -1,6 +1,8 @@
 #pragma once
 #include "Actor/Actor.h"
 
+class ParticleRenderer;
+
 // プレイヤー
 class Player : public Actor
 {
@@ -36,12 +38,12 @@ private:
 	bool mIsGround;
 	float mJumpPower;
 	float mGravity;
-	float mGravityPower;
-	Vector3 mGravityDir;
+	float mGravityPow;
+	//Vector3 mGravityDir;
 	float mGroundDist;
-
 	float mMaxGround;
-	Vector3 mNormal;
 
-	Actor* mGravityAttractor;
+	Vector3 mNormal;
+	// 重力源
+	Actor* mAttractor;
 };

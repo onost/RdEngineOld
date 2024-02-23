@@ -1,6 +1,8 @@
 #include "Player.h"
-#include "Component/MeshRenderer.h"
 #include "Collision/CollisionManager.h"
+#include "Component/MeshRenderer.h"
+#include "Component/SphereCollider.h"
+#include "Component/SpriteRenderer.h"
 #include "Editor.h"
 #include "Graphics/Renderer.h"
 #include "Helper/JsonHelper.h"
@@ -10,20 +12,26 @@ Player::Player(Scene* scene)
 	: Actor(scene)
 	, mRadius(1.0f)
 	, mVelocity(Vector3::kZero)
-	, mSpeed(7.5f)
+	, mSpeed(10.0f)
 	, mRotVel(0.0f)
 	, mRotSpeed(MyMath::kPiOver2)
 	, mIsGround(false)
 	, mJumpPower(0.0f)
 	, mGravity(0.0f)
-	, mGravityPower(0.0f)
-	, mGravityDir(Vector3::kZero)
+	, mGravityPow(0.0f)
+	//, mGravityDir(Vector3(0.0f, -1.0f, 0.0f))
+	, mGroundDist(0.3f)
 	, mMaxGround(60.0f)
 	, mNormal(Vector3::kZero)
+	, mAttractor(nullptr)
 {
 	// メッシュ
 	auto mr = new MeshRenderer(this);
 	mr->SetModel(mScene->GetRenderer()->GetModel("Player.obj"));
+	// コライダー
+	auto sc = new SphereCollider(this);
+	sc->SetAttr(Collider::Allies);// 味方
+	sc->SetSphere({ {0.0f,0.0f,0.0f},mRadius });
 }
 
 void Player::ActorInput(const Input::State& input)
@@ -81,8 +89,7 @@ void Player::ActorInput(const Input::State& input)
 		if (input.mGamepad.GetButtonDown(XINPUT_GAMEPAD_A) ||
 			input.mKeyboard.GetKeyDown(DIK_SPACE))
 		{
-			//mVelocity.y = mJumpPower;
-			mGravityPower = mJumpPower;
+			mGravityPow = mJumpPower;
 		}
 	}
 }
@@ -92,7 +99,7 @@ void Player::ActorUpdate(float deltaTime)
 	// ==================================================
 	// 回転
 	// ==================================================
-	Vector3 upDir = Vector3(0.0f, 1.0f, 0.0f) * mTransform->mRotation;// 上
+	Vector3 upDir = Vector3(0.0f, 1.0f, 0.0f) * mTransform->mRotation;// up
 	Quaternion rot = Quaternion(upDir, mRotVel * mRotSpeed * deltaTime);
 	mTransform->mRotation *= rot;
 
@@ -107,18 +114,28 @@ void Player::ActorUpdate(float deltaTime)
 	// ==================================================
 	// 法線
 	// ==================================================
-	Vector3 downDir = Vector3(0.0f, -1.0f, 0.0f) * mTransform->mRotation;// 下
+	/*Vector3 downDir = Vector3(0.0f, -1.0f, 0.0f) * mTransform->mRotation;// down
 	Ray ray = Ray(mTransform->mPosition, mTransform->mPosition + downDir);
 	RaycastHit info = {};
-	Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
-	if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
+	if (mScene->GetCollisionManager()->Raycast(ray, info, Collider::Planet))
 	{
-		//float dist = Length(info.mPoint - ray.mStart);
+		//float dist = Length(info.mPoint - ray.mStart);// 地面までの距離
 		float dot = Dot(upDir, info.mNormal);
-		if (acosf(dot) <= MyMath::ToRadians(mMaxGround))
+		if (dot <= cosf(MyMath::ToRadians(mMaxGround)))
 		{
 			mNormal = info.mNormal;
 		}
+	}*/
+
+	if (mAttractor)
+	{
+		Vector3 attractorPos = mAttractor->mTransform->GetWorld().GetTranslation();
+		mNormal = Normalize(mTransform->mPosition - attractorPos);
+		// ログ
+		Console::Log(std::format("({:6.3f},{:6.3f},{:6.3f})\n",
+			mNormal.x,
+			mNormal.y,
+			mNormal.z));
 	}
 
 	// ==================================================
@@ -126,51 +143,40 @@ void Player::ActorUpdate(float deltaTime)
 	// ==================================================
 	if (!mIsGround)
 	{
-		mGravityPower += -mGravity;
+		mGravityPow += -mGravity;
 	}
-	Vector3 fallDir = Normalize(-mNormal + mGravityDir);
-	mTransform->mPosition += -fallDir * mGravityPower * deltaTime;
+	mTransform->mPosition += mNormal * mGravityPow * deltaTime;
 
 	// 地面
 	mIsGround = false;
-	ray = Ray(mTransform->mPosition, mTransform->mPosition + fallDir);// 下へ
+	Ray ray = Ray(mTransform->mPosition, mTransform->mPosition - mNormal);
+	RaycastHit info = {};
+	Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
 	if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
 	{
-		float dist = Length(info.mPoint - ray.mStart);
-		if (dist <= mRadius + mGroundDist)
+		// トリガー以外
+		if (!info.mCollider->GetIsTrigger())
 		{
-			mIsGround = true;
-			mGravityPower = 0.0f;
-			// 押し戻し
-			mTransform->mPosition = info.mPoint + Vector3(0.0f, mRadius, 0.0f) * mTransform->mRotation;
-
-			mNormal = info.mNormal;
+			float dist = Length(info.mPoint - ray.mStart);
+			if (dist <= mRadius + mGroundDist)
+			{
+				mIsGround = true;
+				mGravityPow = 0.0f;
+				// 押し戻し
+				mTransform->mPosition = info.mPoint + mNormal * mRadius;
+			}
 		}
 	}
 
+	// 姿勢を制御
+	// http://marupeke296.com/DXG_No16_AttitudeControl.html
+	Vector3 axis = Cross(upDir, mNormal);
+	if (Length(axis) > 0.001f)// assert出る
+	//if (axis != Vector3::kZero)
 	{
-		Console::Log(std::format("({:6.3f},{:6.3f},{:6.3f})\n",
-			mNormal.x,
-			mNormal.y,
-			mNormal.z));
-
-		// http://marupeke296.com/DXG_No16_AttitudeControl.html
-		//Vector3 axis = Cross(Vector3(0.0f, 1.0f, 0.0f), mActualNorm);
-		Vector3 axis = Cross(upDir, mNormal);
-		if (Length(axis) > 0.001f)
-		{
-			axis.Normalize();
-			//float theta = acosf(Dot(Vector3(0.0f, 1.0f, 0.0f), mActualNorm));
-			float theta = acosf(Dot(upDir, mNormal));
-			Quaternion q = Quaternion(axis, theta);
-			mTransform->mRotation *= q;
-		}
-	}
-
-	if (!mIsGround && mGravityAttractor)
-	{
-		Vector3 v = mGravityAttractor->mTransform->GetWorld().GetTranslation() - mTransform->mPosition;
-		mTransform->mPosition += Normalize(v) / 10.0f;
+		axis.Normalize();
+		float theta = acosf(Dot(upDir, mNormal));
+		mTransform->mRotation *= Quaternion(axis, theta);
 	}
 }
 
@@ -184,7 +190,7 @@ void Player::OnCollision(Actor* /*other*/, CollisionInfo* info)
 	if (info->mNormal.y >= maxCos)
 	{
 		mIsGround = true;
-		mGravityPower = 0.0f;
+		mGravityPow = 0.0f;
 		//pushBack = Vector3(0.0f, 1.0f, 0.0f);
 	}
 	// 押し戻し
@@ -194,9 +200,20 @@ void Player::OnCollision(Actor* /*other*/, CollisionInfo* info)
 
 void Player::OnTrigger(Actor* other)
 {
-	if (other->GetName() == "Gravity Attractor")
+	if (other->GetName() == "Attractor")
 	{
-		mGravityAttractor = other;
+		mAttractor = other;
+	}
+	// ゴール！
+	if (other->GetName() == "GoalFlag")
+	{
+		auto actor = mScene->GetActor("GoalSprite");
+		auto component = actor->GetComponent(Component::Type::SpriteRenderer);
+		SpriteRenderer* sprite = dynamic_cast<SpriteRenderer*>(component);
+		if (sprite)
+		{
+			sprite->SetIsVisible(true);
+		}
 	}
 }
 
@@ -211,6 +228,7 @@ void Player::ActorUpdateForDev()
 	ImGui::DragFloat("Jump Power", &mJumpPower, 0.01f, 0.0f, 100.0f);
 	ImGui::DragFloat("Gravity", &mGravity, 0.01f, 0.0f, 100.0f);
 	ImGui::DragFloat("Ground Dist", &mGroundDist, 0.001f, 0.0f, 100.0f);
+	ImGui::DragFloat("Max Ground", &mMaxGround, 0.01f, 1.0f, 180.0f);
 }
 
 // ==================================================
@@ -223,6 +241,7 @@ void Player::Load(const nlohmann::json& json)
 	JsonHelper::GetFloat(json, "Jump Power", mJumpPower);
 	JsonHelper::GetFloat(json, "Gravity", mGravity);
 	JsonHelper::GetFloat(json, "Ground Dist", mGroundDist);
+	JsonHelper::GetFloat(json, "Max Ground", mMaxGround);
 }
 
 void Player::Save(nlohmann::json& json)
@@ -230,5 +249,6 @@ void Player::Save(nlohmann::json& json)
 	Actor::Save(json);
 	JsonHelper::SetFloat(json, "Jump Power", mJumpPower);
 	JsonHelper::SetFloat(json, "Gravity", mGravity);
-	JsonHelper::SetFloat(json, "Ground Dist", mGroundDist);
+	JsonHelper::GetFloat(json, "Ground Dist", mGroundDist);
+	JsonHelper::SetFloat(json, "Max Ground", mMaxGround);
 }
