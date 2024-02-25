@@ -15,7 +15,6 @@ Player::Player(Scene* scene)
 	, mSpeed(10.0f)
 	, mRotVel(0.0f)
 	, mRotSpeed(MyMath::kPiOver2)
-	, mRotY(0.0f)
 	, mIsGround(false)
 	, mJumpPower(0.0f)
 	, mGravity(0.0f)
@@ -104,7 +103,6 @@ void Player::ActorUpdate(float deltaTime)
 	Vector3 upDir = Vector3(0.0f, 1.0f, 0.0f) * mTransform->mRotation;// up
 	Quaternion rot = Quaternion(upDir, mRotVel * mRotSpeed * deltaTime);
 	mTransform->mRotation *= rot;
-	mRotY += mRotVel * mRotSpeed * deltaTime;
 
 	// ==================================================
 	// 移動
@@ -117,29 +115,30 @@ void Player::ActorUpdate(float deltaTime)
 	// ==================================================
 	// 法線
 	// ==================================================
-	/*Vector3 downDir = Vector3(0.0f, -1.0f, 0.0f) * mTransform->mRotation;// down
+	Vector3 downDir = Vector3(0.0f, -1.0f, 0.0f) * mTransform->mRotation;// down
 	Ray ray = Ray(mTransform->mPosition, mTransform->mPosition + downDir);
 	RaycastHit info = {};
-	if (mScene->GetCollisionManager()->Raycast(ray, info, Collider::Planet))
+	Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
+	if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
 	{
 		//float dist = Length(info.mPoint - ray.mStart);// 地面までの距離
 		float dot = Dot(upDir, info.mNormal);
-		if (dot <= cosf(MyMath::ToRadians(mMaxGround)))
+		if (dot >= cosf(MyMath::ToRadians(mMaxGround)))
 		{
 			mNormal = info.mNormal;
 		}
-	}*/
+	}
 
-	if (mAttractor)
+	/*if (mAttractor)
 	{
 		Vector3 attractorPos = mAttractor->mTransform->GetWorld().GetTranslation();
 		mNormal = Normalize(mTransform->mPosition - attractorPos);
 		// ログ
-		/*Console::Log(std::format("({:6.3f},{:6.3f},{:6.3f})\n",
+		Console::Log(std::format("({:6.3f},{:6.3f},{:6.3f})\n",
 			mNormal.x,
 			mNormal.y,
-			mNormal.z));*/
-	}
+			mNormal.z));
+	}*/
 
 	if (!mIsGround)
 	{
@@ -163,9 +162,9 @@ void Player::ActorUpdate(float deltaTime)
 
 	// 地面
 	mIsGround = false;
-	Ray ray = Ray(mTransform->mPosition, mTransform->mPosition - mNormal);
-	RaycastHit info = {};
-	Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
+	ray = Ray(mTransform->mPosition, mTransform->mPosition - mNormal);
+	//RaycastHit info = {};
+	//Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
 	if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
 	{
 		// トリガー以外
@@ -263,15 +262,15 @@ void Player::ActorUpdateForDev()
 
 void Player::ActorRenderForDev(Primitive* prim)
 {
-	float len = 5.0f;
-	Vector3 u = Vector3(0.0f, 1.0f, 0.0f) * mTransform->mRotation * len;
-	Vector3 r = Vector3(1.0f, 0.0f, 0.0f) * mTransform->mRotation * len;
-	Vector3 f = Vector3(0.0f, 0.0f, 1.0f) * mTransform->mRotation * len;
+	static const float kLen = 5.0f;
+	Vector3 u = Vector3(0.0f, 1.0f, 0.0f) * mTransform->mRotation * kLen;
+	Vector3 r = Vector3(1.0f, 0.0f, 0.0f) * mTransform->mRotation * kLen;
+	Vector3 f = Vector3(0.0f, 0.0f, 1.0f) * mTransform->mRotation * kLen;
 	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition + u, Color::kGreen);
 	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition + r, Color::kRed);
 	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition + f, Color::kBlue);
 	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition - mNormal * 100.0f, Color::kWhite);
-	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition - mCurrNorm * 100.0f, Color::kWhite);
+	//prim->DrawLine3(mTransform->mPosition, mTransform->mPosition - mCurrNorm * 100.0f, Color::kWhite);
 }
 
 // ==================================================

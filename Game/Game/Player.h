@@ -35,7 +35,6 @@ private:
 	// 回転
 	float mRotVel;
 	float mRotSpeed;
-	float mRotY;
 	// ジャンプ
 	bool mIsGround;
 	float mJumpPower;
