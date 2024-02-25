@@ -333,6 +333,7 @@ void Actor::UpdateForDev()
 
 void Actor::RenderForDev(Primitive* primitive)
 {
+	ActorRenderForDev(primitive);
 	for (auto& comp : mComponents)
 	{
 		comp->RenderForDev(primitive);

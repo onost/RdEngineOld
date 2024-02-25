@@ -15,6 +15,7 @@ Player::Player(Scene* scene)
 	, mSpeed(10.0f)
 	, mRotVel(0.0f)
 	, mRotSpeed(MyMath::kPiOver2)
+	, mRotY(0.0f)
 	, mIsGround(false)
 	, mJumpPower(0.0f)
 	, mGravity(0.0f)
@@ -103,6 +104,7 @@ void Player::ActorUpdate(float deltaTime)
 	Vector3 upDir = Vector3(0.0f, 1.0f, 0.0f) * mTransform->mRotation;// up
 	Quaternion rot = Quaternion(upDir, mRotVel * mRotSpeed * deltaTime);
 	mTransform->mRotation *= rot;
+	mRotY += mRotVel * mRotSpeed * deltaTime;
 
 	// ==================================================
 	// 移動
@@ -181,15 +183,16 @@ void Player::ActorUpdate(float deltaTime)
 	}
 
 	// 姿勢を制御
-	// 参考: http://marupeke296.com/DXG_No16_AttitudeControl.html
 	Vector3 axis = Cross(upDir, mCurrNorm);
-	float len = Length(axis);
-	Console::Log(std::format("Length: {}\n", len));
-	if (len > 0.01f)// ？
+	//float len = Length(axis);
+	//Console::Log(std::format("Length: {}\n", len));
+	if (Length(axis) > 0.001f)// ？
 	{
 		axis.Normalize();
 		float theta = acosf(Dot(upDir, mCurrNorm));
+		//Console::Log(std::format("Theta: {}\n", theta));
 		mTransform->mRotation *= Quaternion(axis, theta);
+		mTransform->mRotation.Normalize();
 	}
 	/*Vector3 axis = Cross(Vector3(0.0f, 1.0f, 0.0f), mCurrNorm);
 	if (Length(axis) > 0.001f)
@@ -256,6 +259,19 @@ void Player::ActorUpdateForDev()
 	ImGui::DragFloat("Gravity", &mGravity, 0.01f, 0.0f, 100.0f);
 	ImGui::DragFloat("Ground Dist", &mGroundDist, 0.001f, 0.0f, 100.0f);
 	ImGui::DragFloat("Max Ground", &mMaxGround, 0.01f, 1.0f, 180.0f);
+}
+
+void Player::ActorRenderForDev(Primitive* prim)
+{
+	float len = 5.0f;
+	Vector3 u = Vector3(0.0f, 1.0f, 0.0f) * mTransform->mRotation * len;
+	Vector3 r = Vector3(1.0f, 0.0f, 0.0f) * mTransform->mRotation * len;
+	Vector3 f = Vector3(0.0f, 0.0f, 1.0f) * mTransform->mRotation * len;
+	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition + u, Color::kGreen);
+	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition + r, Color::kRed);
+	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition + f, Color::kBlue);
+	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition - mNormal * 100.0f, Color::kWhite);
+	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition - mCurrNorm * 100.0f, Color::kWhite);
 }
 
 // ==================================================

@@ -14,6 +14,7 @@ public:
 	void OnCollision(Actor* other, CollisionInfo* info) override;
 	void OnTrigger(Actor* other) override;
 	void ActorUpdateForDev() override;
+	void ActorRenderForDev(Primitive* prim);
 
 	// ==================================================
 	// json
@@ -34,6 +35,7 @@ private:
 	// 回転
 	float mRotVel;
 	float mRotSpeed;
+	float mRotY;
 	// ジャンプ
 	bool mIsGround;
 	float mJumpPower;

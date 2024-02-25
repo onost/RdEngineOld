@@ -126,7 +126,9 @@ protected:
 	virtual void ActorInput(const Input::State&) {}
 	virtual void ActorUpdate(float) {}
 	virtual void ActorLastUpdate(float) {}
-	virtual void ActorUpdateForDev() {}// 開発用
+	// 開発用
+	virtual void ActorUpdateForDev() {}
+	virtual void ActorRenderForDev(Primitive* /*prim*/) {}
 
 private:
 	// ==================================================
