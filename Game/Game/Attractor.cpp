@@ -32,19 +32,9 @@ void Attractor::Attract(GravityBody* actor, float deltaTime)
 	float len = Length(toCenter);
 	float gravity = mGravity / len * len;// 質量は無視
 	// 引っ張る
-	gravityActor->mTransform->mPosition += Normalize(toCenter) * gravity * deltaTime;
-
-	// 姿勢を制御
-	Vector3 up = Vector3(0.0f, 1.0f, 0.0f) * gravityActor->mTransform->mRotation;
-	Vector3 normal = -Normalize(toCenter);
-	Vector3 axis = Cross(up, normal);
-	if (Length(axis) > 0.001f)
-	{
-		axis.Normalize();
-		float theta = acosf(Dot(up, normal));
-		gravityActor->mTransform->mRotation *= Quaternion(axis, theta);
-		gravityActor->mTransform->mRotation.Normalize();
-	}
+	//gravityActor->mTransform->mPosition += Normalize(toCenter) * gravity * deltaTime;
+	Vector3 force = Normalize(toCenter) * gravity * deltaTime;
+	actor->AddForce(force);
 }
 
 // ==================================================

@@ -11,6 +11,8 @@ public:
 	~GravityBody();
 	void Update(float deltaTime) override;
 
+	void AddForce(const Vector3& force);
+
 	// ==================================================
 	// json
 	// ==================================================
@@ -32,4 +34,8 @@ public:
 private:
 	Attractor* mAttractor;
 	float mMass;// 質量
+	Vector3 mForce;
+	Vector3 mNormal;
+	Vector3 mCurrNormal;
+	bool mIsGround;
 };

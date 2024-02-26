@@ -157,7 +157,7 @@ void Player::ActorUpdate(float deltaTime)
 		mCurrNorm = mNormal;
 	}*/
 
-	mNormal = Vector3(0.0f, 1.0f, 0.0f) * mTransform->mRotation;
+	//mNormal = Vector3(0.0f, 1.0f, 0.0f) * mTransform->mRotation;
 
 	// ==================================================
 	// 重力
@@ -173,25 +173,25 @@ void Player::ActorUpdate(float deltaTime)
 	}*/
 
 	// 地面
-	mIsGround = false;
-	Ray ray = Ray(mTransform->mPosition, mTransform->mPosition - mNormal);
-	RaycastHit info = {};
-	Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
-	if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
-	{
-		// トリガー以外
-		if (!info.mCollider->GetIsTrigger())
-		{
-			float dist = Length(info.mPoint - ray.mStart);
-			if (dist <= mRadius + mGroundDist)
-			{
-				mIsGround = true;
-				mGravityPow = 0.0f;
-				// 押し戻し
-				mTransform->mPosition = info.mPoint + mNormal * mRadius;
-			}
-		}
-	}
+	//mIsGround = false;
+	//Ray ray = Ray(mTransform->mPosition, mTransform->mPosition - mNormal);
+	//RaycastHit info = {};
+	//Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
+	//if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
+	//{
+	//	// トリガー以外
+	//	if (!info.mCollider->GetIsTrigger())
+	//	{
+	//		float dist = Length(info.mPoint - ray.mStart);
+	//		if (dist <= mRadius + mGroundDist)
+	//		{
+	//			mIsGround = true;
+	//			mGravityPow = 0.0f;
+	//			// 押し戻し
+	//			mTransform->mPosition = info.mPoint + mNormal * mRadius;
+	//		}
+	//	}
+	//}
 
 	// 姿勢を制御
 	/*Vector3 axis = Cross(upDir, mCurrNorm);
