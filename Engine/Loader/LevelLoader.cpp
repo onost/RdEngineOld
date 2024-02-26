@@ -118,6 +118,11 @@ void LevelLoader::LoadActors(const nlohmann::json& json, Scene* scene)
 		const nlohmann::json& data = json[i];
 		uint32_t type = 0;
 		JsonHelper::GetUint(data, "Type", type);
+		if (type >= Actor::kCreateFuncs.size())
+		{
+			continue;
+		}
+
 		// アクターを作成
 		Actor* actor = Actor::kCreateFuncs[type](scene);
 		actor->Load(data);
@@ -140,8 +145,14 @@ void LevelLoader::LoadChildren(const nlohmann::json& json, Actor* parent)
 {
 	for (size_t i = 0; i < json.size(); ++i)
 	{
-		const nlohmann::json& data = json[i]; uint32_t type = 0;
+		const nlohmann::json& data = json[i];
+		uint32_t type = 0;
 		JsonHelper::GetUint(data, "Type", type);
+		if (type >= Actor::kCreateFuncs.size())
+		{
+			continue;
+		}
+
 		// アクター名
 		std::string name;
 		JsonHelper::GetString(data, "Name", name);
@@ -176,6 +187,10 @@ void LevelLoader::LoadComponents(const nlohmann::json& json, Actor* owner)
 		const nlohmann::json& data = json[i];
 		uint32_t type = 0;
 		JsonHelper::GetUint(data, "Type", type);
+		if (type >= Component::kCreateFuncs.size())
+		{
+			continue;
+		}
 
 		Component* comp =
 			owner->GetComponent(static_cast<Component::Type>(type));// 追加済みか

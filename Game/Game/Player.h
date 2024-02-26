@@ -2,6 +2,8 @@
 #include "Actor/Actor.h"
 
 class ParticleRenderer;
+class Attractor;
+class GravityBody;
 
 // プレイヤー
 class Player : public Actor
@@ -47,5 +49,7 @@ private:
 	Vector3 mNormal;
 	Vector3 mCurrNorm;
 	// 重力源
-	Actor* mAttractor;
+	//Actor* mAttractor;
+	//Attractor* mAttractor;
+	GravityBody* mGravityBody;
 };

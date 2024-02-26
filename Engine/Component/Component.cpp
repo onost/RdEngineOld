@@ -14,6 +14,8 @@
 #include "ParticleRenderer.h"
 #include "MeshCollider.h"
 #include "Transform.h"
+#include "Game/Attractor.h"
+#include "Game/GravityBody.h"
 
 const std::vector<std::function<Component* (Actor*)>> Component::kCreateFuncs =
 {
@@ -28,7 +30,9 @@ const std::vector<std::function<Component* (Actor*)>> Component::kCreateFuncs =
 	&Component::Create<ParticleRenderer>,
 	&Component::Create<MeshCollider>,
 	&Component::Create<Transform>,
-	&Component::Create<MeshParticleRenderer>
+	&Component::Create<MeshParticleRenderer>,
+	&Component::Create<Attractor>,
+	&Component::Create<GravityBody>
 };
 
 Component::Component(Actor* owner, uint32_t order)

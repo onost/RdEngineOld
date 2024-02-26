@@ -31,7 +31,8 @@ public:
 		DemoPlayer,
 		DemoCamera,
 		DemoEnemy,
-		Player
+		Player,
+		//Attractor
 		//
 	};
 

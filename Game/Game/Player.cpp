@@ -8,6 +8,9 @@
 #include "Helper/JsonHelper.h"
 #include "Scene/Scene.h"
 
+#include "GravityBody.h"
+#include "Attractor.h"
+
 Player::Player(Scene* scene)
 	: Actor(scene)
 	, mRadius(1.0f)
@@ -24,7 +27,8 @@ Player::Player(Scene* scene)
 	, mMaxGround(60.0f)
 	, mNormal(Vector3::kZero)
 	, mCurrNorm(Vector3::kZero)
-	, mAttractor(nullptr)
+	//, mAttractor(nullptr)
+	, mGravityBody(nullptr)
 {
 	// メッシュ
 	auto mr = new MeshRenderer(this);
@@ -33,6 +37,8 @@ Player::Player(Scene* scene)
 	auto sc = new SphereCollider(this);
 	sc->SetAttr(Collider::Allies);// 味方
 	sc->SetSphere({ {0.0f,0.0f,0.0f},mRadius });
+
+	mGravityBody = new GravityBody(this);
 }
 
 void Player::ActorInput(const Input::State& input)
@@ -129,7 +135,7 @@ void Player::ActorUpdate(float deltaTime)
 		}
 	}*/
 
-	if (mAttractor)
+	/*if (mAttractor)
 	{
 		Vector3 attractorPos = mAttractor->mTransform->GetWorld().GetTranslation();
 		mNormal = Normalize(mTransform->mPosition - attractorPos);
@@ -149,16 +155,22 @@ void Player::ActorUpdate(float deltaTime)
 	else
 	{
 		mCurrNorm = mNormal;
-	}
+	}*/
+
+	mNormal = Vector3(0.0f, 1.0f, 0.0f) * mTransform->mRotation;
 
 	// ==================================================
 	// 重力
 	// ==================================================
-	if (!mIsGround)
+	/*if (!mIsGround)
 	{
 		mGravityPow += -mGravity;
 	}
-	mTransform->mPosition += mNormal * mGravityPow * deltaTime;
+	mTransform->mPosition += mNormal * mGravityPow * deltaTime;*/
+	/*if (mAttractor)
+	{
+		mAttractor->Attract(this, deltaTime);
+	}*/
 
 	// 地面
 	mIsGround = false;
@@ -182,7 +194,7 @@ void Player::ActorUpdate(float deltaTime)
 	}
 
 	// 姿勢を制御
-	Vector3 axis = Cross(upDir, mCurrNorm);
+	/*Vector3 axis = Cross(upDir, mCurrNorm);
 	//float len = Length(axis);
 	//Console::Log(std::format("Length: {}\n", len));
 	if (Length(axis) > 0.001f)// ？
@@ -192,7 +204,7 @@ void Player::ActorUpdate(float deltaTime)
 		//Console::Log(std::format("Theta: {}\n", theta));
 		mTransform->mRotation *= Quaternion(axis, theta);
 		mTransform->mRotation.Normalize();
-	}
+	}*/
 	/*Vector3 axis = Cross(Vector3(0.0f, 1.0f, 0.0f), mCurrNorm);
 	if (Length(axis) > 0.001f)
 	{
@@ -231,7 +243,11 @@ void Player::OnTrigger(Actor* other)
 {
 	if (other->GetName() == "Attractor")
 	{
-		mAttractor = other;
+		//mAttractor = other;
+		// GravityBodyのOnCollisionで
+		auto component = other->GetComponent(Component::Type::Attractor);
+		auto attractor = dynamic_cast<Attractor*>(component);
+		mGravityBody->SetAttractor(attractor);
 	}
 	// ゴール！
 	if (other->GetName() == "GoalFlag")

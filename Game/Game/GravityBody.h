@@ -1,17 +1,15 @@
 #pragma once
 #include "Component/Component.h"
 
-class GravityBody;
+class Attractor;
 
-// アトラクター
-class Attractor : public Component
+// 重力の影響を受けるオブジェクト
+class GravityBody : public Component
 {
 public:
-	Attractor(Actor* actor);
-	~Attractor();
-
-	// アクターを引っ張る
-	void Attract(GravityBody* actor, float deltaTime);
+	GravityBody(Actor* owner);
+	~GravityBody();
+	void Update(float deltaTime) override;
 
 	// ==================================================
 	// json
@@ -29,11 +27,9 @@ public:
 	// ヘルパー関数
 	// ==================================================
 	Type GetType() const override { return Type::Attractor; }
+	void SetAttractor(Attractor* attractor) { mAttractor = attractor; }
 
 private:
-	float mRadius;// 半径
-	Vector3 mCenter;// 中心
-	float mGravity;// 重力
-	bool mIsInvSquare;// 逆2乗の法則
+	Attractor* mAttractor;
 	float mMass;// 質量
 };

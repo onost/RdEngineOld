@@ -9,6 +9,7 @@
 #include "Demo/DemoCamera.h"
 #include "Demo/DemoEnemy.h"
 #include "Game/Player.h"
+#include "Game/Attractor.h"
 
 const std::vector<std::function<Actor* (Scene*)>> Actor::kCreateFuncs =
 {
@@ -19,7 +20,8 @@ const std::vector<std::function<Actor* (Scene*)>> Actor::kCreateFuncs =
 	&Actor::Create<DemoPlayer>,
 	&Actor::Create<DemoCamera>,
 	&Actor::Create<DemoEnemy>,
-	&Actor::Create<Player>
+	&Actor::Create<Player>,
+	//&Actor::Create<Attractor>
 	//
 };
 
