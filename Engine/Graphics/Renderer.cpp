@@ -100,6 +100,18 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 		ImGui::Image(
 			ImTextureID(texture->GetDescHandle().ptr),
 			ImVec2(size.x, Window::kHeight * size.x / Window::kWidth));
+		// モデルのドラッグアンドドロップでメッシュレンダラー付のアクターを作成
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (auto payload = ImGui::AcceptDragDropPayload("MODEL_PAYLOAD"))
+			{
+				auto model = *(Model**)(payload->Data);
+				auto actor = new Actor(gEngine->GetSceneManager()->GetCurrScene());
+				auto mr = new MeshRenderer(actor);
+				mr->SetModel(model);
+			}
+			ImGui::EndDragDropTarget();
+		}
 		ImGui::End();
 	}
 	else

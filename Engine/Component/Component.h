@@ -25,7 +25,7 @@ public:
 		Transform,
 		MeshParticleRenderer,
 
-		GravityAttractor
+		Attractor
 
 		/*Transform = 0,
 		CameraComponent,

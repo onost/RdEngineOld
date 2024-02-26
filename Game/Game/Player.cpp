@@ -115,7 +115,7 @@ void Player::ActorUpdate(float deltaTime)
 	// ==================================================
 	// 法線
 	// ==================================================
-	Vector3 downDir = Vector3(0.0f, -1.0f, 0.0f) * mTransform->mRotation;// down
+	/*Vector3 downDir = Vector3(0.0f, -1.0f, 0.0f) * mTransform->mRotation;// down
 	Ray ray = Ray(mTransform->mPosition, mTransform->mPosition + downDir);
 	RaycastHit info = {};
 	Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
@@ -127,9 +127,9 @@ void Player::ActorUpdate(float deltaTime)
 		{
 			mNormal = info.mNormal;
 		}
-	}
+	}*/
 
-	/*if (mAttractor)
+	if (mAttractor)
 	{
 		Vector3 attractorPos = mAttractor->mTransform->GetWorld().GetTranslation();
 		mNormal = Normalize(mTransform->mPosition - attractorPos);
@@ -138,7 +138,7 @@ void Player::ActorUpdate(float deltaTime)
 			mNormal.x,
 			mNormal.y,
 			mNormal.z));
-	}*/
+	}
 
 	if (!mIsGround)
 	{
@@ -162,9 +162,9 @@ void Player::ActorUpdate(float deltaTime)
 
 	// 地面
 	mIsGround = false;
-	ray = Ray(mTransform->mPosition, mTransform->mPosition - mNormal);
-	//RaycastHit info = {};
-	//Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
+	Ray ray = Ray(mTransform->mPosition, mTransform->mPosition - mNormal);
+	RaycastHit info = {};
+	Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
 	if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
 	{
 		// トリガー以外

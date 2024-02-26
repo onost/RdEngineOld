@@ -32,6 +32,8 @@ public:
 	void UpdateForDev();
 	void RenderForDev(Primitive* prim);
 
+	Scene* GetCurrScene() const { return mCurrScene.get(); }
+
 private:
 	std::vector<std::string> mSceneNames;
 	std::unique_ptr<Scene> mCurrScene;
