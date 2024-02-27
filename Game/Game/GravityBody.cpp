@@ -17,8 +17,9 @@ GravityBody::GravityBody(Actor* owner)
 	, mMass(1.0f)
 	, mForce(0.0f)
 	, mNormal(Vector3::kZero)
-	, mCurrNormal(Vector3::kZero)
 	, mIsGround(false)
+	, mPushDist(1.0f)
+	, mGroundDist(0.3f)
 {
 
 }
@@ -37,7 +38,6 @@ void GravityBody::Update(float deltaTime)
 
 	mOwner->mTransform->mPosition += mNormal * mForce * deltaTime;
 
-	//float distance = 0.0f;
 	mIsGround = false;
 	Ray ray = Ray(
 		mOwner->mTransform->mPosition,
@@ -49,11 +49,11 @@ void GravityBody::Update(float deltaTime)
 		if (!info.mCollider->GetIsTrigger())
 		{
 			float distance = Length(info.mPoint - ray.mStart);
-			if (distance <= 1.1f)
+			if (distance <= mPushDist + mGroundDist)
 			{
 				mIsGround = true;
 				mForce = 0.0f;
-				mOwner->mTransform->mPosition = info.mPoint + mNormal * 1.0f;
+				mOwner->mTransform->mPosition = info.mPoint + mNormal * mPushDist;
 			}
 		}
 	}
@@ -65,7 +65,7 @@ void GravityBody::Update(float deltaTime)
 			mOwner->mTransform->mPosition -
 			mCurrAtt->GetOwner()->mTransform->GetWorld().GetTranslation());
 
-		if (mIsGround)
+		/*if (mIsGround)
 		{
 			mCurrNormal = mNormal;
 		}
@@ -74,13 +74,13 @@ void GravityBody::Update(float deltaTime)
 			const float kNormSpeed = 0.1f;
 			mCurrNormal = MyMath::Lerp<Vector3>(mCurrNormal, mNormal, kNormSpeed);
 			mCurrNormal.Normalize();
-		}
+		}*/
 
-		Vector3 axis = Cross(currUp, mCurrNormal);
+		Vector3 axis = Cross(currUp, mNormal);
 		if (Length(axis) > 0.001f)
 		{
 			axis.Normalize();
-			float theta = acosf(Dot(currUp, mCurrNormal));
+			float theta = acosf(Dot(currUp, mNormal));
 			mOwner->mTransform->mRotation *= Quaternion(axis, theta);
 			mOwner->mTransform->mRotation.Normalize();
 		}
@@ -109,11 +109,15 @@ void GravityBody::AddForce(float force)
 void GravityBody::Load(const nlohmann::json& json)
 {
 	JsonHelper::GetFloat(json, "Mass", mMass);
+	JsonHelper::GetFloat(json, "Push Dist", mPushDist);
+	JsonHelper::GetFloat(json, "Ground Dist", mGroundDist);
 }
 
 void GravityBody::Save(nlohmann::json& json)
 {
 	JsonHelper::SetFloat(json, "Mass", mMass);
+	JsonHelper::SetFloat(json, "Push Dist", mPushDist);
+	JsonHelper::SetFloat(json, "Ground Dist", mGroundDist);
 }
 
 // ==================================================
@@ -127,6 +131,8 @@ void GravityBody::UpdateForDev()
 	{
 		ImGui::Text(std::format("Is Ground: {}", mIsGround).c_str());
 		ImGui::DragFloat("Mass", &mMass, 0.01f, 0.0f, 100.0f);
+		ImGui::DragFloat("Push Dist", &mPushDist, 0.01f, 0.0f, 100.0f);
+		ImGui::DragFloat("Ground Dist", &mGroundDist, 0.01f, 0.0f, 100.0f);
 		ImGui::TreePop();
 	}
 }
@@ -136,5 +142,4 @@ void GravityBody::RenderForDev(Primitive* prim)
 	Vector3 pos = mOwner->mTransform->mPosition;
 	const float kLen = 100.0f;
 	prim->DrawLine3(pos, pos - mNormal * kLen, Color::kWhite);
-	prim->DrawLine3(pos, pos - mCurrNormal * kLen, Color::kWhite);
 }

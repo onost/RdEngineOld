@@ -43,6 +43,9 @@ private:
 	//Vector3 mForce;
 	float mForce;
 	Vector3 mNormal;
-	Vector3 mCurrNormal;
+	//Vector3 mCurrNormal;
 	bool mIsGround;
+
+	float mPushDist;
+	float mGroundDist;
 };

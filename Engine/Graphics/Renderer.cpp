@@ -109,6 +109,7 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 				auto actor = new Actor(gEngine->GetSceneManager()->GetCurrScene());
 				auto mr = new MeshRenderer(actor);
 				mr->SetModel(model);
+				actor->SetName(Helper::RemoveExtension(model->GetName()));
 			}
 			ImGui::EndDragDropTarget();
 		}
