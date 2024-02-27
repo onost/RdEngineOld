@@ -13,8 +13,8 @@ public:
 
 	void ActorInput(const Input::State& input) override;
 	void ActorUpdate(float deltaTime) override;
-	void OnCollision(Actor* other, CollisionInfo* info) override;
-	void OnTrigger(Actor* other) override;
+	void ActorOnCollision(Actor* other, CollisionInfo* info) override;
+	void ActorOnTrigger(Actor* other) override;
 	void ActorUpdateForDev() override;
 	void ActorRenderForDev(Primitive* prim);
 
@@ -42,14 +42,9 @@ private:
 	float mJumpPower;
 	float mGravity;
 	float mGravityPow;
-	//Vector3 mGravityDir;
 	float mGroundDist;
 	float mMaxGround;
 
-	Vector3 mNormal;
-	Vector3 mCurrNorm;
-	// 重力源
-	//Actor* mAttractor;
-	//Attractor* mAttractor;
+	// 重力
 	GravityBody* mGravityBody;
 };

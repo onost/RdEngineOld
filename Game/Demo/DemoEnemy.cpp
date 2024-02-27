@@ -67,7 +67,7 @@ void DemoEnemy::ActorUpdate(float deltaTime)
 }
 
 // Collision
-void DemoEnemy::OnCollision(Actor* /*other*/, CollisionInfo* info)
+void DemoEnemy::ActorOnCollision(Actor* /*other*/, CollisionInfo* info)
 {
 	// 押し戻し
 	mTransform->mPosition = mTransform->mPosition + info->mNormal * info->mDepth;
@@ -75,7 +75,7 @@ void DemoEnemy::OnCollision(Actor* /*other*/, CollisionInfo* info)
 }
 
 // Trigger
-void DemoEnemy::OnTrigger(Actor* other)
+void DemoEnemy::ActorOnTrigger(Actor* other)
 {
 	if (other->GetName() == "Bullet")
 	{

@@ -132,6 +132,30 @@ void Actor::UpdateWorld(Actor* parent)
 	}
 }
 
+void Actor::OnCollision(Actor* other, CollisionInfo* info)
+{
+	if (mState == State::kAlive)
+	{
+		ActorOnCollision(other, info);
+		for (auto& comp : mComponents)
+		{
+			comp->OnCollision(other, info);
+		}
+	}
+}
+
+void Actor::OnTrigger(Actor* other)
+{
+	if (mState == State::kAlive)
+	{
+		ActorOnTrigger(other);
+		for (auto& comp : mComponents)
+		{
+			comp->OnTrigger(other);
+		}
+	}
+}
+
 // ==================================================
 // json
 // ==================================================

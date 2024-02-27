@@ -1,5 +1,6 @@
 #pragma once
 #include "Component/Component.h"
+#include <vector>
 
 class Attractor;
 
@@ -10,8 +11,9 @@ public:
 	GravityBody(Actor* owner);
 	~GravityBody();
 	void Update(float deltaTime) override;
+	void OnTrigger(Actor* other) override;
 
-	void AddForce(const Vector3& force);
+	void AddForce(float force);
 
 	// ==================================================
 	// json
@@ -23,18 +25,23 @@ public:
 	// 開発用
 	// ==================================================
 	void UpdateForDev() override;
-	//void RenderForDev(Primitive*) override;
+	void RenderForDev(Primitive*) override;
 
 	// ==================================================
 	// ヘルパー関数
 	// ==================================================
 	Type GetType() const override { return Type::Attractor; }
-	void SetAttractor(Attractor* attractor) { mAttractor = attractor; }
+	float GetMass() const { return mMass; }
+	bool GetIsGround() const { return mIsGround; }
+	const Vector3& GetNormal() const { return mNormal; }
+	void SetForce(float force) { mForce = force; }
 
 private:
-	Attractor* mAttractor;
+	Attractor* mCurrAtt;
+
 	float mMass;// 質量
-	Vector3 mForce;
+	//Vector3 mForce;
+	float mForce;
 	Vector3 mNormal;
 	Vector3 mCurrNormal;
 	bool mIsGround;

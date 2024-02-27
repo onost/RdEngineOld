@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>
 
 class Actor;
+struct CollisionInfo;
 class Primitive;
 
 class Component
@@ -49,6 +50,8 @@ public:
 	virtual void ProcessInput(const Input::State&) {}
 	virtual void Update(float) {}
 	virtual void OnUpdateWorld() {}
+	virtual void OnCollision(Actor*, CollisionInfo*) {}
+	virtual void OnTrigger(Actor*) {}
 
 	// ==================================================
 	// json

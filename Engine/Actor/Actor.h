@@ -44,8 +44,8 @@ public:
 	void Update(float deltaTime);
 	void LastUpdate(float deltaTime);
 	void UpdateWorld(Actor* parent = nullptr);
-	virtual void OnCollision(Actor*, CollisionInfo*) {}
-	virtual void OnTrigger(Actor*) {}
+	void OnCollision(Actor* other, CollisionInfo* info);
+	void OnTrigger(Actor* other);
 
 	// ==================================================
 	// json
@@ -127,6 +127,8 @@ protected:
 	virtual void ActorInput(const Input::State&) {}
 	virtual void ActorUpdate(float) {}
 	virtual void ActorLastUpdate(float) {}
+	virtual void ActorOnCollision(Actor*, CollisionInfo*) {}
+	virtual void ActorOnTrigger(Actor*) {}
 	// 開発用
 	virtual void ActorUpdateForDev() {}
 	virtual void ActorRenderForDev(Primitive* /*prim*/) {}

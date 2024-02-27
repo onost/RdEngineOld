@@ -37,7 +37,7 @@ void DemoBullet::ActorUpdate(float deltaTime)
 	mTransform->mPosition += f * mSpeed * deltaTime;
 }
 
-void DemoBullet::OnTrigger(Actor* /*other*/)
+void DemoBullet::ActorOnTrigger(Actor* /*other*/)
 {
 	mState = State::kDead;
 }

@@ -4,6 +4,7 @@
 #include "Collision/CollisionManager.h"
 #include "Component/Collider.h"
 #include "Editor.h"
+#include "Graphics/Primitive.h"
 #include "Helper/JsonHelper.h"
 #include "Scene/Scene.h"
 #include <format>
@@ -12,9 +13,9 @@
 
 GravityBody::GravityBody(Actor* owner)
 	: Component(owner)
-	, mAttractor(nullptr)
+	, mCurrAtt(nullptr)
 	, mMass(1.0f)
-	, mForce(Vector3::kZero)
+	, mForce(0.0f)
 	, mNormal(Vector3::kZero)
 	, mCurrNormal(Vector3::kZero)
 	, mIsGround(false)
@@ -29,19 +30,40 @@ GravityBody::~GravityBody()
 
 void GravityBody::Update(float deltaTime)
 {
-	if (mAttractor)
+	if (mCurrAtt)
 	{
-		mAttractor->Attract(this, deltaTime);
+		mCurrAtt->Attract(this, deltaTime);
 	}
 
-	mOwner->mTransform->mPosition += mForce * deltaTime;
+	mOwner->mTransform->mPosition += mNormal * mForce * deltaTime;
 
-	if (mAttractor)
+	//float distance = 0.0f;
+	mIsGround = false;
+	Ray ray = Ray(
+		mOwner->mTransform->mPosition,
+		mOwner->mTransform->mPosition - mNormal);
+	RaycastHit info = {};
+	if (mOwner->GetScene()->GetCollisionManager()->Raycast(ray, info, Collider::Terrain))
+	{
+		// トリガー以外
+		if (!info.mCollider->GetIsTrigger())
+		{
+			float distance = Length(info.mPoint - ray.mStart);
+			if (distance <= 1.1f)
+			{
+				mIsGround = true;
+				mForce = 0.0f;
+				mOwner->mTransform->mPosition = info.mPoint + mNormal * 1.0f;
+			}
+		}
+	}
+
+	if (mCurrAtt)
 	{
 		Vector3 currUp = Vector3(0.0f, 1.0f, 0.0f) * mOwner->mTransform->mRotation;
 		mNormal = Normalize(
 			mOwner->mTransform->mPosition -
-			mAttractor->GetOwner()->mTransform->mPosition);
+			mCurrAtt->GetOwner()->mTransform->GetWorld().GetTranslation());
 
 		if (mIsGround)
 		{
@@ -63,30 +85,19 @@ void GravityBody::Update(float deltaTime)
 			mOwner->mTransform->mRotation.Normalize();
 		}
 	}
+}
 
-	mIsGround = false;
-	Vector3 dir = mNormal * mOwner->mTransform->mRotation;
-	Ray ray = Ray(
-		mOwner->mTransform->mPosition,
-		mOwner->mTransform->mPosition - dir);
-	RaycastHit info = {};
-	if (mOwner->GetScene()->GetCollisionManager()->Raycast(ray, info, Collider::Terrain))
+void GravityBody::OnTrigger(Actor* other)
+{
+	if (other->GetName() == "Attractor")
 	{
-		// トリガー以外
-		if (!info.mCollider->GetIsTrigger())
-		{
-			float dist = Length(info.mPoint - ray.mStart);
-			if (dist <= 1.1f)
-			{
-				mIsGround = true;
-				mForce = Vector3::kZero;
-				mOwner->mTransform->mPosition = info.mPoint + dir * 1.0f;
-			}
-		}
+		auto component = other->GetComponent(Component::Type::Attractor);
+		auto attractor = dynamic_cast<Attractor*>(component);
+		mCurrAtt = attractor;
 	}
 }
 
-void GravityBody::AddForce(const Vector3& force)
+void GravityBody::AddForce(float force)
 {
 	mForce += force;
 }
@@ -118,4 +129,12 @@ void GravityBody::UpdateForDev()
 		ImGui::DragFloat("Mass", &mMass, 0.01f, 0.0f, 100.0f);
 		ImGui::TreePop();
 	}
+}
+
+void GravityBody::RenderForDev(Primitive* prim)
+{
+	Vector3 pos = mOwner->mTransform->mPosition;
+	const float kLen = 100.0f;
+	prim->DrawLine3(pos, pos - mNormal * kLen, Color::kWhite);
+	prim->DrawLine3(pos, pos - mCurrNormal * kLen, Color::kWhite);
 }

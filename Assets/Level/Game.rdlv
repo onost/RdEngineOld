@@ -42,6 +42,196 @@
                         {
                             "Position": [
                                 0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Rotation": [
+                                1.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Type": 10
+                        },
+                        {
+                            "Gravity": -9.800000190734863,
+                            "Is Inv Square": true,
+                            "Mass": 2.0,
+                            "Radius": 30.0,
+                            "Type": 12
+                        },
+                        {
+                            "Attribute": 1,
+                            "Center": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Is Trigger": true,
+                            "Radius": 30.0,
+                            "Response Attr": 15,
+                            "Type": 4
+                        }
+                    ],
+                    "Name": "Attractor",
+                    "Order": 100,
+                    "State": 0,
+                    "Type": 0
+                }
+            ],
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Is Visible": true,
+                    "Model": "Planet.gltf",
+                    "Order": 100,
+                    "Shader Type": 0,
+                    "Texture": "Assets/Texture/Default.png",
+                    "Type": 6
+                },
+                {
+                    "Attribute": 1,
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Is Trigger": false,
+                    "Radius": 10.0,
+                    "Response Attr": 15,
+                    "Type": 4
+                }
+            ],
+            "Name": "Planet1",
+            "Order": 95,
+            "State": 0,
+            "Type": 0
+        },
+        {
+            "Children": [
+                {
+                    "Components": [
+                        {
+                            "Position": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Rotation": [
+                                1.0,
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Scale": [
+                                1.0,
+                                1.0,
+                                1.0
+                            ],
+                            "Type": 10
+                        },
+                        {
+                            "Gravity": -9.800000190734863,
+                            "Is Inv Square": true,
+                            "Mass": 2.0,
+                            "Radius": 12.5,
+                            "Type": 12
+                        },
+                        {
+                            "Attribute": 1,
+                            "Center": [
+                                0.0,
+                                0.0,
+                                0.0
+                            ],
+                            "Is Trigger": true,
+                            "Radius": 12.5,
+                            "Response Attr": 15,
+                            "Type": 4
+                        }
+                    ],
+                    "Name": "Attractor",
+                    "Order": 100,
+                    "State": 0,
+                    "Type": 0
+                }
+            ],
+            "Components": [
+                {
+                    "Position": [
+                        25.0,
+                        60.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        4.0,
+                        4.0,
+                        4.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Is Visible": true,
+                    "Model": "Planet.gltf",
+                    "Order": 100,
+                    "Shader Type": 0,
+                    "Texture": "Assets/Texture/Default.png",
+                    "Type": 6
+                },
+                {
+                    "Attribute": 1,
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Is Trigger": false,
+                    "Radius": 10.0,
+                    "Response Attr": 15,
+                    "Type": 4
+                }
+            ],
+            "Name": "Planet2",
+            "Order": 95,
+            "State": 0,
+            "Type": 0
+        },
+        {
+            "Children": [
+                {
+                    "Components": [
+                        {
+                            "Position": [
+                                0.0,
                                 5.0,
                                 -15.0
                             ],
@@ -77,7 +267,7 @@
                 {
                     "Position": [
                         0.0,
-                        31.0,
+                        12.0,
                         0.0
                     ],
                     "Rotation": [
@@ -119,320 +309,12 @@
                 }
             ],
             "Gravity": 1.0,
-            "Jump Power": 30.0,
+            "Jump Power": 15.0,
             "Max Ground": 60.0,
             "Name": "Player",
             "Order": 100,
             "State": 0,
             "Type": 6
-        },
-        {
-            "Components": [
-                {
-                    "Position": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Rotation": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        5.0,
-                        1.0,
-                        5.0
-                    ],
-                    "Type": 10
-                },
-                {
-                    "Is Visible": true,
-                    "Model": "Ground.obj",
-                    "Order": 100,
-                    "Shader Type": 0,
-                    "Texture": "Assets/Texture/Default.png",
-                    "Type": 6
-                },
-                {
-                    "Attribute": 8,
-                    "Axis X": [
-                        1.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Axis Y": [
-                        0.0,
-                        1.0,
-                        0.0
-                    ],
-                    "Axis Z": [
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Is Trigger": false,
-                    "Response Attr": 7,
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Type": 3
-                }
-            ],
-            "Name": "First Floor",
-            "Order": 100,
-            "State": 0,
-            "Type": 0
-        },
-        {
-            "Components": [
-                {
-                    "Position": [
-                        30.0,
-                        12.5,
-                        0.0
-                    ],
-                    "Rotation": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        10.0,
-                        2.0,
-                        10.0
-                    ],
-                    "Type": 10
-                },
-                {
-                    "Is Visible": true,
-                    "Model": "Ground.obj",
-                    "Order": 100,
-                    "Shader Type": 0,
-                    "Texture": "Assets/Texture/Default.png",
-                    "Type": 6
-                },
-                {
-                    "Attribute": 4,
-                    "Axis X": [
-                        1.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Axis Y": [
-                        0.0,
-                        1.0,
-                        0.0
-                    ],
-                    "Axis Z": [
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Is Trigger": false,
-                    "Response Attr": 7,
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Type": 3
-                }
-            ],
-            "Name": "Stand",
-            "Order": 100,
-            "State": 0,
-            "Type": 0
-        },
-        {
-            "Children": [
-                {
-                    "Components": [
-                        {
-                            "Position": [
-                                0.0,
-                                0.0,
-                                0.0
-                            ],
-                            "Rotation": [
-                                1.0,
-                                0.0,
-                                0.0,
-                                0.0
-                            ],
-                            "Scale": [
-                                1.0,
-                                1.0,
-                                1.0
-                            ],
-                            "Type": 10
-                        },
-                        {
-                            "Attribute": 1,
-                            "Center": [
-                                0.0,
-                                0.0,
-                                0.0
-                            ],
-                            "Is Trigger": true,
-                            "Radius": 16.0,
-                            "Response Attr": 15,
-                            "Type": 4
-                        }
-                    ],
-                    "Name": "Attractor",
-                    "Order": 100,
-                    "State": 0,
-                    "Type": 0
-                }
-            ],
-            "Components": [
-                {
-                    "Position": [
-                        100.0,
-                        1.0,
-                        0.0
-                    ],
-                    "Rotation": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Type": 10
-                },
-                {
-                    "Is Visible": true,
-                    "Model": "Planet.gltf",
-                    "Order": 100,
-                    "Shader Type": 0,
-                    "Texture": "Assets/Texture/Default.png",
-                    "Type": 6
-                },
-                {
-                    "Attribute": 8,
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Is Trigger": false,
-                    "Radius": 10.0,
-                    "Response Attr": 15,
-                    "Type": 4
-                }
-            ],
-            "Name": "Planet1",
-            "Order": 100,
-            "State": 0,
-            "Type": 0
-        },
-        {
-            "Children": [
-                {
-                    "Components": [
-                        {
-                            "Position": [
-                                0.0,
-                                0.0,
-                                0.0
-                            ],
-                            "Rotation": [
-                                1.0,
-                                0.0,
-                                0.0,
-                                0.0
-                            ],
-                            "Scale": [
-                                1.0,
-                                1.0,
-                                1.0
-                            ],
-                            "Type": 10
-                        },
-                        {
-                            "Attribute": 1,
-                            "Center": [
-                                0.0,
-                                0.0,
-                                0.0
-                            ],
-                            "Is Trigger": true,
-                            "Radius": 10.5,
-                            "Response Attr": 15,
-                            "Type": 4
-                        }
-                    ],
-                    "Name": "Attractor",
-                    "Order": 100,
-                    "State": 0,
-                    "Type": 0
-                }
-            ],
-            "Components": [
-                {
-                    "Position": [
-                        24.0,
-                        100.0,
-                        0.0
-                    ],
-                    "Rotation": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        4.0,
-                        4.0,
-                        4.0
-                    ],
-                    "Type": 10
-                },
-                {
-                    "Is Visible": true,
-                    "Model": "Planet.gltf",
-                    "Order": 100,
-                    "Shader Type": 0,
-                    "Texture": "Assets/Texture/Default.png",
-                    "Type": 6
-                },
-                {
-                    "Attribute": 8,
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Is Trigger": false,
-                    "Radius": 10.0,
-                    "Response Attr": 15,
-                    "Type": 4
-                }
-            ],
-            "Name": "Planet2",
-            "Order": 100,
-            "State": 0,
-            "Type": 0
         },
         {
             "Children": [
@@ -451,9 +333,9 @@
                                 0.0
                             ],
                             "Scale": [
-                                0.9999998807907104,
                                 1.0,
-                                0.9999998807907104
+                                1.0,
+                                1.0
                             ],
                             "Type": 10
                         },
@@ -563,7 +445,7 @@
                 {
                     "Position": [
                         24.0,
-                        107.5,
+                        100.0,
                         0.0
                     ],
                     "Rotation": [
@@ -673,101 +555,6 @@
                 }
             ],
             "Name": "GoalSprite",
-            "Order": 100,
-            "State": 0,
-            "Type": 0
-        },
-        {
-            "Children": [
-                {
-                    "Components": [
-                        {
-                            "Position": [
-                                0.0,
-                                0.0,
-                                0.0
-                            ],
-                            "Rotation": [
-                                1.0,
-                                0.0,
-                                0.0,
-                                0.0
-                            ],
-                            "Scale": [
-                                1.0,
-                                1.0,
-                                1.0
-                            ],
-                            "Type": 10
-                        },
-                        {
-                            "Gravity": 9.800000190734863,
-                            "Is Inv Square": true,
-                            "Mass": 1.0,
-                            "Radius": 30.0,
-                            "Type": 12
-                        },
-                        {
-                            "Attribute": 1,
-                            "Center": [
-                                0.0,
-                                0.0,
-                                0.0
-                            ],
-                            "Is Trigger": true,
-                            "Radius": 30.0,
-                            "Response Attr": 15,
-                            "Type": 4
-                        }
-                    ],
-                    "Name": "Attractor",
-                    "Order": 100,
-                    "State": 0,
-                    "Type": 0
-                }
-            ],
-            "Components": [
-                {
-                    "Position": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Rotation": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Type": 10
-                },
-                {
-                    "Is Visible": true,
-                    "Model": "Planet.gltf",
-                    "Order": 100,
-                    "Shader Type": 0,
-                    "Texture": "Assets/Texture/Default.png",
-                    "Type": 6
-                },
-                {
-                    "Attribute": 1,
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Is Trigger": false,
-                    "Radius": 10.0,
-                    "Response Attr": 15,
-                    "Type": 4
-                }
-            ],
-            "Name": "Planet3",
             "Order": 100,
             "State": 0,
             "Type": 0

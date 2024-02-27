@@ -29,6 +29,7 @@ public:
 	// ヘルパー関数
 	// ==================================================
 	Type GetType() const override { return Type::Attractor; }
+	float GetRadius() const { return mRadius; }
 
 private:
 	float mRadius;// 半径

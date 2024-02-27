@@ -202,7 +202,7 @@ void DemoPlayer::ActorUpdate(float deltaTime)
 	}
 }
 
-void DemoPlayer::OnCollision(Actor* /*other*/, CollisionInfo* info)
+void DemoPlayer::ActorOnCollision(Actor* /*other*/, CollisionInfo* info)
 {
 	//Console::Log("Hit!");
 

@@ -22,12 +22,8 @@ Player::Player(Scene* scene)
 	, mJumpPower(0.0f)
 	, mGravity(0.0f)
 	, mGravityPow(0.0f)
-	//, mGravityDir(Vector3(0.0f, -1.0f, 0.0f))
 	, mGroundDist(0.3f)
 	, mMaxGround(60.0f)
-	, mNormal(Vector3::kZero)
-	, mCurrNorm(Vector3::kZero)
-	//, mAttractor(nullptr)
 	, mGravityBody(nullptr)
 {
 	// メッシュ
@@ -91,12 +87,12 @@ void Player::ActorInput(const Input::State& input)
 	// ==================================================
 	// ジャンプ
 	// ==================================================
-	if (mIsGround)
+	if (mGravityBody->GetIsGround())
 	{
 		if (input.mGamepad.GetButtonDown(XINPUT_GAMEPAD_A) ||
 			input.mKeyboard.GetKeyDown(DIK_SPACE))
 		{
-			mGravityPow = mJumpPower;
+			mGravityBody->SetForce(mJumpPower);
 		}
 	}
 }
@@ -117,111 +113,9 @@ void Player::ActorUpdate(float deltaTime)
 	Vector3 f = Vector3(0.0f, 0.0f, 1.0f) * mTransform->mRotation;// forward
 	mTransform->mPosition += r * mVelocity.x * deltaTime;
 	mTransform->mPosition += f * mVelocity.z * deltaTime;
-
-	// ==================================================
-	// 法線
-	// ==================================================
-	/*Vector3 downDir = Vector3(0.0f, -1.0f, 0.0f) * mTransform->mRotation;// down
-	Ray ray = Ray(mTransform->mPosition, mTransform->mPosition + downDir);
-	RaycastHit info = {};
-	Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
-	if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
-	{
-		//float dist = Length(info.mPoint - ray.mStart);// 地面までの距離
-		float dot = Dot(upDir, info.mNormal);
-		if (dot >= cosf(MyMath::ToRadians(mMaxGround)))
-		{
-			mNormal = info.mNormal;
-		}
-	}*/
-
-	/*if (mAttractor)
-	{
-		Vector3 attractorPos = mAttractor->mTransform->GetWorld().GetTranslation();
-		mNormal = Normalize(mTransform->mPosition - attractorPos);
-		// ログ
-		Console::Log(std::format("({:6.3f},{:6.3f},{:6.3f})\n",
-			mNormal.x,
-			mNormal.y,
-			mNormal.z));
-	}
-
-	if (!mIsGround)
-	{
-		const float kNormSpeed = 0.1f;
-		mCurrNorm = MyMath::Lerp<Vector3>(mCurrNorm, mNormal, kNormSpeed);
-		mCurrNorm.Normalize();
-	}
-	else
-	{
-		mCurrNorm = mNormal;
-	}*/
-
-	//mNormal = Vector3(0.0f, 1.0f, 0.0f) * mTransform->mRotation;
-
-	// ==================================================
-	// 重力
-	// ==================================================
-	/*if (!mIsGround)
-	{
-		mGravityPow += -mGravity;
-	}
-	mTransform->mPosition += mNormal * mGravityPow * deltaTime;*/
-	/*if (mAttractor)
-	{
-		mAttractor->Attract(this, deltaTime);
-	}*/
-
-	// 地面
-	//mIsGround = false;
-	//Ray ray = Ray(mTransform->mPosition, mTransform->mPosition - mNormal);
-	//RaycastHit info = {};
-	//Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
-	//if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
-	//{
-	//	// トリガー以外
-	//	if (!info.mCollider->GetIsTrigger())
-	//	{
-	//		float dist = Length(info.mPoint - ray.mStart);
-	//		if (dist <= mRadius + mGroundDist)
-	//		{
-	//			mIsGround = true;
-	//			mGravityPow = 0.0f;
-	//			// 押し戻し
-	//			mTransform->mPosition = info.mPoint + mNormal * mRadius;
-	//		}
-	//	}
-	//}
-
-	// 姿勢を制御
-	/*Vector3 axis = Cross(upDir, mCurrNorm);
-	//float len = Length(axis);
-	//Console::Log(std::format("Length: {}\n", len));
-	if (Length(axis) > 0.001f)// ？
-	{
-		axis.Normalize();
-		float theta = acosf(Dot(upDir, mCurrNorm));
-		//Console::Log(std::format("Theta: {}\n", theta));
-		mTransform->mRotation *= Quaternion(axis, theta);
-		mTransform->mRotation.Normalize();
-	}*/
-	/*Vector3 axis = Cross(Vector3(0.0f, 1.0f, 0.0f), mCurrNorm);
-	if (Length(axis) > 0.001f)
-	{
-		axis.Normalize();
-		float theta = acosf(Dot(Vector3(0.0f, 1.0f, 0.0f), mCurrNorm));
-		Quaternion q = Quaternion(axis, theta);
-		q *= Quaternion(Vector3(0.0f, 1.0f, 0.0f) * q, mRotateY);
-		mTransform->mRotation = q;
-
-		Vector3 a = GetAxis(q);
-		float t = GetTheta(q);
-		Console::Log(std::format("({:6.3f},{:6.3f},{:6.3f}): {}\n",
-			a.x, a.y, a.z, t));
-	}*/
 }
 
-void Player::OnCollision(Actor* /*other*/, CollisionInfo* info)
+void Player::ActorOnCollision(Actor* /*other*/, CollisionInfo* info)
 {
 	//Console::Log("Hit!");
 
@@ -239,16 +133,8 @@ void Player::OnCollision(Actor* /*other*/, CollisionInfo* info)
 	mTransform->UpdateWorld(mParent ? mParent->mTransform : nullptr);
 }
 
-void Player::OnTrigger(Actor* other)
+void Player::ActorOnTrigger(Actor* other)
 {
-	if (other->GetName() == "Attractor")
-	{
-		//mAttractor = other;
-		// GravityBodyのOnCollisionで
-		auto component = other->GetComponent(Component::Type::Attractor);
-		auto attractor = dynamic_cast<Attractor*>(component);
-		mGravityBody->SetAttractor(attractor);
-	}
 	// ゴール！
 	if (other->GetName() == "GoalFlag")
 	{
@@ -278,15 +164,13 @@ void Player::ActorUpdateForDev()
 
 void Player::ActorRenderForDev(Primitive* prim)
 {
-	static const float kLen = 5.0f;
+	static const float kLen = 10.0f;
 	Vector3 u = Vector3(0.0f, 1.0f, 0.0f) * mTransform->mRotation * kLen;
 	Vector3 r = Vector3(1.0f, 0.0f, 0.0f) * mTransform->mRotation * kLen;
 	Vector3 f = Vector3(0.0f, 0.0f, 1.0f) * mTransform->mRotation * kLen;
-	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition + u, Color::kGreen);
-	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition + r, Color::kRed);
 	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition + f, Color::kBlue);
-	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition - mNormal * 100.0f, Color::kWhite);
-	//prim->DrawLine3(mTransform->mPosition, mTransform->mPosition - mCurrNorm * 100.0f, Color::kWhite);
+	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition + r, Color::kRed);
+	prim->DrawLine3(mTransform->mPosition, mTransform->mPosition + u, Color::kGreen);
 }
 
 // ==================================================
