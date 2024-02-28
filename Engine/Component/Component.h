@@ -50,8 +50,13 @@ public:
 	virtual void ProcessInput(const Input::State&) {}
 	virtual void Update(float) {}
 	virtual void OnUpdateWorld() {}
-	virtual void OnCollision(Actor*, CollisionInfo*) {}
-	virtual void OnTrigger(Actor*) {}
+	// Collision
+	virtual void OnCollisionEnter(Actor*, CollisionInfo*) {}
+	virtual void OnCollisionStay(Actor*, CollisionInfo*) {}
+	virtual void OnCollisionExit(Actor*, CollisionInfo*) {}
+	virtual void OnTriggerEnter(Actor*) {}
+	virtual void OnTriggerStay(Actor*) {}
+	virtual void OnTriggerExit(Actor*) {}
 
 	// ==================================================
 	// json

@@ -31,7 +31,7 @@ Player::Player(Scene* scene)
 	mr->SetModel(mScene->GetRenderer()->GetModel("Player.obj"));
 	// コライダー
 	auto sc = new SphereCollider(this);
-	sc->SetAttr(Collider::Allies);// 味方
+	sc->SetAttribute(Collider::Allies);// 味方
 	sc->SetSphere({ {0.0f,0.0f,0.0f},mRadius });
 
 	mGravityBody = new GravityBody(this);
@@ -115,7 +115,7 @@ void Player::ActorUpdate(float deltaTime)
 	mTransform->mPosition += f * mVelocity.z * deltaTime;
 }
 
-void Player::ActorOnCollision(Actor* /*other*/, CollisionInfo* info)
+void Player::ActorOnCollisionStay(Actor* /*other*/, CollisionInfo* info)
 {
 	//Console::Log("Hit!");
 
@@ -133,7 +133,7 @@ void Player::ActorOnCollision(Actor* /*other*/, CollisionInfo* info)
 	mTransform->UpdateWorld(mParent ? mParent->mTransform : nullptr);
 }
 
-void Player::ActorOnTrigger(Actor* other)
+void Player::ActorOnTriggerEnter(Actor* other)
 {
 	// ゴール！
 	if (other->GetName() == "GoalFlag")

@@ -7,7 +7,7 @@ class DemoBullet : public Actor
 public:
 	DemoBullet(Scene* scene);
 	void ActorUpdate(float deltaTime) override;
-	void ActorOnTrigger(Actor* other) override;
+	void ActorOnTriggerEnter(Actor* other) override;
 
 private:
 	float mLife;

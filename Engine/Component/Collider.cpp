@@ -7,8 +7,8 @@
 
 Collider::Collider(Actor* owner)
 	: Component(owner)
-	, mAttr(Attribute(0))
-	, mResponseAttr(Attribute(0))
+	, mAttribute(Attribute(0))
+	, mResponse(Attribute(0))
 	, mIsTrigger(false)
 {
 	mOwner->GetScene()->GetCollisionManager()->AddCollider(this);
@@ -29,12 +29,12 @@ void Collider::Load(const nlohmann::json& json)
 	uint32_t attr;
 	if (JsonHelper::GetUint(json, "Attribute", attr))
 	{
-		mAttr = Attribute(attr);
+		mAttribute = Attribute(attr);
 	}
 	uint32_t responseAttr;
 	if (JsonHelper::GetUint(json, "Response Attr", responseAttr))
 	{
-		mResponseAttr = Attribute(responseAttr);
+		mResponse = Attribute(responseAttr);
 	}
 	JsonHelper::GetBool(json, "Is Trigger", mIsTrigger);
 }
@@ -42,8 +42,8 @@ void Collider::Load(const nlohmann::json& json)
 void Collider::Save(nlohmann::json& json)
 {
 	Component::Load(json);
-	JsonHelper::SetUint(json, "Attribute", uint32_t(mAttr));
-	JsonHelper::SetUint(json, "Response Attr", uint32_t(mResponseAttr));
+	JsonHelper::SetUint(json, "Attribute", uint32_t(mAttribute));
+	JsonHelper::SetUint(json, "Response Attr", uint32_t(mResponse));
 	JsonHelper::SetBool(json, "Is Trigger", mIsTrigger);
 }
 
@@ -59,11 +59,11 @@ void Collider::UpdateForDev()
 		for (uint32_t i = 0; i < attrCount; ++i)
 		{
 			Attribute attr = magic_enum::enum_value<Attribute>(i);
-			bool isCheck = ((mAttr & attr) != 0);
+			bool isCheck = ((mAttribute & attr) != 0);
 			if (ImGui::Checkbox(magic_enum::enum_name<Attribute>(attr).data(), &isCheck))
 			{
-				if (isCheck) AddAttr(attr);
-				else RemoveAttr(attr);
+				if (isCheck) AddAttribute(attr);
+				else RemoveAttribute(attr);
 			}
 		}
 		ImGui::TreePop();
@@ -73,11 +73,11 @@ void Collider::UpdateForDev()
 		for (uint32_t i = 0; i < attrCount; ++i)
 		{
 			Attribute attr = magic_enum::enum_value<Attribute>(i);
-			bool isCheck = ((mResponseAttr & attr) != 0);
+			bool isCheck = ((mResponse & attr) != 0);
 			if (ImGui::Checkbox(magic_enum::enum_name<Attribute>(attr).data(), &isCheck))
 			{
-				if (isCheck) AddResponseAttr(attr);
-				else RemoveResponseAttr(attr);
+				if (isCheck) AddResponse(attr);
+				else RemoveResponse(attr);
 			}
 		}
 		ImGui::TreePop();

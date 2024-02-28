@@ -11,7 +11,7 @@ public:
 	GravityBody(Actor* owner);
 	~GravityBody();
 	void Update(float deltaTime) override;
-	void OnTrigger(Actor* other) override;
+	void OnTriggerEnter(Actor* other) override;
 
 	void AddForce(float force);
 
@@ -37,15 +37,16 @@ public:
 	void SetForce(float force) { mForce = force; }
 
 private:
-	Attractor* mCurrAtt;
+	Attractor* mAttractor;
 
 	float mMass;// 質量
-	//Vector3 mForce;
 	float mForce;
 	Vector3 mNormal;
-	//Vector3 mCurrNormal;
 	bool mIsGround;
 
 	float mPushDist;
 	float mGroundDist;
+
+	//Vector3 mForce;
+	//Vector3 mCurrNormal;
 };

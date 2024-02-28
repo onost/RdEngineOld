@@ -32,7 +32,7 @@ DemoPlayer::DemoPlayer(Scene* scene)
 	mr->SetModel(mScene->GetRenderer()->GetModel("Player.obj"));
 	// コライダー
 	auto sc = new SphereCollider(this);
-	sc->SetAttr(Collider::Allies);// 味方
+	sc->SetAttribute(Collider::Allies);// 味方
 	sc->SetSphere({ {0.0f,0.0f,0.0f},mRadius });
 
 	// 砂煙
@@ -151,7 +151,7 @@ void DemoPlayer::ActorUpdate(float deltaTime)
 		// 落下中は少し上から
 		ray.mStart.y += -mVelocity.y * deltaTime;
 	}
-	RaycastHit info = {};
+	RaycastInfo info = {};
 	Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
 	if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
 	{
@@ -202,7 +202,7 @@ void DemoPlayer::ActorUpdate(float deltaTime)
 	}
 }
 
-void DemoPlayer::ActorOnCollision(Actor* /*other*/, CollisionInfo* info)
+void DemoPlayer::ActorOnCollisionStay(Actor* /*other*/, CollisionInfo* info)
 {
 	//Console::Log("Hit!");
 

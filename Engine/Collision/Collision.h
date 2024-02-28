@@ -13,7 +13,7 @@ struct CollisionInfo
 };
 
 // レイキャスト用
-struct RaycastHit
+struct RaycastInfo
 {
 	Vector3 mPoint;
 	Vector3 mNormal;

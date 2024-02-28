@@ -132,26 +132,78 @@ void Actor::UpdateWorld(Actor* parent)
 	}
 }
 
-void Actor::OnCollision(Actor* other, CollisionInfo* info)
+// ==================================================
+// Collision
+// ==================================================
+
+void Actor::OnCollisionEnter(Actor* other, CollisionInfo* info)
 {
 	if (mState == State::kAlive)
 	{
-		ActorOnCollision(other, info);
+		ActorOnCollisionEnter(other, info);
 		for (auto& comp : mComponents)
 		{
-			comp->OnCollision(other, info);
+			comp->OnCollisionEnter(other, info);
 		}
 	}
 }
 
-void Actor::OnTrigger(Actor* other)
+void Actor::OnCollisionStay(Actor* other, CollisionInfo* info)
 {
 	if (mState == State::kAlive)
 	{
-		ActorOnTrigger(other);
+		ActorOnCollisionStay(other, info);
 		for (auto& comp : mComponents)
 		{
-			comp->OnTrigger(other);
+			comp->OnCollisionStay(other, info);
+		}
+	}
+}
+
+void Actor::OnCollisionExit(Actor* other, CollisionInfo* info)
+{
+	if (mState == State::kAlive)
+	{
+		ActorOnCollisionExit(other, info);
+		for (auto& comp : mComponents)
+		{
+			comp->OnCollisionExit(other, info);
+		}
+	}
+}
+
+void Actor::OnTriggerEnter(Actor* other)
+{
+	if (mState == State::kAlive)
+	{
+		ActorOnTriggerEnter(other);
+		for (auto& comp : mComponents)
+		{
+			comp->OnTriggerEnter(other);
+		}
+	}
+}
+
+void Actor::OnTriggerStay(Actor* other)
+{
+	if (mState == State::kAlive)
+	{
+		ActorOnTriggerStay(other);
+		for (auto& comp : mComponents)
+		{
+			comp->OnTriggerStay(other);
+		}
+	}
+}
+
+void Actor::OnTriggerExit(Actor* other)
+{
+	if (mState == State::kAlive)
+	{
+		ActorOnTriggerExit(other);
+		for (auto& comp : mComponents)
+		{
+			comp->OnTriggerExit(other);
 		}
 	}
 }

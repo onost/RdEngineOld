@@ -18,8 +18,8 @@ DemoEnemy::DemoEnemy(Scene* scene)
 	mr->SetModel(mScene->GetRenderer()->GetModel("Player.obj"));
 	// コライダー
 	auto bc = new BoxCollider(this);
-	bc->SetAttr(Collider::Enemies);// 敵
-	bc->SetResponseAttr(Collider::kAll);
+	bc->SetAttribute(Collider::Enemies);// 敵
+	bc->SetResponse(Collider::kAll);
 	bc->SetBox({ {0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f} });
 }
 
@@ -53,7 +53,7 @@ void DemoEnemy::ActorUpdate(float deltaTime)
 
 	// 地面
 	Ray ray = Ray(mTransform->mPosition, mTransform->mPosition + Vector3(0.0f, -1.0f, 0.0f));// 下へ
-	RaycastHit info = {};
+	RaycastInfo info = {};
 	if (mScene->GetCollisionManager()->Raycast(ray, info, Collider::Terrain))
 	{
 		float dist = Length(info.mPoint - ray.mStart);
@@ -67,7 +67,7 @@ void DemoEnemy::ActorUpdate(float deltaTime)
 }
 
 // Collision
-void DemoEnemy::ActorOnCollision(Actor* /*other*/, CollisionInfo* info)
+void DemoEnemy::ActorOnCollisionStay(Actor* /*other*/, CollisionInfo* info)
 {
 	// 押し戻し
 	mTransform->mPosition = mTransform->mPosition + info->mNormal * info->mDepth;
@@ -75,7 +75,7 @@ void DemoEnemy::ActorOnCollision(Actor* /*other*/, CollisionInfo* info)
 }
 
 // Trigger
-void DemoEnemy::ActorOnTrigger(Actor* other)
+void DemoEnemy::ActorOnTriggerEnter(Actor* other)
 {
 	if (other->GetName() == "Bullet")
 	{

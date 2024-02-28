@@ -13,8 +13,8 @@ public:
 
 	void ActorInput(const Input::State& input) override;
 	void ActorUpdate(float deltaTime) override;
-	void ActorOnCollision(Actor* other, CollisionInfo* info) override;
-	void ActorOnTrigger(Actor* other) override;
+	void ActorOnCollisionStay(Actor* other, CollisionInfo* info) override;
+	void ActorOnTriggerEnter(Actor* other) override;
 	void ActorUpdateForDev() override;
 	void ActorRenderForDev(Primitive* prim);
 

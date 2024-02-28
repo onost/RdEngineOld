@@ -18,9 +18,9 @@ DemoBullet::DemoBullet(Scene* scene)
 	// コライダー
 	auto sc = new SphereCollider(this);
 	sc->SetSphere({ {0.0f,0.0f,0.0f},1.0f });
-	sc->SetAttr(Collider::Allies);
-	sc->AddResponseAttr(Collider::Terrain);
-	sc->AddResponseAttr(Collider::Enemies);
+	sc->SetAttribute(Collider::Allies);
+	sc->AddResponse(Collider::Terrain);
+	sc->AddResponse(Collider::Enemies);
 	sc->SetIsTrigger(true);
 }
 
@@ -37,7 +37,7 @@ void DemoBullet::ActorUpdate(float deltaTime)
 	mTransform->mPosition += f * mSpeed * deltaTime;
 }
 
-void DemoBullet::ActorOnTrigger(Actor* /*other*/)
+void DemoBullet::ActorOnTriggerEnter(Actor* /*other*/)
 {
 	mState = State::kDead;
 }

@@ -13,7 +13,7 @@ MeshCollider::MeshCollider(Actor* owner)
 	, mModel(nullptr)
 	, mModelName()
 {
-	SetAttr(Terrain);
+	SetAttribute(Terrain);
 }
 
 MeshCollider::~MeshCollider()

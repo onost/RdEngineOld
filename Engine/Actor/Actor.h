@@ -44,8 +44,13 @@ public:
 	void Update(float deltaTime);
 	void LastUpdate(float deltaTime);
 	void UpdateWorld(Actor* parent = nullptr);
-	void OnCollision(Actor* other, CollisionInfo* info);
-	void OnTrigger(Actor* other);
+	// Collision
+	void OnCollisionEnter(Actor* other, CollisionInfo* info);
+	void OnCollisionStay(Actor* other, CollisionInfo* info);
+	void OnCollisionExit(Actor* other, CollisionInfo* info);
+	void OnTriggerEnter(Actor* other);
+	void OnTriggerStay(Actor* other);
+	void OnTriggerExit(Actor* other);
 
 	// ==================================================
 	// json
@@ -127,8 +132,13 @@ protected:
 	virtual void ActorInput(const Input::State&) {}
 	virtual void ActorUpdate(float) {}
 	virtual void ActorLastUpdate(float) {}
-	virtual void ActorOnCollision(Actor*, CollisionInfo*) {}
-	virtual void ActorOnTrigger(Actor*) {}
+	// Collision
+	virtual void ActorOnCollisionEnter(Actor*, CollisionInfo*) {}
+	virtual void ActorOnCollisionStay(Actor*, CollisionInfo*) {}
+	virtual void ActorOnCollisionExit(Actor*, CollisionInfo*) {}
+	virtual void ActorOnTriggerEnter(Actor*) {}
+	virtual void ActorOnTriggerStay(Actor*) {}
+	virtual void ActorOnTriggerExit(Actor*) {}
 	// 開発用
 	virtual void ActorUpdateForDev() {}
 	virtual void ActorRenderForDev(Primitive* /*prim*/) {}

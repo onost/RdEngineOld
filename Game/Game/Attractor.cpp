@@ -31,7 +31,16 @@ void Attractor::Attract(GravityBody* actor, float deltaTime)
 	Vector3 toCenter = apos - bpos;
 	float len = Length(toCenter);
 	// 万有引力
-	actor->AddForce((mGravity * mMass * actor->GetMass() / len * len) * deltaTime);
+	float gravity = 0.0f;
+	if (mIsInvSquare)
+	{
+		gravity = (mGravity * mMass * actor->GetMass() / len * len) * deltaTime;
+	}
+	else
+	{
+		gravity = (mGravity * mMass * actor->GetMass() / len) * deltaTime;
+	}
+	actor->AddForce(gravity);
 }
 
 // ==================================================

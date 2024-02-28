@@ -49,17 +49,17 @@ public:
 	bool GetIsTrigger() const { return mIsTrigger; }
 	void SetIsTrigger(bool isTrigger) { mIsTrigger = isTrigger; }
 	// Attribute
-	void SetAttr(Attribute attr) { mAttr = attr; }
-	void AddAttr(Attribute attr) { mAttr = Attribute(uint32_t(mAttr) | uint32_t(attr)); }
-	void RemoveAttr(Attribute attr) { mAttr = Attribute(uint32_t(mAttr) & uint32_t(~attr)); }
-	void SetResponseAttr(Attribute attr) { mResponseAttr = attr; }
-	void AddResponseAttr(Attribute attr) { mResponseAttr = Attribute(uint32_t(mResponseAttr) | uint32_t(attr)); }
-	void RemoveResponseAttr(Attribute attr) { mResponseAttr = Attribute(uint32_t(mResponseAttr) & uint32_t(~attr)); }
+	void SetAttribute(Attribute attr) { mAttribute = attr; }
+	void AddAttribute(Attribute attr) { mAttribute = Attribute(uint32_t(mAttribute) | uint32_t(attr)); }
+	void RemoveAttribute(Attribute attr) { mAttribute = Attribute(uint32_t(mAttribute) & uint32_t(~attr)); }
+	void SetResponse(Attribute attr) { mResponse = attr; }
+	void AddResponse(Attribute attr) { mResponse = Attribute(uint32_t(mResponse) | uint32_t(attr)); }
+	void RemoveResponse(Attribute attr) { mResponse = Attribute(uint32_t(mResponse) & uint32_t(~attr)); }
 	//void SetColor(const Color& color) { mColor = color; }
 
 protected:
-	Attribute mAttr;
-	Attribute mResponseAttr;
+	Attribute mAttribute;
+	Attribute mResponse;
 	bool mIsTrigger;
 protected:
 	//Color mColor;// 開発用

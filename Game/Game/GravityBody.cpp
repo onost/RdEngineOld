@@ -13,7 +13,7 @@
 
 GravityBody::GravityBody(Actor* owner)
 	: Component(owner)
-	, mCurrAtt(nullptr)
+	, mAttractor(nullptr)
 	, mMass(1.0f)
 	, mForce(0.0f)
 	, mNormal(Vector3::kZero)
@@ -31,9 +31,9 @@ GravityBody::~GravityBody()
 
 void GravityBody::Update(float deltaTime)
 {
-	if (mCurrAtt)
+	if (mAttractor)
 	{
-		mCurrAtt->Attract(this, deltaTime);
+		mAttractor->Attract(this, deltaTime);
 	}
 
 	mOwner->mTransform->mPosition += mNormal * mForce * deltaTime;
@@ -42,7 +42,7 @@ void GravityBody::Update(float deltaTime)
 	Ray ray = Ray(
 		mOwner->mTransform->mPosition,
 		mOwner->mTransform->mPosition - mNormal);
-	RaycastHit info = {};
+	RaycastInfo info = {};
 	if (mOwner->GetScene()->GetCollisionManager()->Raycast(ray, info, Collider::Terrain))
 	{
 		// トリガー以外
@@ -58,12 +58,12 @@ void GravityBody::Update(float deltaTime)
 		}
 	}
 
-	if (mCurrAtt)
+	if (mAttractor)
 	{
 		Vector3 currUp = Vector3(0.0f, 1.0f, 0.0f) * mOwner->mTransform->mRotation;
 		mNormal = Normalize(
 			mOwner->mTransform->mPosition -
-			mCurrAtt->GetOwner()->mTransform->GetWorld().GetTranslation());
+			mAttractor->GetOwner()->mTransform->GetWorld().GetTranslation());
 
 		/*if (mIsGround)
 		{
@@ -87,13 +87,13 @@ void GravityBody::Update(float deltaTime)
 	}
 }
 
-void GravityBody::OnTrigger(Actor* other)
+void GravityBody::OnTriggerEnter(Actor* other)
 {
 	if (other->GetName() == "Attractor")
 	{
 		auto component = other->GetComponent(Component::Type::Attractor);
 		auto attractor = dynamic_cast<Attractor*>(component);
-		mCurrAtt = attractor;
+		mAttractor = attractor;
 	}
 }
 
