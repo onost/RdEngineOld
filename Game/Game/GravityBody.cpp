@@ -65,7 +65,7 @@ void GravityBody::Update(float deltaTime)
 			mOwner->mTransform->mPosition -
 			mAttractor->GetOwner()->mTransform->GetWorld().GetTranslation());
 
-		/*if (mIsGround)
+		if (mIsGround)
 		{
 			mCurrNormal = mNormal;
 		}
@@ -74,13 +74,13 @@ void GravityBody::Update(float deltaTime)
 			const float kNormSpeed = 0.1f;
 			mCurrNormal = MyMath::Lerp<Vector3>(mCurrNormal, mNormal, kNormSpeed);
 			mCurrNormal.Normalize();
-		}*/
+		}
 
-		Vector3 axis = Cross(currUp, mNormal);
+		Vector3 axis = Cross(currUp, mCurrNormal);
 		if (Length(axis) > 0.001f)
 		{
 			axis.Normalize();
-			float theta = acosf(Dot(currUp, mNormal));
+			float theta = acosf(Dot(currUp, mCurrNormal));
 			mOwner->mTransform->mRotation *= Quaternion(axis, theta);
 			mOwner->mTransform->mRotation.Normalize();
 		}

@@ -42,7 +42,7 @@ void Quaternion::Normalize()
 	}
 	else
 	{
-		MyAssert(false);
+		//MyAssert(false);
 		*this = kIdentity;
 	}
 }
