@@ -65,7 +65,7 @@ void GravityBody::Update(float deltaTime)
 			mOwner->mTransform->mPosition -
 			mAttractor->GetOwner()->mTransform->GetWorld().GetTranslation());
 
-		if (mIsGround)
+		/*if (mIsGround)
 		{
 			mCurrNormal = mNormal;
 		}
@@ -74,13 +74,13 @@ void GravityBody::Update(float deltaTime)
 			const float kNormSpeed = 0.1f;
 			mCurrNormal = MyMath::Lerp<Vector3>(mCurrNormal, mNormal, kNormSpeed);
 			mCurrNormal.Normalize();
-		}
+		}*/
 
-		Vector3 axis = Cross(currUp, mCurrNormal);
+		Vector3 axis = Cross(currUp, mNormal);
 		if (Length(axis) > 0.001f)
 		{
 			axis.Normalize();
-			float theta = acosf(Dot(currUp, mCurrNormal));
+			float theta = acosf(Dot(currUp, mNormal));
 			mOwner->mTransform->mRotation *= Quaternion(axis, theta);
 			mOwner->mTransform->mRotation.Normalize();
 		}
@@ -91,9 +91,12 @@ void GravityBody::OnTriggerEnter(Actor* other)
 {
 	if (other->GetName() == "Attractor")
 	{
-		auto component = other->GetComponent(Component::Type::Attractor);
-		auto attractor = dynamic_cast<Attractor*>(component);
-		mAttractor = attractor;
+		if (!mIsGround)
+		{
+			auto component = other->GetComponent(Component::Type::Attractor);
+			auto attractor = dynamic_cast<Attractor*>(component);
+			mAttractor = attractor;
+		}
 	}
 }
 
