@@ -63,6 +63,7 @@ void RdEngine::Initialize()
 	mRenderer = std::make_unique<Renderer>();
 	mCollisionManager = std::make_unique<CollisionManager>();
 	mSceneManager = std::make_unique<SceneManager>();
+	mAudio = std::make_unique<Audio>();
 
 	// システムファイル
 	Load();
@@ -76,6 +77,9 @@ void RdEngine::Initialize()
 	mRenderer->Initialize();
 	//mCollisionManager->Initialize();
 	mSceneManager->Initialize();
+	mAudio->Initialize();
+	//auto audio01 = mAudio->Load("Assets/Audio/Audio01.wav");
+	//mAudio->Play(audio01);
 
 	Editor::Initialize(mWindow.get());
 	Random::Initialize();
@@ -86,6 +90,10 @@ void RdEngine::Terminate()
 	// システムファイル
 	Save();
 	Editor::Terminate();
+	if (mAudio)
+	{
+		mAudio->Terminate();
+	}
 	if (mSceneManager)
 	{
 		mSceneManager->Terminate();

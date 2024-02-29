@@ -1,8 +1,12 @@
 #pragma once
-#include <xaudio2.h>
+#include "Core/ResourceBank.h"
+#include <string>
 #include <wrl.h>
+#include <xaudio2.h>
 
 // https://www.youfit.co.jp/archives/1418
+// https://qiita.com/okmonn/items/ab037ef11bf0e2ebbaca
+// https://necotech.org/archives/657
 
 class Audio
 {
@@ -41,8 +45,16 @@ public:
 	};
 
 	void Initialize();
+	void Terminate();
+
+	// 読み込み
+	SoundData* Load(const std::string& filePath);
+	// 再生
+	void Play(SoundData* soundData);
 
 private:
 	Microsoft::WRL::ComPtr<IXAudio2> mXAudio2;
 	IXAudio2MasteringVoice* mMasterVoice;
+	// アセット
+	ResourceBank<SoundData> mSounds;
 };
