@@ -32,6 +32,7 @@ public:
 		DemoCamera,
 		DemoEnemy,
 		Player,
+		PlayerCamera
 		//Attractor
 		//
 	};
