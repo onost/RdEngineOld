@@ -9,7 +9,7 @@
 PlayerCamera::PlayerCamera(Scene* scene)
 	: Actor(scene)
 	, mTarget(nullptr)
-	, mDistance(10.0f)
+	, mDistance(15.0f)
 	, mRot(MyMath::kPiOver2 * 0.2f)
 	, mRotVel(0.0f)
 	, mRotSpeed(MyMath::kPiOver2)
@@ -41,22 +41,26 @@ void PlayerCamera::ActorUpdate(float deltaTime)
 	}
 	if (mTarget)
 	{
-		mRot += mRotVel * mRotSpeed * deltaTime;
-		mRot = MyMath::Clamp(mRot, kRotMin, kRotMax);
-
+		// Rotation
 		Quaternion rotation = mTarget->mTransform->mRotation;
 		Vector3 b = Vector3(0.0f, 0.0f, -1.0f) * rotation;
 		Vector3 r = Vector3(1.0f, 0.0f, 0.0f) * rotation;
+		mRot += mRotVel * mRotSpeed * deltaTime;
+		mRot = MyMath::Clamp(mRot, kRotMin, kRotMax);
 		Quaternion rot = Quaternion(r, mRot);
+		// Position
+		Vector3 corrPos = Vector3(0.0f, 2.0f, 0.0f) * rotation;
+		Vector3 position = mTarget->mTransform->mPosition + corrPos + b * mDistance * rot;
 
-		const Vector3 corrPos = Vector3(0.0f, 2.0f, 0.0f);// 少し上
-		mTransform->mPosition = mTarget->mTransform->mPosition + corrPos + b * mDistance * rot;
-		mTransform->mRotation = rotation * rot;
+		const float kSpeed = 0.2f;
+		mTransform->mRotation = Slerp(mTransform->mRotation, rotation * rot, kSpeed);
+		mTransform->mPosition = MyMath::Lerp(mTransform->mPosition, position, kSpeed);
 
 		// カメラが埋まらないように
 		Ray ray = Ray(mTarget->mTransform->mPosition + corrPos, mTransform->mPosition + b * mLeeway);// 少し長め
 		RaycastInfo info = {};
-		if (mScene->GetCollisionManager()->Raycast(ray, info, Collider::Terrain))
+		Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));
+		if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
 		{
 			float dist = Length(info.mPoint - ray.mStart);
 			if (dist <= mDistance + mLeeway)

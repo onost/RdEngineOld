@@ -38,6 +38,7 @@ void GravityBody::Update(float deltaTime)
 
 	mOwner->mTransform->mPosition += mNormal * mForce * deltaTime;
 
+	//float distance = 0.0f;
 	mIsGround = false;
 	Ray ray = Ray(
 		mOwner->mTransform->mPosition,
@@ -65,22 +66,22 @@ void GravityBody::Update(float deltaTime)
 			mOwner->mTransform->mPosition -
 			mAttractor->GetOwner()->mTransform->GetWorld().GetTranslation());
 
-		/*if (mIsGround)
+		if (mIsGround)
 		{
 			mCurrNormal = mNormal;
 		}
 		else
 		{
-			const float kNormSpeed = 0.1f;
+			const float kNormSpeed = 0.2f;
 			mCurrNormal = MyMath::Lerp<Vector3>(mCurrNormal, mNormal, kNormSpeed);
 			mCurrNormal.Normalize();
-		}*/
+		}
 
-		Vector3 axis = Cross(currUp, mNormal);
+		Vector3 axis = Cross(currUp, mCurrNormal);
 		if (Length(axis) > 0.001f)
 		{
 			axis.Normalize();
-			float theta = acosf(Dot(currUp, mNormal));
+			float theta = acosf(Dot(currUp, mCurrNormal));
 			mOwner->mTransform->mRotation *= Quaternion(axis, theta);
 			mOwner->mTransform->mRotation.Normalize();
 		}

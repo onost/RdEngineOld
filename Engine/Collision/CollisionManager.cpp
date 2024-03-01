@@ -132,7 +132,8 @@ bool CollisionManager::Raycast(
 	float minT = MyMath::kInfinity;
 	for (auto& c : mColliders)
 	{
-		if (!(c->mAttribute & attribute))
+		if (!(c->mAttribute & attribute) ||
+			c->mIsTrigger)//
 		{
 			continue;
 		}

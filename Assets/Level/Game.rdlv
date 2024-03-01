@@ -62,7 +62,7 @@
                             "Gravity": -9.800000190734863,
                             "Is Inv Square": true,
                             "Mass": 2.0,
-                            "Radius": 30.0,
+                            "Radius": 20.0,
                             "Type": 12
                         },
                         {
@@ -73,7 +73,7 @@
                                 0.0
                             ],
                             "Is Trigger": true,
-                            "Radius": 30.0,
+                            "Radius": 20.0,
                             "Response Attr": 15,
                             "Type": 4
                         }
