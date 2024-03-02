@@ -46,7 +46,8 @@ public:
 	Model* GetModel(const std::string& filePath);
 	Skeleton* GetMaterial(const std::string&);
 	Skeleton* GetSkeleton(const std::string&);
-	Animation* GetAnimation(const std::string&);
+	AnimationOld* GetAnimationOld(const std::string&);
+	Animation* GetAnimation(const std::string& filePath);
 	Shader* GetVs(const std::string& filePath);
 	Shader* GetGs(const std::string& filePath);
 	Shader* GetPs(const std::string& filePath);
@@ -93,6 +94,7 @@ private:
 	ResourceBank<Model> mModels;// モデル
 	ResourceBank<Material> mMaterials;// マテリアル
 	ResourceBank<Skeleton> mSkeletons;// スケルトン
+	ResourceBank<AnimationOld> mAnimationOlds;// アニメーション
 	ResourceBank<Animation> mAnimations;// アニメーション
 	ResourceBank<Shader> mShaders;// シェーダ
 	// モデル用関数テーブル

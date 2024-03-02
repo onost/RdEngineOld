@@ -2,7 +2,7 @@
 #include "Skeleton.h"
 #include "Helper/MyAssert.h"
 
-std::vector<Matrix4> Animation::GetPoseAtTime(Skeleton* skeleton, float time)
+std::vector<Matrix4> AnimationOld::GetPoseAtTime(Skeleton* skeleton, float time)
 {
 	MyAssert(skeleton);
 	uint32_t currFrame = static_cast<uint32_t>(time / mFrameDuration);

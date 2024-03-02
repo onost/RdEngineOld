@@ -942,6 +942,46 @@
             "Components": [
                 {
                     "Position": [
+                        0.0,
+                        2.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Is Visible": true,
+                    "Model": "AnimCube.gltf",
+                    "Order": 100,
+                    "Shader Type": 0,
+                    "Texture": "Assets/Texture/Default.png",
+                    "Type": 6
+                },
+                {
+                    "Animation": "AnimCube.gltf",
+                    "Order": 100,
+                    "Type": 14
+                }
+            ],
+            "Name": "Anim Test",
+            "Order": 100,
+            "State": 0,
+            "Type": 0
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
                         10.0,
                         5.0,
                         0.0
