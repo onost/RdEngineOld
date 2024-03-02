@@ -48,46 +48,6 @@ void Animator::OnUpdateWorld()
 	}
 }
 
-// Vector3
-Vector3 Animator::CalcValue(const std::vector<Keyframe<Vector3>>& key, float time)
-{
-	MyAssert(!key.empty());
-	if (key.size() == 1 || time <= key[0].mTime)
-	{
-		return key[0].mValue;
-	}
-	for (uint32_t i = 0; i < key.size() - 1; ++i)
-	{
-		uint32_t next = i + 1;
-		if (key[i].mTime <= time && time <= key[next].mTime)
-		{
-			float t = (time - key[i].mTime) / (key[next].mTime - key[i].mTime);
-			return MyMath::Lerp(key[i].mValue, key[next].mValue, t);
-		}
-	}
-	return (*key.rbegin()).mValue;
-}
-
-// Quaternion
-Quaternion Animator::CalcValue(const std::vector<Keyframe<Quaternion>>& key, float time)
-{
-	MyAssert(!key.empty());
-	if (key.size() == 1 || time <= key[0].mTime)
-	{
-		return key[0].mValue;
-	}
-	for (uint32_t i = 0; i < key.size() - 1; ++i)
-	{
-		uint32_t next = i + 1;
-		if (key[i].mTime <= time && time <= key[next].mTime)
-		{
-			float t = (time - key[i].mTime) / (key[next].mTime - key[i].mTime);
-			return Slerp(key[i].mValue, key[next].mValue, t);
-		}
-	}
-	return (*key.rbegin()).mValue;
-}
-
 // ==================================================
 // json
 // ==================================================

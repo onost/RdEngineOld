@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
-class Skeleton;
+class SkeletonOld;
 class Transform;
 
 // モデル
@@ -20,7 +20,7 @@ public:
 	void Draw(Transform* transform,
 		ModelCommon::Type type = ModelCommon::Type::Default);
 	// スキンアニメーション用
-	void Draw(Transform* transform, Skeleton* skeleton,
+	void Draw(Transform* transform, SkeletonOld* skeleton,
 		ModelCommon::Type type = ModelCommon::Type::Default);
 
 	//Model* Copy();

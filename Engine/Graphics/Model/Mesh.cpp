@@ -17,7 +17,7 @@ void Mesh::Create()
 		// インデックスバッファ
 		mIBuff = std::make_unique<IndexBuffer>();
 		mIBuff->Create(
-			sizeof(uint16_t) * static_cast<uint32_t>(mIndices.size()),
+			sizeof(uint32_t) * static_cast<uint32_t>(mIndices.size()),
 			static_cast<void*>(mIndices.data()));
 	}
 }

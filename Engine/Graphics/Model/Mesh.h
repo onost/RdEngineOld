@@ -27,7 +27,7 @@ public:
 public:
 	// 頂点、インデックスを追加
 	void AddVertex(const Vertex vertex) { mVertices.emplace_back(vertex); }
-	void AddIndex(const uint16_t index) { mIndices.emplace_back(index); }
+	void AddIndex(const uint32_t index) { mIndices.emplace_back(index); }
 
 	void Create();
 	void Draw(ID3D12GraphicsCommandList* cmdList,
@@ -38,7 +38,7 @@ public:
 
 	// Getter
 	std::vector<Vertex>& GetVertices() { return mVertices; }
-	std::vector<uint16_t>& GetIndices() { return mIndices; }
+	std::vector<uint32_t>& GetIndices() { return mIndices; }
 	Material* GetMaterial() const { return mMaterial; }
 	bool GetIsSkinned() const { return mIsSkinned; }
 	const Matrix4 GetLocal() const { return mLocal; }
@@ -50,7 +50,7 @@ private:
 	std::unique_ptr<VertexBuffer> mVBuff;
 	std::unique_ptr<IndexBuffer> mIBuff;
 	std::vector<Vertex> mVertices;
-	std::vector<uint16_t> mIndices;
+	std::vector<uint32_t> mIndices;
 	Material* mMaterial;
 	bool mIsSkinned;
 

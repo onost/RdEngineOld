@@ -557,6 +557,9 @@
     <ClInclude Include="Engine\Component\Animator.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Math\QuaternionTransform.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="External\ImGui\LICENSE.txt">

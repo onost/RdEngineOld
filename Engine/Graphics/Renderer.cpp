@@ -53,6 +53,8 @@ void Renderer::Initialize()
 	//mModelFuncs["obj"] = &Renderer::GetModelFromObj;// .obj
 	//mModelFuncs["fbx"] = &Renderer::GetModelFromFbx;// .fbx
 
+	ModelLoader::SetRenderer(this);
+
 	Load();
 }
 
@@ -285,7 +287,7 @@ Model* Renderer::GetModel(const std::string& filePath)
 	if (!model)
 	{
 		//model = ObjLoader::Load(filePath);
-		model = ModelLoader::Load(filePath);
+		model = ModelLoader::LoadModel(filePath);
 		mModels.Add(filePath, model);
 	}
 	return model;
@@ -341,8 +343,18 @@ Animation* Renderer::GetAnimation(const std::string& filePath)
 	return anim;
 }
 
-Skeleton* Renderer::GetMaterial(const std::string&) { return nullptr; }
-Skeleton* Renderer::GetSkeleton(const std::string&) { return nullptr; }
+void Renderer::AddSkeleton(const std::string& filePath, Skeleton* skeleton)
+{
+	mSkeletons.Add(filePath, skeleton);
+}
+
+Skeleton* Renderer::GetSkeleton(const std::string& filePath)
+{
+	return mSkeletons.Get(filePath);
+}
+
+SkeletonOld* Renderer::GetMaterial(const std::string&) { return nullptr; }
+SkeletonOld* Renderer::GetSkeletonOld(const std::string&) { return nullptr; }
 AnimationOld* Renderer::GetAnimationOld(const std::string&) { return nullptr; }
 
 // ==================================================

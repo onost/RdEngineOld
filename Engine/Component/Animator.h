@@ -32,13 +32,6 @@ public:
 	Type GetType() const override { return Type::Animator; }
 
 private:
-	// 値を計算
-	Vector3 CalcValue(
-		const std::vector<Keyframe<Vector3>>& key, float time);
-	Quaternion CalcValue(
-		const std::vector<Keyframe<Quaternion>>& key, float time);
-
-private:
 	Animation* mAnimation;
 	float mCurrTime;
 	bool mIsLoop;

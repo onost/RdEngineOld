@@ -4,8 +4,11 @@
 #include "Graphics/Model/Skeleton.h"
 #include <memory>
 
-class AnimationOld;
-class Skeleton;
+//class AnimationOld;
+//class SkeletonOld;
+
+struct Animation;
+struct Skeleton;
 
 // スキンメッシュレンダラー
 class SkinnedMeshRenderer : public MeshRenderer
@@ -17,7 +20,7 @@ public:
 	void Update(float deltaTime) override;
 	void Draw() override;
 	// アニメーションを再生
-	void PlayAnimation(AnimationOld* anim);
+	void PlayAnimation(Animation* anim);
 
 	// ==================================================
 	// json
@@ -37,12 +40,12 @@ public:
 	Type GetType() const override { return Type::SkinnedMeshRenderer; }
 	Skeleton* GetSkeleton() const { return mSkeleton; }
 	float GetCurrTime() const { return mCurrTime; }
-	AnimationOld* GetAnimation() const { return mCurrAnim; }
+	Animation* GetAnimation() const { return mCurrAnim; }
 	void SetSkeleton(Skeleton* skeleton)
 	{
 		mSkeleton = skeleton;
-		mSkelName = mSkeleton->GetName();
-		mPoses.resize(mSkeleton->GetBoneCount());
+		mSkelName = mSkeleton->mName;
+		//mPoses.resize(mSkeleton->mJoints.size());
 	}
 
 private:
@@ -52,7 +55,7 @@ private:
 	Skeleton* mSkeleton;
 	// アニメーション
 	float mCurrTime;
-	AnimationOld* mCurrAnim;
+	Animation* mCurrAnim;
 	//Animation* mNextAnim;
 	std::unique_ptr<ConstantBuffer> mCBuff;
 	//std::vector<Matrix4> mCurrPoses;
@@ -60,5 +63,5 @@ private:
 	// 開発用
 	std::string mSkelName;
 	std::string mAnimName;
-	std::vector<Matrix4> mPoses;
+	//std::vector<Matrix4> mPoses;
 };

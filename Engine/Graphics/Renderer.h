@@ -44,13 +44,15 @@ public:
 	// ==================================================
 	Texture* GetTexture(const std::string& filePath);
 	Model* GetModel(const std::string& filePath);
-	Skeleton* GetMaterial(const std::string&);
-	Skeleton* GetSkeleton(const std::string&);
+	SkeletonOld* GetMaterial(const std::string&);
+	SkeletonOld* GetSkeletonOld(const std::string&);
 	AnimationOld* GetAnimationOld(const std::string&);
 	Animation* GetAnimation(const std::string& filePath);
 	Shader* GetVs(const std::string& filePath);
 	Shader* GetGs(const std::string& filePath);
 	Shader* GetPs(const std::string& filePath);
+	void AddSkeleton(const std::string& filePath, Skeleton* skeleton);
+	Skeleton* GetSkeleton(const std::string& filePath);
 
 	// ==================================================
 	// レンダラーコンポーネント
@@ -93,6 +95,7 @@ private:
 	ResourceBank<Texture> mTextures;// テクスチャ
 	ResourceBank<Model> mModels;// モデル
 	ResourceBank<Material> mMaterials;// マテリアル
+	ResourceBank<SkeletonOld> mSkeletonOlds;// スケルトン
 	ResourceBank<Skeleton> mSkeletons;// スケルトン
 	ResourceBank<AnimationOld> mAnimationOlds;// アニメーション
 	ResourceBank<Animation> mAnimations;// アニメーション
