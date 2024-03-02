@@ -1,8 +1,10 @@
 #include "ModelLoader.h"
+#include "Graphics/Model/Animation.h"
 #include "Graphics/Model/Model.h"
 #include "Graphics/Model/ModelCommon.h"
 #include <format>
 
+// モデル
 Model* ModelLoader::Load(const std::string& modelName)
 {
 	Helper::WriteToConsole(std::format("Create: \"{}\"\n", modelName.c_str()));
@@ -141,4 +143,55 @@ ModelLoader::Node ModelLoader::ReadNode(aiNode* node)
 		result.mChildren[childIndex] = ReadNode(node->mChildren[childIndex]);
 	}
 	return result;
+}
+
+// アニメーション
+Animation* ModelLoader::LoadAnimation(const std::string& modelName)
+{
+	Helper::WriteToConsole(std::format("Create: \"{}\"\n", modelName.c_str()));
+
+	std::string filePath =
+		ModelCommon::kModelPath + Helper::RemoveExtension(modelName) + "/";
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile((filePath + modelName).c_str(), 0);
+	MyAssert(scene->mNumAnimations != 0);// アニメーションなし
+
+	Animation* myAnim = new Animation();
+
+	aiAnimation* anim = scene->mAnimations[0];//
+	myAnim->mName = modelName;// 名前
+	myAnim->mDuration = float(anim->mDuration / anim->mTicksPerSecond);// 秒へ
+	for (uint32_t channelIndex = 0; channelIndex < anim->mNumChannels; ++channelIndex)
+	{
+		aiNodeAnim* nodeAnim = anim->mChannels[channelIndex];
+		NodeAnimation& myNodeAnim = myAnim->mNodeAnimations[nodeAnim->mNodeName.C_Str()];
+		// Scale
+		for (uint32_t keyIndex = 0; keyIndex < nodeAnim->mNumScalingKeys; ++keyIndex)
+		{
+			aiVectorKey& key = nodeAnim->mScalingKeys[keyIndex];
+			Keyframe<Vector3> myKey;
+			myKey.mTime = float(key.mTime / anim->mTicksPerSecond);
+			myKey.mValue = Vector3(key.mValue.x, key.mValue.y, key.mValue.z);
+			myNodeAnim.mScale.emplace_back(myKey);
+		}
+		// Rotation
+		for (uint32_t keyIndex = 0; keyIndex < nodeAnim->mNumRotationKeys; ++keyIndex)
+		{
+			aiQuatKey& key = nodeAnim->mRotationKeys[keyIndex];
+			Keyframe<Quaternion> myKey;
+			myKey.mTime = float(key.mTime / anim->mTicksPerSecond);
+			myKey.mValue = Quaternion(key.mValue.w, key.mValue.x, -key.mValue.y, -key.mValue.z);
+			myNodeAnim.mRotate.emplace_back(myKey);
+		}
+		// Position
+		for (uint32_t keyIndex = 0; keyIndex < nodeAnim->mNumPositionKeys; ++keyIndex)
+		{
+			aiVectorKey& key = nodeAnim->mPositionKeys[keyIndex];
+			Keyframe<Vector3> myKey;
+			myKey.mTime = float(key.mTime / anim->mTicksPerSecond);
+			myKey.mValue = Vector3(-key.mValue.x, key.mValue.y, key.mValue.z);
+			myNodeAnim.mTranslate.emplace_back(myKey);
+		}
+	}
+	return myAnim;
 }

@@ -3,10 +3,11 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <map>
 
 class Skeleton;
 
-class Animation
+class AnimationOld
 {
 public:
 	// アニメーションを取得
@@ -24,4 +25,42 @@ private:
 	// vector: Frame
 	// unordered_map: Bone Name, Transform
 	std::vector<std::unordered_map<std::string, BoneTransform>> mTracks;
+};
+
+
+
+template <class T>
+struct Keyframe
+{
+	float mTime;
+	T mValue;
+};
+
+struct NodeAnimation
+{
+	std::vector<Keyframe<Vector3>> mScale;
+	std::vector<Keyframe<Quaternion>> mRotate;
+	std::vector<Keyframe<Vector3>> mTranslate;
+};
+
+/*
+template <class T>
+struct AnimationCurve
+{
+	std::vector<Keyframe<T>> mKeyframes;
+};
+
+struct NodeAnimation
+{
+	AnimationCurve<Vector3> mScale;
+	AnimationCurve<Quaternion> mRotate;
+	AnimationCurve<Vector3> mTranslate;
+};
+*/
+
+struct Animation
+{
+	std::string mName;
+	float mDuration;
+	std::map<std::string, NodeAnimation> mNodeAnimations;
 };

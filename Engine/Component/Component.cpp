@@ -16,6 +16,7 @@
 #include "Transform.h"
 #include "Game/Attractor.h"
 #include "Game/GravityBody.h"
+#include "Animator.h"
 
 const std::vector<std::function<Component* (Actor*)>> Component::kCreateFuncs =
 {
@@ -32,7 +33,8 @@ const std::vector<std::function<Component* (Actor*)>> Component::kCreateFuncs =
 	&Component::Create<Transform>,
 	&Component::Create<MeshParticleRenderer>,
 	&Component::Create<Attractor>,
-	&Component::Create<GravityBody>
+	&Component::Create<GravityBody>,
+	&Component::Create<Animator>
 };
 
 Component::Component(Actor* owner, uint32_t order)

@@ -63,7 +63,7 @@ void SkinnedMeshRenderer::Draw()
 	}
 }
 
-void SkinnedMeshRenderer::PlayAnimation(Animation* anim)
+void SkinnedMeshRenderer::PlayAnimation(AnimationOld* anim)
 {
 	if (!anim)
 	{
@@ -112,7 +112,7 @@ void SkinnedMeshRenderer::Load(const nlohmann::json& json)
 	if (JsonHelper::GetString(json, "Curr Anim", animName))
 	{
 		auto renderer = mOwner->GetScene()->GetRenderer();
-		mCurrAnim = renderer->GetAnimation(animName);
+		mCurrAnim = renderer->GetAnimationOld(animName);
 		if (mCurrAnim)
 		{
 			mAnimName = mCurrAnim->GetName();
@@ -182,7 +182,7 @@ void SkinnedMeshRenderer::UpdateForDev()
 		{
 			if (auto payload = ImGui::AcceptDragDropPayload("ANIM_PAYLOAD"))
 			{
-				mCurrAnim = *(Animation**)(payload->Data);
+				mCurrAnim = *(AnimationOld**)(payload->Data);
 				mAnimName = mCurrAnim->GetName();
 			}
 			ImGui::EndDragDropTarget();
@@ -190,7 +190,7 @@ void SkinnedMeshRenderer::UpdateForDev()
 		if (ImGui::Button("Load##Anim"))
 		{
 			auto renderer = mOwner->GetScene()->GetRenderer();
-			auto anim = renderer->GetAnimation(mAnimName);
+			auto anim = renderer->GetAnimationOld(mAnimName);
 			if (anim)
 			{
 				mCurrAnim = anim;

@@ -4,7 +4,7 @@
 #include "Graphics/Model/Skeleton.h"
 #include <memory>
 
-class Animation;
+class AnimationOld;
 class Skeleton;
 
 // スキンメッシュレンダラー
@@ -17,7 +17,7 @@ public:
 	void Update(float deltaTime) override;
 	void Draw() override;
 	// アニメーションを再生
-	void PlayAnimation(Animation* anim);
+	void PlayAnimation(AnimationOld* anim);
 
 	// ==================================================
 	// json
@@ -37,7 +37,7 @@ public:
 	Type GetType() const override { return Type::SkinnedMeshRenderer; }
 	Skeleton* GetSkeleton() const { return mSkeleton; }
 	float GetCurrTime() const { return mCurrTime; }
-	Animation* GetAnimation() const { return mCurrAnim; }
+	AnimationOld* GetAnimation() const { return mCurrAnim; }
 	void SetSkeleton(Skeleton* skeleton)
 	{
 		mSkeleton = skeleton;
@@ -52,7 +52,7 @@ private:
 	Skeleton* mSkeleton;
 	// アニメーション
 	float mCurrTime;
-	Animation* mCurrAnim;
+	AnimationOld* mCurrAnim;
 	//Animation* mNextAnim;
 	std::unique_ptr<ConstantBuffer> mCBuff;
 	//std::vector<Matrix4> mCurrPoses;
