@@ -184,6 +184,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Game\PlayerCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Audio\Audio.h" />
     <ClInclude Include="Engine\Component\Animator.h" />
     <ClInclude Include="Game\Game\Attractor.h" />
     <ClInclude Include="Engine\Actor\Actor.h" />

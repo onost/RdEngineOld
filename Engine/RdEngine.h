@@ -38,6 +38,7 @@ public:
 	Renderer* GetRenderer() const { return mRenderer.get(); }
 	CollisionManager* GetCollisionManager() const { return mCollisionManager.get(); }
 	SceneManager* GetSceneManager() const { return mSceneManager.get(); }
+	Audio* GetAudio() const { return mAudio.get(); }
 
 private:
 	// ゲームループ用

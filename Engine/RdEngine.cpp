@@ -79,7 +79,6 @@ void RdEngine::Initialize()
 	mSceneManager->Initialize();
 	mAudio->Initialize();
 	//auto audio01 = mAudio->Load("Assets/Audio/Audio01.wav");
-	//mAudio->Play(audio01);
 
 	Editor::Initialize(mWindow.get());
 	Random::Initialize();

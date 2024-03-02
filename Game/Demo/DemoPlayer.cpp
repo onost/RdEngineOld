@@ -11,6 +11,9 @@
 #include "DemoBullet.h"
 #include "DemoCamera.h"
 
+#include "RdEngine.h"
+#include "Audio/Audio.h"
+
 DemoPlayer::DemoPlayer(Scene* scene)
 	: Actor(scene)
 	, mRadius(1.0f)
@@ -98,6 +101,8 @@ void DemoPlayer::ActorInput(const Input::State& input)
 			input.mKeyboard.GetKeyDown(DIK_SPACE))
 		{
 			mVelocity.y = mJumpPower;
+			auto audio = gEngine->GetAudio();
+			audio->Play(audio->Load("Assets/Audio/Audio01.wav"));
 		}
 	}
 
