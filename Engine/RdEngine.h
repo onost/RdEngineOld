@@ -1,4 +1,5 @@
 #pragma once
+#include "Audio/Audio.h"
 #include "Collision/CollisionManager.h"
 #include "Graphics/Renderer.h"
 #include "Input/Input.h"
@@ -66,6 +67,7 @@ private:
 	std::unique_ptr<Renderer> mRenderer;
 	std::unique_ptr<CollisionManager> mCollisionManager;
 	std::unique_ptr<SceneManager> mSceneManager;
+	std::unique_ptr<Audio> mAudio;
 };
 
 extern std::unique_ptr<RdEngine> gEngine;
