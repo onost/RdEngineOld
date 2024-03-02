@@ -52,7 +52,7 @@ private:
 	void TriList2(const std::vector<Vertex>& v);
 
 private:
-	static const uint32_t kMaxVertex = 8192;
+	static const uint32_t kMaxVertex = 16384;
 	ID3D12GraphicsCommandList* mCmdList;
 	Renderer* mRenderer;
 	RootSignature mRootSignature;

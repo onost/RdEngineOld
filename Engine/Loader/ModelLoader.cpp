@@ -2,10 +2,13 @@
 #include "Graphics/Model/Animation.h"
 #include "Graphics/Model/Model.h"
 #include "Graphics/Model/ModelCommon.h"
+#include "Graphics/Renderer.h"
 #include <format>
 
+Renderer* ModelLoader::mRenderer = nullptr;
+
 // モデル
-Model* ModelLoader::Load(const std::string& modelName)
+Model* ModelLoader::LoadModel(const std::string& modelName)
 {
 	Helper::WriteToConsole(std::format("Create: \"{}\"\n", modelName.c_str()));
 
@@ -50,7 +53,7 @@ Model* ModelLoader::Load(const std::string& modelName)
 	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
 	{
 		Mesh* myMesh = new Mesh();
-		uint16_t index = 0;
+		uint32_t index = 0;
 
 		aiMesh* mesh = scene->mMeshes[meshIndex];
 		MyAssert(mesh->HasNormals());// 法線なし
@@ -83,13 +86,13 @@ Model* ModelLoader::Load(const std::string& modelName)
 				// インデックス
 				if (vertCount >= 3)
 				{
-					myMesh->mIndices.emplace_back(static_cast<uint16_t>(index - 1));
-					myMesh->mIndices.emplace_back(static_cast<uint16_t>(index));
-					myMesh->mIndices.emplace_back(static_cast<uint16_t>(index - 3));
+					myMesh->mIndices.emplace_back(index - 1);
+					myMesh->mIndices.emplace_back(index);
+					myMesh->mIndices.emplace_back(index - 3);
 				}
 				else
 				{
-					myMesh->mIndices.emplace_back(static_cast<uint16_t>(index));
+					myMesh->mIndices.emplace_back(index);
 				}
 				++vertCount;
 				++index;
@@ -107,42 +110,10 @@ Model* ModelLoader::Load(const std::string& modelName)
 		model->mMeshes.emplace_back(myMesh);
 	}
 	model->Create(modelName);
+	auto skeleton = CreateSkeleton(node);
+	mRenderer->AddSkeleton(modelName, skeleton);
+	skeleton->mName = modelName;
 	return model;
-}
-
-// ノードを解析
-ModelLoader::Node ModelLoader::ReadNode(aiNode* node)
-{
-	Node result = {};
-	// local
-	aiMatrix4x4 local = node->mTransformation;
-	//local.Transpose();
-	result.mLocal.m[0][0] = local[0][0];
-	result.mLocal.m[0][1] = local[1][0];
-	result.mLocal.m[0][2] = local[2][0];
-	result.mLocal.m[0][3] = local[3][0];
-	result.mLocal.m[1][0] = local[0][1];
-	result.mLocal.m[1][1] = local[1][1];
-	result.mLocal.m[1][2] = local[2][1];
-	result.mLocal.m[1][3] = local[3][1];
-	result.mLocal.m[2][0] = local[0][2];
-	result.mLocal.m[2][1] = local[1][2];
-	result.mLocal.m[2][2] = local[2][2];
-	result.mLocal.m[2][3] = local[3][2];
-	result.mLocal.m[3][0] = local[0][3];
-	result.mLocal.m[3][1] = local[1][3];
-	result.mLocal.m[3][2] = local[2][3];
-	result.mLocal.m[3][3] = local[3][3];
-	// name
-	result.mName = node->mName.C_Str();
-	// children
-	result.mChildren.resize(node->mNumChildren);
-	for (uint32_t childIndex = 0; childIndex < node->mNumChildren; ++childIndex)
-	{
-		// 再帰
-		result.mChildren[childIndex] = ReadNode(node->mChildren[childIndex]);
-	}
-	return result;
 }
 
 // アニメーション
@@ -194,4 +165,85 @@ Animation* ModelLoader::LoadAnimation(const std::string& modelName)
 		}
 	}
 	return myAnim;
+}
+
+// ノードを解析
+ModelLoader::Node ModelLoader::ReadNode(aiNode* node)
+{
+	Node result = {};
+	aiVector3D scale;
+	aiQuaternion rotate;
+	aiVector3D translate;
+	node->mTransformation.Decompose(scale, rotate, translate);
+	result.mTransform.mScale = Vector3(scale.x, scale.y, scale.z);
+	result.mTransform.mRotate = Quaternion(rotate.w, rotate.x, -rotate.y, -rotate.z);
+	result.mTransform.mTranslate = Vector3(-translate.x, translate.y, translate.z);
+	// local
+	//aiMatrix4x4 local = node->mTransformation;
+	result.mLocal = Matrix4::CreateAffine(
+		result.mTransform.mScale,
+		result.mTransform.mRotate,
+		result.mTransform.mTranslate);
+	//local.Transpose();
+	/*result.mLocal.m[0][0] = local[0][0];
+	result.mLocal.m[0][1] = local[1][0];
+	result.mLocal.m[0][2] = local[2][0];
+	result.mLocal.m[0][3] = local[3][0];
+	result.mLocal.m[1][0] = local[0][1];
+	result.mLocal.m[1][1] = local[1][1];
+	result.mLocal.m[1][2] = local[2][1];
+	result.mLocal.m[1][3] = local[3][1];
+	result.mLocal.m[2][0] = local[0][2];
+	result.mLocal.m[2][1] = local[1][2];
+	result.mLocal.m[2][2] = local[2][2];
+	result.mLocal.m[2][3] = local[3][2];
+	result.mLocal.m[3][0] = local[0][3];
+	result.mLocal.m[3][1] = local[1][3];
+	result.mLocal.m[3][2] = local[2][3];
+	result.mLocal.m[3][3] = local[3][3];*/
+	// name
+	result.mName = node->mName.C_Str();
+	// children
+	result.mChildren.resize(node->mNumChildren);
+	for (uint32_t childIndex = 0; childIndex < node->mNumChildren; ++childIndex)
+	{
+		// 再帰
+		result.mChildren[childIndex] = ReadNode(node->mChildren[childIndex]);
+	}
+	return result;
+}
+
+// スケルトンを作成
+Skeleton* ModelLoader::CreateSkeleton(const Node& rootNode)
+{
+	Skeleton* skeleton = new Skeleton();
+	skeleton->mRoot = CreateJoint(rootNode, {}, skeleton->mJoints);
+	for (const Joint& joint : skeleton->mJoints)
+	{
+		skeleton->mJointMap.emplace(joint.mName, joint.mIndex);
+	}
+	skeleton->Update();
+	return skeleton;
+}
+
+// ジョイントを作成
+int32_t ModelLoader::CreateJoint(
+	const Node& node,
+	const std::optional<int32_t>& parent,
+	std::vector<Joint>& joints)
+{
+	Joint joint = {};
+	joint.mName = node.mName;
+	joint.mTransform = node.mTransform;
+	joint.mLocal = node.mLocal;
+	joint.mSkeletonSpaceMat = Matrix4::kIdentity;
+	joint.mIndex = int32_t(joints.size());
+	joint.mParent = parent;
+	joints.emplace_back(joint);
+	for (const Node& child : node.mChildren)
+	{
+		int32_t childIndex = CreateJoint(child, joint.mIndex, joints);
+		joints[joint.mIndex].mChildren.emplace_back(childIndex);
+	}
+	return joint.mIndex;
 }

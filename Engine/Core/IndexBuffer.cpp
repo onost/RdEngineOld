@@ -21,7 +21,7 @@ void IndexBuffer::Create(uint32_t size, void* initData)
 	// インデックスバッファビュー
 	mView.BufferLocation = mResource->GetGPUVirtualAddress();
 	mView.SizeInBytes = size;
-	mView.Format = DXGI_FORMAT_R16_UINT;
+	mView.Format = DXGI_FORMAT_R32_UINT;
 	// マップ
 	mResource->Map(0, nullptr, &mData);
 	if (initData)

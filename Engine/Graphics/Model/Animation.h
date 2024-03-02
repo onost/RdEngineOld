@@ -5,13 +5,13 @@
 #include <vector>
 #include <map>
 
-class Skeleton;
+class SkeletonOld;
 
 class AnimationOld
 {
 public:
 	// アニメーションを取得
-	std::vector<Matrix4> GetPoseAtTime(Skeleton* skeleton, float time);
+	std::vector<Matrix4> GetPoseAtTime(SkeletonOld* skeleton, float time);
 
 	const std::string& GetName() const { return mName; }
 	uint32_t GetBoneCount() const { return mBoneCount; }
@@ -42,6 +42,12 @@ struct NodeAnimation
 	std::vector<Keyframe<Quaternion>> mRotate;
 	std::vector<Keyframe<Vector3>> mTranslate;
 };
+
+// 値を計算
+Vector3 CalcValue(
+	const std::vector<Keyframe<Vector3>>& key, float time);
+Quaternion CalcValue(
+	const std::vector<Keyframe<Quaternion>>& key, float time);
 
 /*
 template <class T>
