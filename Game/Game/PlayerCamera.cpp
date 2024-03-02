@@ -38,6 +38,21 @@ void PlayerCamera::ActorUpdate(float deltaTime)
 	if (!mTarget)
 	{
 		mTarget = mScene->GetActor("Player");
+		if (mTarget)
+		{
+			// Rotation
+			Quaternion rotation = mTarget->mTransform->mRotation;
+			Vector3 b = Vector3(0.0f, 0.0f, -1.0f) * rotation;
+			Vector3 r = Vector3(1.0f, 0.0f, 0.0f) * rotation;
+			mRot += mRotVel * mRotSpeed * deltaTime;
+			mRot = MyMath::Clamp(mRot, kRotMin, kRotMax);
+			Quaternion rot = Quaternion(r, mRot);
+			// Position
+			Vector3 corrPos = Vector3(0.0f, 2.0f, 0.0f) * rotation;
+
+			mTransform->mRotation = rotation * rot;
+			mTransform->mPosition = mTarget->mTransform->mPosition + corrPos + b * mDistance * rot;
+		}
 	}
 	if (mTarget)
 	{
