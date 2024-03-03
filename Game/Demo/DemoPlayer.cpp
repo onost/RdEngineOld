@@ -101,8 +101,8 @@ void DemoPlayer::ActorInput(const Input::State& input)
 			input.mKeyboard.GetKeyDown(DIK_SPACE))
 		{
 			mVelocity.y = mJumpPower;
-			auto audio = gEngine->GetAudio();
-			audio->Play(audio->Load("Assets/Audio/Audio01.wav"));
+			//auto audio = gEngine->GetAudio();
+			//audio->Play(audio->Load("Assets/Audio/Audio01.wav"));
 		}
 	}
 
