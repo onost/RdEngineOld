@@ -38,26 +38,26 @@ public:
 	// ヘルパー関数
 	// ==================================================
 	Type GetType() const override { return Type::SkinnedMeshRenderer; }
-	Skeleton* GetSkeleton() const { return mSkeleton; }
+	//Skeleton* GetSkeleton() const { return mSkeleton; }
 	float GetCurrTime() const { return mCurrTime; }
 	Animation* GetAnimation() const { return mCurrAnim; }
-	void SetSkeleton(Skeleton* skeleton)
+	/*void SetSkeleton(Skeleton* skeleton)
 	{
 		mSkeleton = skeleton;
 		mSkelName = mSkeleton->mName;
 		//mPoses.resize(mSkeleton->mJoints.size());
-	}
+	}*/
 
 private:
 	void ComputePose();
 
 private:
-	Skeleton* mSkeleton;
+	//Skeleton* mSkeleton;
 	// アニメーション
 	float mCurrTime;
 	Animation* mCurrAnim;
 	//Animation* mNextAnim;
-	std::unique_ptr<ConstantBuffer> mCBuff;
+	//std::unique_ptr<ConstantBuffer> mCBuff;
 	//std::vector<Matrix4> mCurrPoses;
 
 	// 開発用

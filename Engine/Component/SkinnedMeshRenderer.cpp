@@ -4,21 +4,22 @@
 #include "Graphics/Renderer.h"
 #include "Helper/JsonHelper.h"
 #include "Scene/Scene.h"
+#include "Graphics/Model/SkinCluster.h"
 
 SkinnedMeshRenderer::SkinnedMeshRenderer(Actor* owner)
 	: MeshRenderer(owner)
-	, mSkeleton(nullptr)
+	//, mSkeleton(nullptr)
 	, mCurrTime(0.0f)
 	, mCurrAnim(nullptr)
-	, mCBuff(nullptr)
+	//, mCBuff(nullptr)
 	//, mCurrPoses()
 	, mSkelName()
 	, mAnimName()
 	//, mPoses()
 {
 	mOwner->GetScene()->GetRenderer()->AddSkinnedMesh(this);
-	mCBuff = std::make_unique<ConstantBuffer>();
-	mCBuff->Create(sizeof(Matrix4) * 128);// 128: Max Bone
+	//mCBuff = std::make_unique<ConstantBuffer>();
+	//mCBuff->Create(sizeof(Matrix4) * 128);// 128: Max Bone
 }
 
 SkinnedMeshRenderer::~SkinnedMeshRenderer()
@@ -28,7 +29,8 @@ SkinnedMeshRenderer::~SkinnedMeshRenderer()
 
 void SkinnedMeshRenderer::Update(float deltaTime)
 {
-	if (mSkeleton && mCurrAnim)
+	//if (mSkeleton && mCurrAnim)
+	if (mCurrAnim)
 	{
 		// アニメーションを更新
 		mCurrTime += deltaTime;
@@ -36,7 +38,11 @@ void SkinnedMeshRenderer::Update(float deltaTime)
 		{
 			mCurrTime -= mCurrAnim->mDuration;
 		}
-		ComputePose();
+		//ComputePose();
+		for (auto& mesh : mModel->GetMeshes())
+		{
+			mesh->Update(mCurrAnim, mCurrTime);
+		}
 	}
 }
 
@@ -47,11 +53,11 @@ void SkinnedMeshRenderer::Draw()
 		MyAssert(ModelCommon::mCmdList);
 		for (auto& mesh : mModel->GetMeshes())
 		{
-			if (mesh->GetIsSkinned() && mSkeleton)
+			if (mesh->GetSkeleton())
 			{
 				// スキンアニメーション
 				ModelCommon::SetSkinnedPso(mShaderType);
-				mCBuff->Bind(ModelCommon::mCmdList, 5);
+				//mCBuff->Bind(ModelCommon::mCmdList, 5);
 			}
 			else
 			{
@@ -71,25 +77,7 @@ void SkinnedMeshRenderer::PlayAnimation(Animation* anim)
 	}
 	mCurrAnim = anim;
 	mCurrTime = 0.0f;
-	ComputePose();
-}
-
-void SkinnedMeshRenderer::ComputePose()
-{
-	/*auto invBindPoses = mSkeleton->GetInvBindPoses();
-	auto currPoses = mCurrAnim->GetPoseAtTime(mSkeleton, mCurrTime);*/
-	if (mSkeleton && mCurrAnim)
-	{
-		mSkeleton->ApplyAnimation(*mCurrAnim, mCurrTime);
-		mSkeleton->Update();
-		auto data = static_cast<Matrix4*>(mCBuff->GetData());
-		for (uint32_t i = 0; i < mSkeleton->mJoints.size(); ++i)
-		{
-			data[i] = Matrix4::kIdentity;// invBindPoses[i] * currPoses[i];
-		}
-		// 開発用
-		//mPoses = currPoses;
-	}
+	//ComputePose();
 }
 
 // ==================================================
@@ -100,7 +88,7 @@ void SkinnedMeshRenderer::Load(const nlohmann::json& json)
 {
 	MeshRenderer::Load(json);
 	// Skeleton
-	std::string skeletonName;
+	/*std::string skeletonName;
 	if (JsonHelper::GetString(json, "Skeleton", skeletonName))
 	{
 		auto renderer = mOwner->GetScene()->GetRenderer();
@@ -110,7 +98,7 @@ void SkinnedMeshRenderer::Load(const nlohmann::json& json)
 			mSkelName = mSkeleton->mName;
 			//mPoses.resize(mSkeleton->mJoints.size());
 		}
-	}
+	}*/
 	// Animation
 	JsonHelper::GetFloat(json, "Curr Time", mCurrTime);
 	std::string animName;
@@ -129,10 +117,10 @@ void SkinnedMeshRenderer::Save(nlohmann::json& json)
 {
 	MeshRenderer::Save(json);
 	// Skeleton
-	if (mSkeleton)
+	/*if (mSkeleton)
 	{
 		JsonHelper::SetString(json, "Skeleton", mSkeleton->mName);
-	}
+	}*/
 	// Animation
 	JsonHelper::GetFloat(json, "Curr Time", mCurrTime);
 	if (mCurrAnim)
@@ -153,7 +141,7 @@ void SkinnedMeshRenderer::UpdateForDev()
 		// Model
 		UpdateModel();
 		// Skeleton
-		ImGui::InputText("Skel Name", &mSkelName);
+		/*ImGui::InputText("Skel Name", &mSkelName);
 		if (ImGui::BeginDragDropTarget())// ドロップ
 		{
 			if (auto payload = ImGui::AcceptDragDropPayload("SKEL_PAYLOAD"))
@@ -173,7 +161,7 @@ void SkinnedMeshRenderer::UpdateForDev()
 				mSkeleton = skel;
 				//mPoses.resize(mSkeleton->mJoints.size());
 			}
-		}
+		}*/
 		// Curr Time
 		float duration = 0.0f;
 		if (mCurrAnim)
@@ -207,9 +195,10 @@ void SkinnedMeshRenderer::UpdateForDev()
 
 void SkinnedMeshRenderer::RenderForDev(Primitive* prim)
 {
-	if (mSkeleton && mCurrAnim)
+	if (mModel->GetMeshes()[0]->GetSkeleton() && mCurrAnim)
 	{
-		auto& joints = mSkeleton->mJoints;
+		auto skeleton = mModel->GetMeshes()[0]->GetSkeleton();
+		auto& joints = skeleton->mJoints;
 		std::vector<Vector3> positions(joints.size());
 		for (uint32_t i = 0; i < joints.size(); ++i)
 		{
@@ -221,7 +210,5 @@ void SkinnedMeshRenderer::RenderForDev(Primitive* prim)
 				prim->DrawLine3(positions[i], positions[*parent], Color::kWhite);
 			}
 		}
-
-		Console::Log(std::format("{},{},{}", positions[30].x, positions[30].y, positions[30].z));
 	}
 }

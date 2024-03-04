@@ -23,6 +23,15 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 	std::vector<std::string> matNames;
 	auto node = ReadNode(scene->mRootNode);
 
+	Skeleton* skeleton = nullptr;
+	if (scene->mNumAnimations > 0)
+	{
+		// スケルトン
+		skeleton = CreateSkeleton(node);
+		mRenderer->AddSkeleton(modelName, skeleton);
+		skeleton->mName = modelName;
+	}
+
 	// マテリアル
 	for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex)
 	{
@@ -53,6 +62,7 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
 	{
 		Mesh* myMesh = new Mesh();
+		myMesh->mSkeleton = skeleton;
 		uint32_t index = 0;
 
 		aiMesh* mesh = scene->mMeshes[meshIndex];
@@ -106,13 +116,40 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 				myMesh->mLocal = node.mLocal;
 			}
 		}
+
+		//std::map<std::string, JointWeightData> skinClusterData;
+		// ボーン
+		for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
+		{
+			aiBone* bone = mesh->mBones[boneIndex];
+			std::string jointName = bone->mName.C_Str();
+			JointWeightData& jointWeightData = myMesh->mSkinClusterData[jointName];
+
+			aiMatrix4x4 bindPose = bone->mOffsetMatrix.Inverse();
+			aiVector3D scale;
+			aiQuaternion rotate;
+			aiVector3D translate;
+			bindPose.Decompose(scale, rotate, translate);
+			Matrix4 myBindPose = Matrix4::CreateAffine(
+				Vector3(scale.x, scale.y, scale.z),
+				Quaternion(rotate.w, rotate.x, -rotate.y, -rotate.z),
+				Vector3(-translate.x, translate.y, translate.z));
+			jointWeightData.mInvBindPose = Inverse(myBindPose);
+
+			for (uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex)
+			{
+				VertexWeightData data = {};
+				data.mWeight = bone->mWeights[weightIndex].mWeight;
+				data.mVertexIndex = bone->mWeights[weightIndex].mVertexId;
+				jointWeightData.mVertexWeights.emplace_back(data);
+			}
+		}
+
 		// 追加
 		model->mMeshes.emplace_back(myMesh);
 	}
 	model->Create(modelName);
-	auto skeleton = CreateSkeleton(node);
-	mRenderer->AddSkeleton(modelName, skeleton);
-	skeleton->mName = modelName;
+
 	return model;
 }
 

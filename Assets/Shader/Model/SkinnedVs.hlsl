@@ -5,33 +5,39 @@ struct VsInput
     float32_t4 pos : POSITION0;
     float32_t4 norm : NORMAL0;
     float32_t2 uv : TEXCOORD0;
-    uint32_t4 boneIdx : BONEINDICES0;
     float32_t4 boneWt : WEIGHTS0;
+    int32_t4 boneIdx : BONEINDICES0;
 };
+
+struct Well
+{
+    float32_t4x4 mSkeletonSpaceMat;
+};
+StructuredBuffer<Well> gMatrixPalette : register(t1);
 
 cbuffer cbuff0 : register(b0)
 {
     float32_t4x4 gWorld;
 };
 
-cbuffer cbuff4 : register(b4)
+/*cbuffer cbuff4 : register(b4)
 {
     float32_t4x4 gBones[128];
-}
+}*/
 
 VsOutput main(VsInput input)
 {
     // Skin Pos
-    float32_t4 skinPos = mul(input.pos, gBones[input.boneIdx.x]) * input.boneWt.x;
-    skinPos += mul(input.pos, gBones[input.boneIdx.y]) * input.boneWt.y;
-    skinPos += mul(input.pos, gBones[input.boneIdx.z]) * input.boneWt.z;
-    skinPos += mul(input.pos, gBones[input.boneIdx.w]) * input.boneWt.w;
+    float32_t4 skinPos = mul(input.pos, gMatrixPalette[input.boneIdx.x].mSkeletonSpaceMat) * input.boneWt.x;
+    skinPos += mul(input.pos, gMatrixPalette[input.boneIdx.y].mSkeletonSpaceMat) * input.boneWt.y;
+    skinPos += mul(input.pos, gMatrixPalette[input.boneIdx.z].mSkeletonSpaceMat) * input.boneWt.z;
+    skinPos += mul(input.pos, gMatrixPalette[input.boneIdx.w].mSkeletonSpaceMat) * input.boneWt.w;
 
     // Skin Norm
-    float32_t4 skinNorm = mul(input.norm, gBones[input.boneIdx.x]) * input.boneWt.x;
-    skinNorm += mul(input.norm, gBones[input.boneIdx.y]) * input.boneWt.y;
-    skinNorm += mul(input.norm, gBones[input.boneIdx.z]) * input.boneWt.z;
-    skinNorm += mul(input.norm, gBones[input.boneIdx.w]) * input.boneWt.w;
+    float32_t4 skinNorm = mul(input.norm, gMatrixPalette[input.boneIdx.x].mSkeletonSpaceMat) * input.boneWt.x;
+    skinNorm += mul(input.norm, gMatrixPalette[input.boneIdx.y].mSkeletonSpaceMat) * input.boneWt.y;
+    skinNorm += mul(input.norm, gMatrixPalette[input.boneIdx.z].mSkeletonSpaceMat) * input.boneWt.z;
+    skinNorm += mul(input.norm, gMatrixPalette[input.boneIdx.w].mSkeletonSpaceMat) * input.boneWt.w;
 
     VsOutput output;
     // pos

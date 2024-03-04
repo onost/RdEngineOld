@@ -12,6 +12,7 @@ public:
 	// 頂点データをコピー
 	void Copy(void* src);
 
+	const D3D12_VERTEX_BUFFER_VIEW& GetView() const { return mView; }
 	void* GetData() const { return mData; }
 
 private:

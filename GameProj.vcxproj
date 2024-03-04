@@ -98,6 +98,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Engine\Component\Animator.cpp" />
     <ClCompile Include="Engine\Audio\Audio.cpp" />
+    <ClCompile Include="Engine\Graphics\Model\SkinCluster.cpp" />
     <ClCompile Include="Game\Game\Attractor.cpp" />
     <ClCompile Include="Engine\Actor\Actor.cpp" />
     <ClCompile Include="Engine\Actor\DebugCamera.cpp" />
@@ -186,6 +187,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="Engine\Audio\Audio.h" />
     <ClInclude Include="Engine\Component\Animator.h" />
+    <ClInclude Include="Engine\Graphics\Model\SkinCluster.h" />
     <ClInclude Include="Game\Game\Attractor.h" />
     <ClInclude Include="Engine\Actor\Actor.h" />
     <ClInclude Include="Engine\Actor\DebugCamera.h" />

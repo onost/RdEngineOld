@@ -26,7 +26,8 @@ void ModelCommon::Initialize(Renderer* renderer)
 	mRootSignature.RootParams(3).InitDescTable(1);
 	mRootSignature.RootParams(3).SetDescRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 	mRootSignature.RootParams(4).InitConstant(3);
-	mRootSignature.RootParams(5).InitConstant(4);
+	mRootSignature.RootParams(5).InitDescTable(1);
+	mRootSignature.RootParams(5).SetDescRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
 	mRootSignature.Samplers(0) = GraphicsCommon::gSamplerLinearWrap;
 	mRootSignature.Create();
 
@@ -86,13 +87,15 @@ void ModelCommon::Initialize(Renderer* renderer)
 	skinnedInputLayouts[2].SemanticIndex = 0;
 	skinnedInputLayouts[2].Format = DXGI_FORMAT_R32G32_FLOAT;
 	skinnedInputLayouts[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	skinnedInputLayouts[3].SemanticName = "BONEINDICES";
+	skinnedInputLayouts[3].SemanticName = "WEIGHTS";
 	skinnedInputLayouts[3].SemanticIndex = 0;
-	skinnedInputLayouts[3].Format = DXGI_FORMAT_R32G32B32A32_UINT;
+	skinnedInputLayouts[3].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	skinnedInputLayouts[3].InputSlot = 1;//
 	skinnedInputLayouts[3].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	skinnedInputLayouts[4].SemanticName = "WEIGHTS";
+	skinnedInputLayouts[4].SemanticName = "BONEINDICES";
 	skinnedInputLayouts[4].SemanticIndex = 0;
-	skinnedInputLayouts[4].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	skinnedInputLayouts[4].Format = DXGI_FORMAT_R32G32B32A32_SINT;
+	skinnedInputLayouts[4].InputSlot = 1;//
 	skinnedInputLayouts[4].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 	mSkinnedPsos[uint32_t(Type::Default)].SetInputLayout(skinnedInputLayouts, _countof(skinnedInputLayouts));
 

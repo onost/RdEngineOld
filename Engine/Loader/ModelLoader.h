@@ -25,6 +25,18 @@ public:
 		Matrix4 mLocal;
 	};
 
+	// ボーン用
+	struct VertexWeightData
+	{
+		float mWeight;
+		uint32_t mVertexIndex;
+	};
+	struct JointWeightData
+	{
+		Matrix4 mInvBindPose;
+		std::vector<VertexWeightData> mVertexWeights;
+	};
+
 	// モデル
 	static Model* LoadModel(const std::string& modelName);
 	// アニメーション

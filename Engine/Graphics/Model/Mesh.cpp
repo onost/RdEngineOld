@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include "Helper/MyAssert.h"
 #include "Material.h"
+#include "SkinCluster.h"
 
 void Mesh::Create()
 {
@@ -20,8 +21,26 @@ void Mesh::Create()
 			sizeof(uint32_t) * static_cast<uint32_t>(mIndices.size()),
 			static_cast<void*>(mIndices.data()));
 	}
+
+	// Skin Cluster
+	if (mSkeleton)
+	{
+		mSkinCluster = std::make_unique<SkinCluster>();
+		mSkinCluster->Create(this, mSkeleton);
+	}
 }
 
+void Mesh::Update(Animation* animation, float time)
+{
+	if (mSkeleton && animation)
+	{
+		mSkeleton->ApplyAnimation(*animation, time);
+		mSkeleton->Update();
+		mSkinCluster->Update(mSkeleton);
+	}
+}
+
+// 描画
 void Mesh::Draw(ID3D12GraphicsCommandList* cmdList,
 	uint32_t matRootParamIdx, uint32_t texRootParamIdx)
 {
@@ -33,25 +52,39 @@ void Mesh::DrawInstancing(ID3D12GraphicsCommandList* cmdList,
 	uint32_t instanceCount, uint32_t matRootParamIdx, uint32_t texRootParamIdx)
 {
 	MyAssert(cmdList);
+
 	if (mMaterial)
 	{
 		// マテリアル
 		mMaterial->Bind(cmdList, matRootParamIdx, texRootParamIdx);
 		if (mVBuff)
 		{
-			mVBuff->Bind(cmdList);
+			//mVBuff->Bind(cmdList);
+			if (mSkeleton)
+			{
+				D3D12_VERTEX_BUFFER_VIEW vbvs[2] =
+				{
+					mVBuff->GetView(),
+					mSkinCluster->mInfluence->GetView()
+				};
+				cmdList->IASetVertexBuffers(0, 2, vbvs);
+				mSkinCluster->mPalette->Bind(cmdList, 5);
+			}
+			else
+			{
+				mVBuff->Bind(cmdList);
+			}
+
 			if (mIBuff)
 			{
 				// インデックスあり
 				mIBuff->Bind(cmdList);
-				cmdList->DrawIndexedInstanced(
-					static_cast<uint32_t>(mIndices.size()), instanceCount, 0, 0, 0);
+				cmdList->DrawIndexedInstanced(static_cast<uint32_t>(mIndices.size()), instanceCount, 0, 0, 0);
 			}
 			else
 			{
 				// インデックスなし
-				cmdList->DrawInstanced(
-					static_cast<uint32_t>(mVertices.size()), instanceCount, 0, 0);
+				cmdList->DrawInstanced(static_cast<uint32_t>(mVertices.size()), instanceCount, 0, 0);
 			}
 		}
 	}
