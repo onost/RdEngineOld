@@ -63,23 +63,33 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 	{
 		Mesh* myMesh = new Mesh();
 		myMesh->mSkeleton = skeleton;
-		uint32_t index = 0;
+		//uint32_t index = 0;
 
 		aiMesh* mesh = scene->mMeshes[meshIndex];
 		MyAssert(mesh->HasNormals());// 法線なし
 		MyAssert(mesh->HasTextureCoords(0));// UV座標なし
 
 		// 面
-		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex)
+		myMesh->mVertices.resize(mesh->mNumVertices);
+		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; ++vertexIndex)
 		{
-			aiFace& face = mesh->mFaces[faceIndex];
-			MyAssert(face.mNumIndices <= 4);
+			//aiFace& face = mesh->mFaces[vertexIndex];
+			//MyAssert(face.mNumIndices <= 4);
 
-			uint32_t vertCount = 0;
+			aiVector3D& position = mesh->mVertices[vertexIndex];
+			aiVector3D& normal = mesh->mNormals[vertexIndex];
+			aiVector3D& uv = mesh->mTextureCoords[0][vertexIndex];
+
 			// 頂点
-			for (uint32_t element = 0; element < face.mNumIndices; ++element)
+			myMesh->mVertices[vertexIndex].mPos = Vector3(-position.x, position.y, position.z);
+			myMesh->mVertices[vertexIndex].mNormal = Vector3(-normal.x, normal.y, normal.z);
+			myMesh->mVertices[vertexIndex].mUv = Vector2(uv.x, uv.y);
+
+			//uint32_t vertCount = 0;
+			// 頂点
+			/*for (uint32_t element = 0; element < mesh->mNumVertices; ++element)
 			{
-				uint32_t vertexIndex = face.mIndices[element];
+				//uint32_t vertexIndex = face.mIndices[element];
 				aiVector3D& position = mesh->mVertices[vertexIndex];
 				aiVector3D& normal = mesh->mNormals[vertexIndex];
 				aiVector3D& uv = mesh->mTextureCoords[0][vertexIndex];
@@ -114,6 +124,35 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 
 				// トランスフォーム
 				myMesh->mLocal = node.mLocal;
+			}*/
+		}
+
+		// マテリアル
+		auto matIndex = mesh->mMaterialIndex;
+		auto name = matNames[matIndex];
+		myMesh->mMaterial = model->mMaterials[name];
+
+		// トランスフォーム
+		myMesh->mLocal = node.mLocal;
+
+		// メッシュ
+		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex)
+		{
+			aiFace& face = mesh->mFaces[faceIndex];
+			MyAssert(face.mNumIndices <= 4);
+
+			for (uint32_t element = 0; element < face.mNumIndices; ++element)
+			{
+				if (element == 3)
+				{
+					myMesh->mIndices.emplace_back(face.mIndices[element - 1]);
+					myMesh->mIndices.emplace_back(face.mIndices[element]);
+					myMesh->mIndices.emplace_back(face.mIndices[element - 3]);
+				}
+				else
+				{
+					myMesh->mIndices.emplace_back(face.mIndices[element]);
+				}
 			}
 		}
 

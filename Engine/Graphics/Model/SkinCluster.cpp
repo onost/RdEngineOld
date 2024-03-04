@@ -2,6 +2,8 @@
 #include "Mesh.h"
 #include "Skeleton.h"
 #include "Helper/MyAssert.h"
+#include "Editor.h"
+#include <format>
 
 void SkinCluster::Create(Mesh* mesh, Skeleton* skeleton)
 {
@@ -22,6 +24,7 @@ void SkinCluster::Create(Mesh* mesh, Skeleton* skeleton)
 		{
 			continue;
 		}
+		Console::Log(std::format("{}", jointWeight.first));
 
 		mInvBindPose[(*it).second] = jointWeight.second.mInvBindPose;
 		for (const auto& vertexWeight : jointWeight.second.mVertexWeights)
@@ -33,8 +36,9 @@ void SkinCluster::Create(Mesh* mesh, Skeleton* skeleton)
 				{
 					currInfluence.mWeights[i] = vertexWeight.mWeight;
 					currInfluence.mJointIndices[i] = (*it).second;
-					break;
+					//break;
 				}
+				Console::Log(std::format("{}: {}", vertexWeight.mWeight, (*it).second));
 			}
 		}
 	}
