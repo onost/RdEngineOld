@@ -2,6 +2,7 @@
 #include "Helper/MyAssert.h"
 #include "Material.h"
 #include "SkinCluster.h"
+#include "Animation.h"
 
 void Mesh::Create()
 {
@@ -34,9 +35,8 @@ void Mesh::Update(Animation* animation, float time)
 {
 	if (mSkeleton && animation)
 	{
-		mSkeleton->ApplyAnimation(*animation, time);
-		mSkeleton->Update();
-		mSkinCluster->Update(mSkeleton);
+		auto poses = animation->UpdatePoseAtTime(mSkeleton, time);
+		mSkinCluster->Update(poses);
 	}
 }
 
@@ -59,16 +59,15 @@ void Mesh::DrawInstancing(ID3D12GraphicsCommandList* cmdList,
 		mMaterial->Bind(cmdList, matRootParamIdx, texRootParamIdx);
 		if (mVBuff)
 		{
-			//mVBuff->Bind(cmdList);
 			if (mSkeleton)
 			{
 				D3D12_VERTEX_BUFFER_VIEW vbvs[2] =
 				{
 					mVBuff->GetView(),
-					mSkinCluster->mInfluence->GetView()
+					mSkinCluster->GetView()
 				};
 				cmdList->IASetVertexBuffers(0, 2, vbvs);
-				mSkinCluster->mPalette->Bind(cmdList, 5);
+				mSkinCluster->Bind(cmdList, 5);
 			}
 			else
 			{
@@ -87,5 +86,19 @@ void Mesh::DrawInstancing(ID3D12GraphicsCommandList* cmdList,
 				cmdList->DrawInstanced(static_cast<uint32_t>(mVertices.size()), instanceCount, 0, 0);
 			}
 		}
+	}
+}
+
+void Mesh::SetSkeleton(Skeleton* skeleton)
+{
+	mSkeleton = skeleton;
+	if (mSkinCluster)
+	{
+		mSkinCluster->Create(this, mSkeleton);
+	}
+	else
+	{
+		mSkinCluster = std::make_unique<SkinCluster>();
+		mSkinCluster->Create(this, mSkeleton);
 	}
 }

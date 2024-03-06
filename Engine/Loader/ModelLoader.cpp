@@ -21,16 +21,17 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 
 	Model* model = new Model();
 	std::vector<std::string> matNames;
+	// ノードを解析
 	auto node = ReadNode(scene->mRootNode);
 
+	/*// スケルトン
 	Skeleton* skeleton = nullptr;
-	if (scene->mNumAnimations > 0)
+	if (scene->mNumAnimations > 0)// アニメーションがある
 	{
-		// スケルトン
+		skeleton->SetName(modelName);// モデル名として
 		skeleton = CreateSkeleton(node);
 		mRenderer->AddSkeleton(modelName, skeleton);
-		skeleton->mName = modelName;
-	}
+	}*/
 
 	// マテリアル
 	for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex)
@@ -50,7 +51,6 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 		{
 			aiString texturePath;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath);
-			//myMaterial->mTexturePath = texturePath.C_Str();
 			myMaterial->mTexturePath = filePath + Helper::GetFileName(texturePath.C_Str());
 		}
 		// 追加
@@ -73,9 +73,6 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 		myMesh->mVertices.resize(mesh->mNumVertices);
 		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; ++vertexIndex)
 		{
-			//aiFace& face = mesh->mFaces[vertexIndex];
-			//MyAssert(face.mNumIndices <= 4);
-
 			aiVector3D& position = mesh->mVertices[vertexIndex];
 			aiVector3D& normal = mesh->mNormals[vertexIndex];
 			aiVector3D& uv = mesh->mTextureCoords[0][vertexIndex];
@@ -84,47 +81,6 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 			myMesh->mVertices[vertexIndex].mPos = Vector3(-position.x, position.y, position.z);
 			myMesh->mVertices[vertexIndex].mNormal = Vector3(-normal.x, normal.y, normal.z);
 			myMesh->mVertices[vertexIndex].mUv = Vector2(uv.x, uv.y);
-
-			//uint32_t vertCount = 0;
-			// 頂点
-			/*for (uint32_t element = 0; element < mesh->mNumVertices; ++element)
-			{
-				//uint32_t vertexIndex = face.mIndices[element];
-				aiVector3D& position = mesh->mVertices[vertexIndex];
-				aiVector3D& normal = mesh->mNormals[vertexIndex];
-				aiVector3D& uv = mesh->mTextureCoords[0][vertexIndex];
-
-				// 頂点
-				Mesh::Vertex vertex = {};
-				vertex.mPos = Vector3(position.x, position.y, position.z);
-				vertex.mNormal = Vector3(normal.x, normal.y, normal.z);
-				vertex.mUv = Vector2(uv.x, uv.y);
-				vertex.mPos.x *= -1.0f;
-				vertex.mNormal.x *= -1.0f;
-				myMesh->mVertices.emplace_back(vertex);
-
-				// インデックス
-				if (vertCount >= 3)
-				{
-					myMesh->mIndices.emplace_back(index - 1);
-					myMesh->mIndices.emplace_back(index);
-					myMesh->mIndices.emplace_back(index - 3);
-				}
-				else
-				{
-					myMesh->mIndices.emplace_back(index);
-				}
-				++vertCount;
-				++index;
-
-				// マテリアル
-				auto matIndex = mesh->mMaterialIndex;
-				auto name = matNames[matIndex];
-				myMesh->mMaterial = model->mMaterials[name];
-
-				// トランスフォーム
-				myMesh->mLocal = node.mLocal;
-			}*/
 		}
 
 		// マテリアル
@@ -156,7 +112,17 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 			}
 		}
 
-		//std::map<std::string, JointWeightData> skinClusterData;
+		// スケルトン
+		Skeleton* skeleton = nullptr;
+		if (mesh->mNumBones > 0)
+		{
+			if (scene->mNumAnimations > 0)// アニメーションがある
+			{
+				skeleton->SetName(modelName);// モデル名として
+				skeleton = CreateSkeleton(node);
+				mRenderer->AddSkeleton(modelName, skeleton);
+			}
+		}
 		// ボーン
 		for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
 		{
@@ -312,7 +278,7 @@ int32_t ModelLoader::CreateJoint(
 	joint.mName = node.mName;
 	joint.mTransform = node.mTransform;
 	joint.mLocal = node.mLocal;
-	joint.mSkeletonSpaceMat = Matrix4::kIdentity;
+	joint.mSkelSpaceMat = Matrix4::kIdentity;
 	joint.mIndex = int32_t(joints.size());
 	joint.mParent = parent;
 	joints.emplace_back(joint);

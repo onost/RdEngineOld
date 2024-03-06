@@ -202,7 +202,7 @@ void SkinnedMeshRenderer::RenderForDev(Primitive* prim)
 		std::vector<Vector3> positions(joints.size());
 		for (uint32_t i = 0; i < joints.size(); ++i)
 		{
-			positions[i] = (joints[i].mSkeletonSpaceMat * mOwner->mTransform->GetWorld()).GetTranslation();
+			positions[i] = (joints[i].mSkelSpaceMat * mOwner->mTransform->GetWorld()).GetTranslation();
 			prim->DrawSphere(positions[i], 0.2f, Color::kWhite);// radius = 0.2f
 			auto parent = joints[i].mParent;
 			if (parent)

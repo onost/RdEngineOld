@@ -6,12 +6,11 @@
 #include <assimp/postprocess.h>
 #include <string>
 #include <vector>
-#include "Graphics/Model/Skeleton.h"
 
-struct Animation;
+class Animation;
 class Model;
 class Renderer;
-struct Skeleton;
+class Skeleton;
 
 // glTFでモデルを読み込む
 class ModelLoader
@@ -25,18 +24,6 @@ public:
 		Matrix4 mLocal;
 	};
 
-	// ボーン用
-	struct VertexWeightData
-	{
-		float mWeight;
-		uint32_t mVertexIndex;
-	};
-	struct JointWeightData
-	{
-		Matrix4 mInvBindPose;
-		std::vector<VertexWeightData> mVertexWeights;
-	};
-
 	// モデル
 	static Model* LoadModel(const std::string& modelName);
 	// アニメーション
@@ -48,12 +35,11 @@ private:
 	// ノードを解析
 	static Node ReadNode(aiNode* node);
 
-	// スケルトンを作成
+	// スケルトン
 	static Skeleton* CreateSkeleton(const Node& rootNode);
-	// ジョイントを作成
+	// ジョイント
 	static int32_t CreateJoint(
-		const Node& node,
-		const std::optional<int32_t>& parent,
+		const Node& node, const std::optional<int32_t>& parent,
 		std::vector<Joint>& joints);
 
 private:

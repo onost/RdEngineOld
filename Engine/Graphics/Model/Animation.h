@@ -1,33 +1,11 @@
 #pragma once
-#include "Bone.h"
-#include <string>
-#include <unordered_map>
-#include <vector>
+#include "Quaternion.h"
+#include "Vector3.h"
 #include <map>
+#include <string>
+#include <vector>
 
-class SkeletonOld;
-
-class AnimationOld
-{
-public:
-	// アニメーションを取得
-	std::vector<Matrix4> GetPoseAtTime(SkeletonOld* skeleton, float time);
-
-	const std::string& GetName() const { return mName; }
-	uint32_t GetBoneCount() const { return mBoneCount; }
-	float GetDuration() const { return mDuration; }
-
-private:
-	std::string mName;
-	uint32_t mBoneCount;
-	float mDuration;
-	float mFrameDuration = 60.0f;
-	// vector: Frame
-	// unordered_map: Bone Name, Transform
-	std::vector<std::unordered_map<std::string, BoneTransform>> mTracks;
-};
-
-
+class Skeleton;
 
 template <class T>
 struct Keyframe
@@ -42,12 +20,6 @@ struct NodeAnimation
 	std::vector<Keyframe<Quaternion>> mRotate;
 	std::vector<Keyframe<Vector3>> mTranslate;
 };
-
-// 値を計算
-Vector3 CalcValue(
-	const std::vector<Keyframe<Vector3>>& key, float time);
-Quaternion CalcValue(
-	const std::vector<Keyframe<Quaternion>>& key, float time);
 
 /*
 template <class T>
@@ -64,9 +36,29 @@ struct NodeAnimation
 };
 */
 
-struct Animation
+// ==================================================
+// ヘルパー関数
+// ==================================================
+Vector3 UpdateKeyframeAtTime(
+	const std::vector<Keyframe<Vector3>>& key, float time);
+Quaternion UpdateKeyframeAtTime(
+	const std::vector<Keyframe<Quaternion>>& key, float time);
+
+// アニメーション
+class Animation
 {
+	friend class ModelLoader;
+public:
+	std::vector<Matrix4> UpdatePoseAtTime(Skeleton* skeleton, float time);
+
+	const std::string& GetName() const { return mName; }
+	const std::map<std::string, NodeAnimation>& GetNodeAnimations() const { return mNodeAnimations; }
+	float GetDuration() const { return mDuration; }
+
+private:
 	std::string mName;
-	float mDuration;
+	// string: アニメーション名
+	// NodeAnimation: アニメーション
 	std::map<std::string, NodeAnimation> mNodeAnimations;
+	float mDuration;
 };

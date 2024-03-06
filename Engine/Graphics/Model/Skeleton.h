@@ -1,50 +1,66 @@
 #pragma once
-#include "Bone.h"
+#include "Matrix4.h"
 #include "QuaternionTransform.h"
+#include <map>
+#include <optional>
 #include <string>
 #include <vector>
-#include <optional>
-#include <map>
-#include "Graphics/Model/Animation.h"
 
-class SkeletonOld
-{
-public:
-	// グローバルバインドポーズの逆行列を計算
-	void ComputeInvBindPose();
+class Animation;
 
-	const std::string& GetName() const { return mName; }
-	uint32_t GetBoneCount() const { return static_cast<uint32_t>(mBones.size()); }
-	const std::vector<Bone>& GetBones() const { return mBones; }
-	const std::vector<Matrix4>& GetInvBindPoses() const { return mInvBindPoses; }
-
-private:
-	std::string mName;
-	std::vector<Bone> mBones;
-	// グローバルバインドポーズの逆行列
-	std::vector<Matrix4> mInvBindPoses;
-};
-
-
-
+// ジョイント
 struct Joint
 {
 	std::string mName;
+	// ジョイントのトランスフォーム
 	QuaternionTransform mTransform;
 	Matrix4 mLocal;
-	Matrix4 mSkeletonSpaceMat;
+	Matrix4 mSkelSpaceMat;// スケルトンスペースでの行列
+	// インデックス
 	int32_t mIndex;
-	std::optional<int32_t> mParent;
-	std::vector<int32_t> mChildren;
+	std::optional<int32_t> mParent;// 親
+	std::vector<int32_t> mChildren;// 子
 };
 
+// スケルトン
 struct Skeleton
 {
-	std::string mName;
-	int32_t mRoot;
-	std::map<std::string, int32_t> mJointMap;
-	std::vector<Joint> mJoints;
+public:
+	// 頂点
+	struct VertexData
+	{
+		// 重み
+		float mWeight;
+		// 頂点のインデックス
+		uint32_t mVertexWeight;
+	};
+	// ジョイント
+	struct JointData
+	{
+		// ジョイントの逆バインドポーズ行列
+		Matrix4 mInvBindPose;
+		// 影響を与える頂点
+		std::vector<VertexData> mVertexWeights;
+	};
 
 	void Update();
-	void ApplyAnimation(const Animation& animation, float time);
+	void ApplyAnimation(const Animation* anim, float time);
+
+	const std::vector<Joint>& GetJoints() const { return mJoints; }
+	const std::map<std::string, int32_t>& GetJointMap() const { return mJointMap; }
+	void SetName(const std::string& name) { mName = name; }
+
+private:
+	std::string mName;
+	// ルートボーンのインデックス
+	int32_t mRoot;
+	// ジョイント
+	std::vector<Joint> mJoints;
+
+	// string: ジョイント名
+	// int32_t: ジョイントのインデックス
+	std::map<std::string, int32_t> mJointMap;
+	// string: ジョイント名
+	// JointData: Skinning
+	std::map<std::string, JointData> mForSkinCluster;
 };

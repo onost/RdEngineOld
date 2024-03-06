@@ -1,55 +1,60 @@
 #include "SkinCluster.h"
 #include "Mesh.h"
 #include "Skeleton.h"
-#include "Helper/MyAssert.h"
-#include "Editor.h"
-#include <format>
 
 void SkinCluster::Create(Mesh* mesh, Skeleton* skeleton)
 {
+	// 頂点
+	mInfluence = new VertexBuffer();
+	mInfluence->Create(
+		sizeof(VertexInfluence) * uint32_t(mesh->GetVertices().size()),
+		sizeof(VertexInfluence));
+
+	auto joints = skeleton->GetJoints();
+	mInvBindPoses.resize(joints.size());
 	// Matrix Palette
 	mPalette = new StructuredBuffer();
-	mPalette->Create(sizeof(Well), uint32_t(skeleton->mJoints.size()));
+	mPalette->Create(sizeof(Well), uint32_t(joints.size()));
 
-	// Vertex Influence
-	mInfluence = new VertexBuffer();
-	mInfluence->Create(sizeof(VertexInfluence) * uint32_t(mesh->mVertices.size()), sizeof(VertexInfluence));
+	auto jointMap = skeleton->GetJointMap();
 	VertexInfluence* influenceData = static_cast<VertexInfluence*>(mInfluence->GetData());
-
-	mInvBindPose.resize(skeleton->mJoints.size());
-	for (const auto& jointWeight : mesh->mSkinClusterData)
+	for (const auto& data : mesh->mSkinClusterData)
 	{
-		auto it = skeleton->mJointMap.find(jointWeight.first);
-		if (it == skeleton->mJointMap.end())
+		auto it = jointMap.find(data.first);
+		if (it == jointMap.end())
 		{
 			continue;
 		}
-		Console::Log(std::format("{}", jointWeight.first));
-
-		mInvBindPose[(*it).second] = jointWeight.second.mInvBindPose;
-		for (const auto& vertexWeight : jointWeight.second.mVertexWeights)
+		// 逆バインドポーズ行列
+		mInvBindPoses[(*it).second] = data.second.mInvBindPose;
+		// ウェイト
+		for (const auto& w : data.second.mVertexWeights)
 		{
-			VertexInfluence& currInfluence = influenceData[vertexWeight.mVertexIndex];
+			VertexInfluence& curr = influenceData[w.mVertexIndex];
 			for (uint32_t i = 0; i < kMaxInfluence; ++i)
 			{
-				if (currInfluence.mWeights[i] == 0.0f)
+				if (curr.mWeights[i] == 0.0f)
 				{
-					currInfluence.mWeights[i] = vertexWeight.mWeight;
-					currInfluence.mJointIndices[i] = (*it).second;
+					curr.mWeights[i] = w.mWeight;
+					curr.mJointIndices[i] = (*it).second;
 					//break;
 				}
-				Console::Log(std::format("{}: {}", vertexWeight.mWeight, (*it).second));
 			}
 		}
 	}
 }
 
-void SkinCluster::Update(Skeleton* skeleton)
+void SkinCluster::Update(const std::vector<Matrix4>& poses)
 {
-	for (size_t i = 0; i < skeleton->mJoints.size(); ++i)
+	// パレットを更新
+	Well* palette = static_cast<Well*>(mPalette->GetData());
+	for (size_t i = 0; i < poses.size(); ++i)
 	{
-		MyAssert(i < mInvBindPose.size());
-		Well* palette = static_cast<Well*>(mPalette->GetData());
-		palette[i].mSkeletonSpace = mInvBindPose[i] * skeleton->mJoints[i].mSkeletonSpaceMat;
+		palette[i].mSkelSpaceMat = mInvBindPoses[i] * poses[i];
 	}
+}
+
+void SkinCluster::Bind(ID3D12GraphicsCommandList* cmdList, uint32_t rootParamIdx)
+{
+	mPalette->Bind(cmdList, rootParamIdx);
 }

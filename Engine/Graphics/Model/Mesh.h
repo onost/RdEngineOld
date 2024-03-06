@@ -2,21 +2,19 @@
 #include "Core/IndexBuffer.h"
 #include "Core/VertexBuffer.h"
 #include "Matrix4.h"
+#include "SkinCluster.h"
 #include "Vector2.h"
 #include "Vector3.h"
 #include <memory>
 #include <vector>
-#include "Loader/ModelLoader.h"
-#include "SkinCluster.h"
 
+class Animation;
 class Material;
-struct SkinCluster;
 
 class Mesh
 {
 	friend class ObjLoader;
 	friend class ModelLoader;
-	friend struct SkinCluster;
 public:
 	// 頂点
 	struct Vertex
@@ -24,8 +22,6 @@ public:
 		Vector3 mPos;
 		Vector3 mNormal;
 		Vector2 mUv;
-		//uint32_t mBone[4];
-		//float mWeight[4];
 	};
 
 public:
@@ -47,26 +43,27 @@ public:
 	std::vector<Vertex>& GetVertices() { return mVertices; }
 	std::vector<uint32_t>& GetIndices() { return mIndices; }
 	Material* GetMaterial() const { return mMaterial; }
-	bool GetIsSkinned() const { return mIsSkinned; }
+	bool GetIsSkinned() const { return mSkeleton != nullptr; }
 	const Matrix4 GetLocal() const { return mLocal; }
 	Skeleton* GetSkeleton() const { return mSkeleton; }
 	// Setter
 	void SetMaterial(Material* material) { mMaterial = material; }
-	//void SetIsSkinned(bool isSkinned) { mIsSkinned = isSkinned; }
+	void SetSkeleton(Skeleton* skeleton);// cpp
 
 private:
 	std::unique_ptr<VertexBuffer> mVBuff;
 	std::unique_ptr<IndexBuffer> mIBuff;
+	// 頂点
 	std::vector<Vertex> mVertices;
+	std::unique_ptr<SkinCluster> mSkinCluster;
+	// インデックス
 	std::vector<uint32_t> mIndices;
+
+	// マテリアル
 	Material* mMaterial;
-	bool mIsSkinned;
+	// スケルトン
+	Skeleton* mSkeleton;
 
 	// トランスフォーム
 	Matrix4 mLocal;
-
-	// Skinning
-	std::map<std::string, ModelLoader::JointWeightData> mSkinClusterData;
-	Skeleton* mSkeleton;
-	std::unique_ptr<SkinCluster> mSkinCluster;
 };

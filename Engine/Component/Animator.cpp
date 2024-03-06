@@ -29,7 +29,7 @@ void Animator::Update(float deltaTime)
 		mCurrTime += deltaTime;
 		if (mIsLoop)
 		{
-			mCurrTime = std::fmod(mCurrTime, mAnimation->mDuration);
+			mCurrTime = std::fmod(mCurrTime, mAnimation->GetDuration());
 		}
 	}
 }
@@ -38,11 +38,11 @@ void Animator::OnUpdateWorld()
 {
 	if (mAnimation)
 	{
-		NodeAnimation& nodeAnim = mAnimation->mNodeAnimations.begin()->second;//
+		const NodeAnimation& nodeAnim = mAnimation->GetNodeAnimations().begin()->second;//
 		// ローカル行列を作成
-		Vector3 scale = CalcValue(nodeAnim.mScale, mCurrTime);
-		Quaternion rotate = CalcValue(nodeAnim.mRotate, mCurrTime);
-		Vector3 translate = CalcValue(nodeAnim.mTranslate, mCurrTime);
+		Vector3 scale = UpdateKeyframeAtTime(nodeAnim.mScale, mCurrTime);
+		Quaternion rotate = UpdateKeyframeAtTime(nodeAnim.mRotate, mCurrTime);
+		Vector3 translate = UpdateKeyframeAtTime(nodeAnim.mTranslate, mCurrTime);
 		Matrix4 local = Matrix4::CreateAffine(scale, rotate, translate);
 		mOwner->mTransform->SetWorld(local * mOwner->mTransform->GetWorld());
 	}
@@ -63,7 +63,7 @@ void Animator::Load(const nlohmann::json& json)
 		mAnimation = renderer->GetAnimation(animName);
 		if (mAnimation)
 		{
-			mAnimName = mAnimation->mName;
+			mAnimName = mAnimation->GetName();
 		}
 	}
 }
@@ -74,7 +74,7 @@ void Animator::Save(nlohmann::json& json)
 
 	if (mAnimation)
 	{
-		JsonHelper::SetString(json, "Animation", mAnimation->mName);
+		JsonHelper::SetString(json, "Animation", mAnimation->GetName());
 	}
 }
 
@@ -96,7 +96,7 @@ void Animator::UpdateForDev()
 			if (auto payload = ImGui::AcceptDragDropPayload("ANIM_PAYLOAD"))
 			{
 				mAnimation = *(Animation**)(payload->Data);
-				mAnimName = mAnimation->mName;
+				mAnimName = mAnimation->GetName();
 			}
 			ImGui::EndDragDropTarget();
 		}

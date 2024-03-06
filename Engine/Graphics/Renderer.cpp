@@ -332,6 +332,7 @@ Shader* Renderer::GetPs(const std::string& filePath)
 	return shader;
 }
 
+// アニメーション
 Animation* Renderer::GetAnimation(const std::string& filePath)
 {
 	Animation* anim = mAnimations.Get(filePath);
@@ -343,19 +344,15 @@ Animation* Renderer::GetAnimation(const std::string& filePath)
 	return anim;
 }
 
+// スケルトン
 void Renderer::AddSkeleton(const std::string& filePath, Skeleton* skeleton)
 {
 	mSkeletons.Add(filePath, skeleton);
 }
-
 Skeleton* Renderer::GetSkeleton(const std::string& filePath)
 {
 	return mSkeletons.Get(filePath);
 }
-
-SkeletonOld* Renderer::GetMaterial(const std::string&) { return nullptr; }
-SkeletonOld* Renderer::GetSkeletonOld(const std::string&) { return nullptr; }
-AnimationOld* Renderer::GetAnimationOld(const std::string&) { return nullptr; }
 
 // ==================================================
 // レンダラーコンポーネント
