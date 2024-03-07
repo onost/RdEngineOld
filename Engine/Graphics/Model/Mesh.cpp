@@ -1,8 +1,16 @@
 #include "Mesh.h"
+#include "Animation.h"
+#include "Skeleton.h"
 #include "Helper/MyAssert.h"
 #include "Material.h"
-#include "SkinCluster.h"
-#include "Animation.h"
+
+Mesh::~Mesh()
+{
+	if (mSkeleton)
+	{
+		delete mSkeleton;
+	}
+}
 
 void Mesh::Create()
 {
@@ -35,8 +43,8 @@ void Mesh::Update(Animation* animation, float time)
 {
 	if (mSkeleton && animation)
 	{
-		auto poses = animation->UpdatePoseAtTime(mSkeleton, time);
-		mSkinCluster->Update(poses);
+		mCurrPoses = animation->UpdatePoseAtTime(mSkeleton, time);
+		mSkinCluster->Update(mCurrPoses);
 	}
 }
 

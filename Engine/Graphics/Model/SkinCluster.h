@@ -3,6 +3,7 @@
 #include "Core/VertexBuffer.h"
 #include "Matrix4.h"
 #include <array>
+#include <memory>
 #include <vector>
 
 class Mesh;
@@ -34,7 +35,7 @@ private:
 	// 逆バインドポーズ行列
 	std::vector<Matrix4> mInvBindPoses;
 	// 頂点
-	VertexBuffer* mInfluence;
+	std::unique_ptr<VertexBuffer> mInfluence;
 	// Matrix Palette
-	StructuredBuffer* mPalette;
+	std::unique_ptr<StructuredBuffer> mPalette;
 };

@@ -22,12 +22,12 @@ void Skeleton::Update()
 	}
 }
 
-void Skeleton::ApplyAnimation(const Animation* anim, float time)
+/*void Skeleton::ApplyAnimation(const Animation* anim, float time)
 {
 	for (Joint& joint : mJoints)
 	{
-		auto nodeAnim = anim->GetNodeAnimations();
-		if (auto it = nodeAnim.find(joint.mName); it != nodeAnim.end())
+		auto nodeAnims = anim->GetNodeAnimations();
+		if (auto it = nodeAnims.find(joint.mName); it != nodeAnims.end())
 		{
 			const NodeAnimation& nodeAnim = (*it).second;
 			joint.mTransform.mScale = UpdateKeyframeAtTime(nodeAnim.mScale, time);
@@ -35,4 +35,4 @@ void Skeleton::ApplyAnimation(const Animation* anim, float time)
 			joint.mTransform.mTranslate = UpdateKeyframeAtTime(nodeAnim.mTranslate, time);
 		}
 	}
-}
+}*/

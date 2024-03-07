@@ -17,21 +17,12 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile((filePath + modelName).c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
 	//aiProcess_Triangulate: 三角形化
-	MyAssert(scene->HasMeshes());// メッシュなし
+	MyAssert(scene->HasMeshes());
 
 	Model* model = new Model();
-	std::vector<std::string> matNames;
+	std::vector<std::string> materialNames;
 	// ノードを解析
 	auto node = ReadNode(scene->mRootNode);
-
-	/*// スケルトン
-	Skeleton* skeleton = nullptr;
-	if (scene->mNumAnimations > 0)// アニメーションがある
-	{
-		skeleton->SetName(modelName);// モデル名として
-		skeleton = CreateSkeleton(node);
-		mRenderer->AddSkeleton(modelName, skeleton);
-	}*/
 
 	// マテリアル
 	for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex)
@@ -55,19 +46,16 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 		}
 		// 追加
 		model->mMaterials.emplace(myMaterial->GetName(), myMaterial);
-		matNames.emplace_back(myMaterial->GetName());
+		materialNames.emplace_back(myMaterial->GetName());
 	}
 
 	// メッシュ
 	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
 	{
 		Mesh* myMesh = new Mesh();
-		myMesh->mSkeleton = skeleton;
-		//uint32_t index = 0;
-
 		aiMesh* mesh = scene->mMeshes[meshIndex];
-		MyAssert(mesh->HasNormals());// 法線なし
-		MyAssert(mesh->HasTextureCoords(0));// UV座標なし
+		MyAssert(mesh->HasNormals());
+		MyAssert(mesh->HasTextureCoords(0));
 
 		// 面
 		myMesh->mVertices.resize(mesh->mNumVertices);
@@ -76,41 +64,40 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 			aiVector3D& position = mesh->mVertices[vertexIndex];
 			aiVector3D& normal = mesh->mNormals[vertexIndex];
 			aiVector3D& uv = mesh->mTextureCoords[0][vertexIndex];
-
 			// 頂点
 			myMesh->mVertices[vertexIndex].mPos = Vector3(-position.x, position.y, position.z);
 			myMesh->mVertices[vertexIndex].mNormal = Vector3(-normal.x, normal.y, normal.z);
 			myMesh->mVertices[vertexIndex].mUv = Vector2(uv.x, uv.y);
 		}
 
-		// マテリアル
-		auto matIndex = mesh->mMaterialIndex;
-		auto name = matNames[matIndex];
-		myMesh->mMaterial = model->mMaterials[name];
-
-		// トランスフォーム
-		myMesh->mLocal = node.mLocal;
-
-		// メッシュ
+		// インデックス
 		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex)
 		{
 			aiFace& face = mesh->mFaces[faceIndex];
 			MyAssert(face.mNumIndices <= 4);
 
-			for (uint32_t element = 0; element < face.mNumIndices; ++element)
+			for (uint32_t i = 0; i < face.mNumIndices; ++i)
 			{
-				if (element == 3)
+				if (i == 3)
 				{
-					myMesh->mIndices.emplace_back(face.mIndices[element - 1]);
-					myMesh->mIndices.emplace_back(face.mIndices[element]);
-					myMesh->mIndices.emplace_back(face.mIndices[element - 3]);
+					myMesh->mIndices.emplace_back(face.mIndices[i - 1]);
+					myMesh->mIndices.emplace_back(face.mIndices[i]);
+					myMesh->mIndices.emplace_back(face.mIndices[i - 3]);
 				}
 				else
 				{
-					myMesh->mIndices.emplace_back(face.mIndices[element]);
+					myMesh->mIndices.emplace_back(face.mIndices[i]);
 				}
 			}
 		}
+
+		// マテリアル
+		auto materialIndex = mesh->mMaterialIndex;
+		auto materialName = materialNames[materialIndex];
+		myMesh->mMaterial = model->mMaterials[materialName];
+
+		// トランスフォーム
+		myMesh->mLocal = node.mLocal;
 
 		// スケルトン
 		Skeleton* skeleton = nullptr;
@@ -118,18 +105,19 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 		{
 			if (scene->mNumAnimations > 0)// アニメーションがある
 			{
-				skeleton->SetName(modelName);// モデル名として
 				skeleton = CreateSkeleton(node);
-				mRenderer->AddSkeleton(modelName, skeleton);
+				skeleton->SetName(modelName);// モデル名として
+				//mRenderer->AddSkeleton(modelName, skeleton);
 			}
 		}
-		// ボーン
+		myMesh->mSkeleton = skeleton;
+		// ボーン（ジョイント）
 		for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
 		{
 			aiBone* bone = mesh->mBones[boneIndex];
 			std::string jointName = bone->mName.C_Str();
-			JointWeightData& jointWeightData = myMesh->mSkinClusterData[jointName];
-
+			Skeleton::JointData& jointData = skeleton->mForSkinCluster[jointName];
+			// 逆バインドポーズ行列を計算
 			aiMatrix4x4 bindPose = bone->mOffsetMatrix.Inverse();
 			aiVector3D scale;
 			aiQuaternion rotate;
@@ -139,14 +127,14 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 				Vector3(scale.x, scale.y, scale.z),
 				Quaternion(rotate.w, rotate.x, -rotate.y, -rotate.z),
 				Vector3(-translate.x, translate.y, translate.z));
-			jointWeightData.mInvBindPose = Inverse(myBindPose);
-
+			jointData.mInvBindPose = Inverse(myBindPose);
+			// Weight
 			for (uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex)
 			{
-				VertexWeightData data = {};
-				data.mWeight = bone->mWeights[weightIndex].mWeight;
-				data.mVertexIndex = bone->mWeights[weightIndex].mVertexId;
-				jointWeightData.mVertexWeights.emplace_back(data);
+				Skeleton::WeightData weightData = {};
+				weightData.mWeight = bone->mWeights[weightIndex].mWeight;
+				weightData.mVertexIndex = bone->mWeights[weightIndex].mVertexId;
+				jointData.mWeightData.emplace_back(weightData);
 			}
 		}
 
@@ -154,7 +142,6 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 		model->mMeshes.emplace_back(myMesh);
 	}
 	model->Create(modelName);
-
 	return model;
 }
 
@@ -167,11 +154,10 @@ Animation* ModelLoader::LoadAnimation(const std::string& modelName)
 		ModelCommon::kModelPath + Helper::RemoveExtension(modelName) + "/";
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile((filePath + modelName).c_str(), 0);
-	MyAssert(scene->mNumAnimations != 0);// アニメーションなし
-
-	Animation* myAnim = new Animation();
+	MyAssert(scene->mNumAnimations != 0);
 
 	aiAnimation* anim = scene->mAnimations[0];//
+	Animation* myAnim = new Animation();
 	myAnim->mName = modelName;// 名前
 	myAnim->mDuration = float(anim->mDuration / anim->mTicksPerSecond);// 秒へ
 	for (uint32_t channelIndex = 0; channelIndex < anim->mNumChannels; ++channelIndex)
@@ -270,8 +256,7 @@ Skeleton* ModelLoader::CreateSkeleton(const Node& rootNode)
 
 // ジョイントを作成
 int32_t ModelLoader::CreateJoint(
-	const Node& node,
-	const std::optional<int32_t>& parent,
+	const Node& node, const std::optional<int32_t>& parent,
 	std::vector<Joint>& joints)
 {
 	Joint joint = {};

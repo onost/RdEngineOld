@@ -23,16 +23,17 @@ struct Joint
 };
 
 // スケルトン
-struct Skeleton
+class Skeleton
 {
+	friend class ModelLoader;
 public:
 	// 頂点
-	struct VertexData
+	struct WeightData
 	{
 		// 重み
 		float mWeight;
 		// 頂点のインデックス
-		uint32_t mVertexWeight;
+		uint32_t mVertexIndex;
 	};
 	// ジョイント
 	struct JointData
@@ -40,14 +41,15 @@ public:
 		// ジョイントの逆バインドポーズ行列
 		Matrix4 mInvBindPose;
 		// 影響を与える頂点
-		std::vector<VertexData> mVertexWeights;
+		std::vector<WeightData> mWeightData;
 	};
 
 	void Update();
-	void ApplyAnimation(const Animation* anim, float time);
+	//void ApplyAnimation(const Animation* anim, float time);
 
 	const std::vector<Joint>& GetJoints() const { return mJoints; }
 	const std::map<std::string, int32_t>& GetJointMap() const { return mJointMap; }
+	const std::map<std::string, JointData>& GetForSkinCluster() const { return mForSkinCluster; }
 	void SetName(const std::string& name) { mName = name; }
 
 private:

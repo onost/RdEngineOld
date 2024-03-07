@@ -48,7 +48,7 @@ Quaternion UpdateKeyframeAtTime(
 
 std::vector<Matrix4> Animation::UpdatePoseAtTime(Skeleton* skeleton, float time)
 {
-	std::vector<Matrix4> poses(skeleton->GetJoints().size());
+	std::vector<Matrix4> poses;// (skeleton->GetJoints().size());
 	// ローカル行列
 	for (const Joint& joint : skeleton->GetJoints())
 	{
@@ -60,14 +60,30 @@ std::vector<Matrix4> Animation::UpdatePoseAtTime(Skeleton* skeleton, float time)
 			auto translate = UpdateKeyframeAtTime(nodeAnim.mTranslate, time);
 			poses.emplace_back(Matrix4::CreateAffine(scale, rotate, translate));
 		}
+		else
+		{
+			poses.emplace_back(joint.mLocal);
+		}
+	}
+	for (const Joint& joint : skeleton->GetJoints())
+	{
+		// スケルトンスペースでの行列
+		if (joint.mParent)
+		{
+			poses[joint.mIndex] = poses[joint.mIndex] * poses[*joint.mParent];
+		}
+		else
+		{
+			poses[joint.mIndex] = poses[joint.mIndex];
+		}
 	}
 	// スケルトンスペースでの行列
-	for (const Joint& joint : skeleton->GetJoints())
+	/*for (const Joint& joint : skeleton->GetJoints())
 	{
 		if (joint.mParent)
 		{
 			poses[joint.mIndex] *= poses[*joint.mParent];
 		}
-	}
+	}*/
 	return poses;
 }

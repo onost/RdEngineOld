@@ -4,11 +4,8 @@
 #include "Graphics/Model/Skeleton.h"
 #include <memory>
 
-//class AnimationOld;
-//class SkeletonOld;
-
-struct Animation;
-struct Skeleton;
+class Animation;
+class Skeleton;
 
 // スキンメッシュレンダラー
 class SkinnedMeshRenderer : public MeshRenderer
@@ -38,30 +35,12 @@ public:
 	// ヘルパー関数
 	// ==================================================
 	Type GetType() const override { return Type::SkinnedMeshRenderer; }
-	//Skeleton* GetSkeleton() const { return mSkeleton; }
 	float GetCurrTime() const { return mCurrTime; }
 	Animation* GetAnimation() const { return mCurrAnim; }
-	/*void SetSkeleton(Skeleton* skeleton)
-	{
-		mSkeleton = skeleton;
-		mSkelName = mSkeleton->mName;
-		//mPoses.resize(mSkeleton->mJoints.size());
-	}*/
 
 private:
-	void ComputePose();
-
-private:
-	//Skeleton* mSkeleton;
 	// アニメーション
 	float mCurrTime;
 	Animation* mCurrAnim;
-	//Animation* mNextAnim;
-	//std::unique_ptr<ConstantBuffer> mCBuff;
-	//std::vector<Matrix4> mCurrPoses;
-
-	// 開発用
-	std::string mSkelName;
 	std::string mAnimName;
-	//std::vector<Matrix4> mPoses;
 };

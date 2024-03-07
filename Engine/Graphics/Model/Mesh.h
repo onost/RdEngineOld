@@ -25,6 +25,8 @@ public:
 	};
 
 public:
+	~Mesh();
+
 	// 頂点、インデックスを追加
 	void AddVertex(const Vertex vertex) { mVertices.emplace_back(vertex); }
 	void AddIndex(const uint32_t index) { mIndices.emplace_back(index); }
@@ -46,6 +48,7 @@ public:
 	bool GetIsSkinned() const { return mSkeleton != nullptr; }
 	const Matrix4 GetLocal() const { return mLocal; }
 	Skeleton* GetSkeleton() const { return mSkeleton; }
+	const std::vector<Matrix4>& GetCurrPoses() const { return mCurrPoses; }
 	// Setter
 	void SetMaterial(Material* material) { mMaterial = material; }
 	void SetSkeleton(Skeleton* skeleton);// cpp
@@ -63,6 +66,7 @@ private:
 	Material* mMaterial;
 	// スケルトン
 	Skeleton* mSkeleton;
+	std::vector<Matrix4> mCurrPoses;
 
 	// トランスフォーム
 	Matrix4 mLocal;

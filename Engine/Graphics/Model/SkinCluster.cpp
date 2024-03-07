@@ -5,7 +5,7 @@
 void SkinCluster::Create(Mesh* mesh, Skeleton* skeleton)
 {
 	// 頂点
-	mInfluence = new VertexBuffer();
+	mInfluence = std::make_unique<VertexBuffer>();
 	mInfluence->Create(
 		sizeof(VertexInfluence) * uint32_t(mesh->GetVertices().size()),
 		sizeof(VertexInfluence));
@@ -13,12 +13,12 @@ void SkinCluster::Create(Mesh* mesh, Skeleton* skeleton)
 	auto joints = skeleton->GetJoints();
 	mInvBindPoses.resize(joints.size());
 	// Matrix Palette
-	mPalette = new StructuredBuffer();
+	mPalette = std::make_unique<StructuredBuffer>();
 	mPalette->Create(sizeof(Well), uint32_t(joints.size()));
 
 	auto jointMap = skeleton->GetJointMap();
 	VertexInfluence* influenceData = static_cast<VertexInfluence*>(mInfluence->GetData());
-	for (const auto& data : mesh->mSkinClusterData)
+	for (const auto& data : skeleton->GetForSkinCluster())
 	{
 		auto it = jointMap.find(data.first);
 		if (it == jointMap.end())
@@ -28,7 +28,7 @@ void SkinCluster::Create(Mesh* mesh, Skeleton* skeleton)
 		// 逆バインドポーズ行列
 		mInvBindPoses[(*it).second] = data.second.mInvBindPose;
 		// ウェイト
-		for (const auto& w : data.second.mVertexWeights)
+		for (const auto& w : data.second.mWeightData)
 		{
 			VertexInfluence& curr = influenceData[w.mVertexIndex];
 			for (uint32_t i = 0; i < kMaxInfluence; ++i)

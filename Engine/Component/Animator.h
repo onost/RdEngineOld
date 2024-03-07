@@ -5,7 +5,7 @@
 #include "Vector3.h"
 #include <vector>
 
-struct Animation;
+class Animation;
 
 class Animator : public Component
 {
