@@ -333,15 +333,13 @@ Shader* Renderer::GetPs(const std::string& filePath)
 }
 
 // アニメーション
+void Renderer::AddAnimation(const std::string& filePath, Animation* animation)
+{
+	mAnimations.Add(filePath, animation);
+}
 Animation* Renderer::GetAnimation(const std::string& filePath)
 {
-	Animation* anim = mAnimations.Get(filePath);
-	if (!anim)
-	{
-		anim = ModelLoader::LoadAnimation(filePath);
-		mAnimations.Add(filePath, anim);
-	}
-	return anim;
+	return mAnimations.Get(filePath);
 }
 
 // スケルトン

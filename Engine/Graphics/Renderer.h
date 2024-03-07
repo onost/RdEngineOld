@@ -44,6 +44,7 @@ public:
 	// ==================================================
 	Texture* GetTexture(const std::string& filePath);
 	Model* GetModel(const std::string& filePath);
+	void AddAnimation(const std::string& filePath, Animation* animation);
 	Animation* GetAnimation(const std::string& filePath);
 	Shader* GetVs(const std::string& filePath);
 	Shader* GetGs(const std::string& filePath);

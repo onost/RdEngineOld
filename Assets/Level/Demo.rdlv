@@ -968,7 +968,7 @@
                     "Type": 6
                 },
                 {
-                    "Animation": "AnimCube.gltf",
+                    "Animation": "AnimCube.gltf/CubeAction",
                     "Order": 100,
                     "Type": 14
                 }
@@ -1000,7 +1000,7 @@
                     "Type": 10
                 },
                 {
-                    "Curr Anim": "Walking.gltf",
+                    "Curr Anim": "Walking.gltf/Armature|mixamo.com|Layer0",
                     "Is Visible": true,
                     "Model": "Walking.gltf",
                     "Order": 100,

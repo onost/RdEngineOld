@@ -29,7 +29,7 @@ public:
 	// モデル
 	static Model* LoadModel(const std::string& modelName);
 	// アニメーション
-	static Animation* LoadAnimation(const std::string& modelName);
+	static void LoadAnimation(const std::string& modelName);
 
 	static void SetRenderer(Renderer* renderer) { mRenderer = renderer; }
 

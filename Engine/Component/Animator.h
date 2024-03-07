@@ -30,6 +30,7 @@ public:
 	// ヘルパー関数
 	// ==================================================
 	Type GetType() const override { return Type::Animator; }
+	void SetAnimation(Animation* anim);
 
 private:
 	Animation* mAnimation;

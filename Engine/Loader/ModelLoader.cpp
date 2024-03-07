@@ -142,11 +142,15 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 		model->mMeshes.emplace_back(myMesh);
 	}
 	model->Create(modelName);
+
+	// アニメーション
+	LoadAnimation(modelName);
+
 	return model;
 }
 
 // アニメーション
-Animation* ModelLoader::LoadAnimation(const std::string& modelName)
+void ModelLoader::LoadAnimation(const std::string& modelName)
 {
 	Helper::WriteToConsole(std::format("Create: \"{}\"\n", modelName.c_str()));
 
@@ -154,45 +158,48 @@ Animation* ModelLoader::LoadAnimation(const std::string& modelName)
 		ModelCommon::kModelPath + Helper::RemoveExtension(modelName) + "/";
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile((filePath + modelName).c_str(), 0);
-	MyAssert(scene->mNumAnimations != 0);
+	//MyAssert(scene->mNumAnimations != 0);
 
-	aiAnimation* anim = scene->mAnimations[0];//
-	Animation* myAnim = new Animation();
-	myAnim->mName = modelName;// 名前
-	myAnim->mDuration = float(anim->mDuration / anim->mTicksPerSecond);// 秒へ
-	for (uint32_t channelIndex = 0; channelIndex < anim->mNumChannels; ++channelIndex)
+	for (uint32_t animIndex = 0; animIndex != scene->mNumAnimations; ++animIndex)
 	{
-		aiNodeAnim* nodeAnim = anim->mChannels[channelIndex];
-		NodeAnimation& myNodeAnim = myAnim->mNodeAnimations[nodeAnim->mNodeName.C_Str()];
-		// Scale
-		for (uint32_t keyIndex = 0; keyIndex < nodeAnim->mNumScalingKeys; ++keyIndex)
+		aiAnimation* anim = scene->mAnimations[animIndex];//
+		Animation* myAnim = new Animation();
+		myAnim->mName = modelName + "/" + anim->mName.C_Str();// 名前
+		myAnim->mDuration = float(anim->mDuration / anim->mTicksPerSecond);// 秒へ
+		for (uint32_t channelIndex = 0; channelIndex < anim->mNumChannels; ++channelIndex)
 		{
-			aiVectorKey& key = nodeAnim->mScalingKeys[keyIndex];
-			Keyframe<Vector3> myKey;
-			myKey.mTime = float(key.mTime / anim->mTicksPerSecond);
-			myKey.mValue = Vector3(key.mValue.x, key.mValue.y, key.mValue.z);
-			myNodeAnim.mScale.emplace_back(myKey);
+			aiNodeAnim* nodeAnim = anim->mChannels[channelIndex];
+			NodeAnimation& myNodeAnim = myAnim->mNodeAnimations[nodeAnim->mNodeName.C_Str()];
+			// Scale
+			for (uint32_t keyIndex = 0; keyIndex < nodeAnim->mNumScalingKeys; ++keyIndex)
+			{
+				aiVectorKey& key = nodeAnim->mScalingKeys[keyIndex];
+				Keyframe<Vector3> myKey;
+				myKey.mTime = float(key.mTime / anim->mTicksPerSecond);
+				myKey.mValue = Vector3(key.mValue.x, key.mValue.y, key.mValue.z);
+				myNodeAnim.mScale.emplace_back(myKey);
+			}
+			// Rotation
+			for (uint32_t keyIndex = 0; keyIndex < nodeAnim->mNumRotationKeys; ++keyIndex)
+			{
+				aiQuatKey& key = nodeAnim->mRotationKeys[keyIndex];
+				Keyframe<Quaternion> myKey;
+				myKey.mTime = float(key.mTime / anim->mTicksPerSecond);
+				myKey.mValue = Quaternion(key.mValue.w, key.mValue.x, -key.mValue.y, -key.mValue.z);
+				myNodeAnim.mRotate.emplace_back(myKey);
+			}
+			// Position
+			for (uint32_t keyIndex = 0; keyIndex < nodeAnim->mNumPositionKeys; ++keyIndex)
+			{
+				aiVectorKey& key = nodeAnim->mPositionKeys[keyIndex];
+				Keyframe<Vector3> myKey;
+				myKey.mTime = float(key.mTime / anim->mTicksPerSecond);
+				myKey.mValue = Vector3(-key.mValue.x, key.mValue.y, key.mValue.z);
+				myNodeAnim.mTranslate.emplace_back(myKey);
+			}
 		}
-		// Rotation
-		for (uint32_t keyIndex = 0; keyIndex < nodeAnim->mNumRotationKeys; ++keyIndex)
-		{
-			aiQuatKey& key = nodeAnim->mRotationKeys[keyIndex];
-			Keyframe<Quaternion> myKey;
-			myKey.mTime = float(key.mTime / anim->mTicksPerSecond);
-			myKey.mValue = Quaternion(key.mValue.w, key.mValue.x, -key.mValue.y, -key.mValue.z);
-			myNodeAnim.mRotate.emplace_back(myKey);
-		}
-		// Position
-		for (uint32_t keyIndex = 0; keyIndex < nodeAnim->mNumPositionKeys; ++keyIndex)
-		{
-			aiVectorKey& key = nodeAnim->mPositionKeys[keyIndex];
-			Keyframe<Vector3> myKey;
-			myKey.mTime = float(key.mTime / anim->mTicksPerSecond);
-			myKey.mValue = Vector3(-key.mValue.x, key.mValue.y, key.mValue.z);
-			myNodeAnim.mTranslate.emplace_back(myKey);
-		}
+		mRenderer->AddAnimation(myAnim->GetName(), myAnim);
 	}
-	return myAnim;
 }
 
 // ノードを解析

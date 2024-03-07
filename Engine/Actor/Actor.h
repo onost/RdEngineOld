@@ -32,7 +32,8 @@ public:
 		DemoCamera,
 		DemoEnemy,
 		Player,
-		PlayerCamera
+		PlayerCamera,
+		StarPiece
 		//Attractor
 		//
 	};

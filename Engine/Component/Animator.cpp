@@ -112,3 +112,16 @@ void Animator::UpdateForDev()
 		ImGui::TreePop();
 	}
 }
+
+// ==================================================
+// ヘルパー関数
+// ==================================================
+void Animator::SetAnimation(Animation* anim)
+{
+	if (!anim)
+	{
+		return;
+	}
+	mAnimation = anim;
+	mCurrTime = 0.0f;
+}
