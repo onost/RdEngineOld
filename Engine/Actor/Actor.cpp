@@ -12,6 +12,7 @@
 #include "Game/Attractor.h"
 #include "Game/PlayerCamera.h"
 #include "Game/StarPiece.h"
+#include "Game/StarPieceManager.h"
 
 const std::vector<std::function<Actor* (Scene*)>> Actor::kCreateFuncs =
 {
@@ -24,7 +25,8 @@ const std::vector<std::function<Actor* (Scene*)>> Actor::kCreateFuncs =
 	&Actor::Create<DemoEnemy>,
 	&Actor::Create<Player>,
 	&Actor::Create<PlayerCamera>,
-	&Actor::Create<StarPiece>
+	&Actor::Create<StarPiece>,
+	&Actor::Create<StarPieceManager>
 	//&Actor::Create<Attractor>
 	//
 };
@@ -209,6 +211,23 @@ void Actor::OnTriggerExit(Actor* other)
 		{
 			comp->OnTriggerExit(other);
 		}
+	}
+}
+
+void Actor::RemoveDeadActor()
+{
+	// 死んだアクターを削除
+	std::vector<Actor*> deadActors;
+	for (auto& child : mChildren)
+	{
+		if (child->GetState() == Actor::State::kDead)
+		{
+			deadActors.emplace_back(child);
+		}
+	}
+	for (auto& actor : deadActors)
+	{
+		delete actor;
 	}
 }
 

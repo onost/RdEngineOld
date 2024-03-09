@@ -16,7 +16,7 @@ GravityBody::GravityBody(Actor* owner)
 	, mAttractor(nullptr)
 	, mMass(1.0f)
 	, mForce(0.0f)
-	, mNormal(Vector3::kZero)
+	, mNormal(Vector3(0.0f, 1.0f, 0.0f))
 	, mIsGround(false)
 	, mPushDist(1.0f)
 	, mGroundDist(0.3f)
@@ -55,6 +55,8 @@ void GravityBody::Update(float deltaTime)
 				mIsGround = true;
 				mForce = 0.0f;
 				mOwner->mTransform->mPosition = info.mPoint + mNormal * mPushDist;
+
+				//mCurrNormal = info.mNormal;
 			}
 		}
 	}
@@ -115,6 +117,7 @@ void GravityBody::Load(const nlohmann::json& json)
 	JsonHelper::GetFloat(json, "Mass", mMass);
 	JsonHelper::GetFloat(json, "Push Dist", mPushDist);
 	JsonHelper::GetFloat(json, "Ground Dist", mGroundDist);
+	JsonHelper::GetVector3(json, "Normal", mNormal);
 }
 
 void GravityBody::Save(nlohmann::json& json)
@@ -122,6 +125,7 @@ void GravityBody::Save(nlohmann::json& json)
 	JsonHelper::SetFloat(json, "Mass", mMass);
 	JsonHelper::SetFloat(json, "Push Dist", mPushDist);
 	JsonHelper::SetFloat(json, "Ground Dist", mGroundDist);
+	JsonHelper::SetVector3(json, "Normal", mNormal);
 }
 
 // ==================================================

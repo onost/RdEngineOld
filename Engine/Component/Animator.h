@@ -30,12 +30,16 @@ public:
 	// ヘルパー関数
 	// ==================================================
 	Type GetType() const override { return Type::Animator; }
+	const std::string& GetAnimName() const { return mAnimation->GetName(); }
+	bool GetIsEnd() const { return mIsEnd; }
 	void SetAnimation(Animation* anim);
+	void SetIsLoop(bool isLoop) { mIsLoop = isLoop; }
 
 private:
 	Animation* mAnimation;
 	float mCurrTime;
 	bool mIsLoop;
+	bool mIsEnd;
 	// 開発用
 	std::string mAnimName;
 };

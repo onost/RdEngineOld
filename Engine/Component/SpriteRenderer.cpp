@@ -74,6 +74,9 @@ void SpriteRenderer::Load(const nlohmann::json& json)
 	Color color;
 	JsonHelper::GetColor(json, "Color", color);
 	mSprite->SetColor(color);
+
+	auto renderer = mOwner->GetScene()->GetRenderer();
+	renderer->SortSprites(this);
 }
 
 void SpriteRenderer::Save(nlohmann::json& json)

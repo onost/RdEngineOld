@@ -85,6 +85,11 @@ void Scene::Update(float deltaTime)
 		delete actor;
 	}
 
+	for (uint32_t i = 0; i < mActors.size(); ++i)
+	{
+		mActors[i]->RemoveDeadActor();
+	}
+
 	//TestCollision();//
 }
 
@@ -227,6 +232,12 @@ void Scene::UpdateForDev()
 		Actor::kCreateFuncs[uint32_t(mActorType)](this);
 	}
 	ImGui::Separator();
+	ImGui::InputText("Prefab Name", &mPrefabName);
+	if (ImGui::Button("Load"))
+	{
+		LevelLoader::LoadPrefab(this, "Assets/Prefab/" + mPrefabName + ".rdpr");
+	}
+	ImGui::Separator();
 	// アクターツリー
 	ImGui::Text(std::format("Actor Count: {}", mActors.size()).c_str());
 	ImGui::SetNextItemOpen(true, ImGuiCond_Once);
@@ -266,6 +277,10 @@ void Scene::UpdateForDev()
 		if (ImGui::Button("Remove##1"))
 		{
 			delete mActorForDev;
+		}
+		if (ImGui::Button("Save Prefab"))
+		{
+			LevelLoader::SavePrefab(mActorForDev, "Assets/Prefab/" + mActorForDev->GetName() + ".rdpr");
 		}
 	}
 	ImGui::End();

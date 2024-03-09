@@ -73,6 +73,7 @@ void ParticleCommon::Initialize(Renderer* renderer)
 	// メッシュパーティクル用
 	mModelPsos[uint32_t(ModelCommon::Type::Default)] = mPsos[uint32_t(Blend::None)];
 	mModelPsos[uint32_t(ModelCommon::Type::Default)].SetPixelShader(defaultPs->Get());
+	mModelPsos[uint32_t(ModelCommon::Type::Default)].SetBlendDesc(GraphicsCommon::gBlendNormal);
 	mModelPsos[uint32_t(ModelCommon::Type::Default)].SetDepthStencilDesc(GraphicsCommon::gDepthEnable);
 	mModelPsos[uint32_t(ModelCommon::Type::Unlight)] = mModelPsos[uint32_t(ModelCommon::Type::Default)];
 	mModelPsos[uint32_t(ModelCommon::Type::Unlight)].SetPixelShader(unlightPs->Get());

@@ -184,6 +184,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Game\Player.cpp" />
     <ClCompile Include="Game\Game\PlayerCamera.cpp" />
     <ClCompile Include="Game\Game\StarPiece.cpp" />
+    <ClCompile Include="Game\Game\StarPieceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Audio\Audio.h" />
@@ -284,6 +285,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Game\Player.h" />
     <ClInclude Include="Game\Game\PlayerCamera.h" />
     <ClInclude Include="Game\Game\StarPiece.h" />
+    <ClInclude Include="Game\Game\StarPieceManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="External\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

@@ -9,6 +9,7 @@ class StarPiece : public Actor
 {
 public:
 	StarPiece(Scene* scene);
+	void ActorUpdate(float deltaTime) override;
 	void ActorOnTriggerEnter(Actor* other) override;
 	Type GetType() const { return Type::StarPiece; }
 

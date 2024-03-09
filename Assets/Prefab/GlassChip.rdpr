@@ -1,0 +1,122 @@
+{
+    "Components": [
+        {
+            "Position": [
+                55.0,
+                105.0,
+                0.0
+            ],
+            "Rotation": [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Type": 10
+        },
+        {
+            "Amount": 20,
+            "Box Max": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Box Min": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Delay": 0.8999999761581421,
+            "Frequency": 0.05000000074505806,
+            "Init Accel Max": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Init Accel Min": [
+                0.0,
+                -2.0,
+                0.0
+            ],
+            "Init EColor Max": [
+                1.0,
+                1.0,
+                1.0,
+                0.9960784316062927
+            ],
+            "Init EColor Min": [
+                1.0,
+                1.0,
+                1.0,
+                0.9960784316062927
+            ],
+            "Init ERot Max": [
+                2.0,
+                2.0,
+                2.0
+            ],
+            "Init ERot Min": [
+                -2.0,
+                -2.0,
+                -2.0
+            ],
+            "Init EScale Max": 0.0,
+            "Init EScale Min": 0.0,
+            "Init Life Max": 1.0,
+            "Init Life Min": 0.5,
+            "Init SColor Max": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Init SColor Min": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Init SRot Max": [
+                2.0,
+                2.0,
+                2.0
+            ],
+            "Init SRot Min": [
+                -2.0,
+                -2.0,
+                -2.0
+            ],
+            "Init SScale Max": 2.0,
+            "Init SScale Min": 1.0,
+            "Init Vel Max": [
+                40.0,
+                40.0,
+                40.0
+            ],
+            "Init Vel Min": [
+                -40.0,
+                -40.0,
+                -40.0
+            ],
+            "Is Billboard": false,
+            "Is Loop": false,
+            "Is Visible": true,
+            "Life": 1.0,
+            "Model": "GlassChip.gltf",
+            "Order": 100,
+            "Radius": 4.0,
+            "Shader Type": 0,
+            "Shape": 2,
+            "Type": 11
+        }
+    ],
+    "Name": "GlassChip",
+    "Order": 100,
+    "State": 0,
+    "Type": 0
+}

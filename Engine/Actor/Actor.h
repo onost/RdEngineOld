@@ -33,7 +33,8 @@ public:
 		DemoEnemy,
 		Player,
 		PlayerCamera,
-		StarPiece
+		StarPiece,
+		StarPieceManager
 		//Attractor
 		//
 	};
@@ -53,6 +54,8 @@ public:
 	void OnTriggerEnter(Actor* other);
 	void OnTriggerStay(Actor* other);
 	void OnTriggerExit(Actor* other);
+
+	void RemoveDeadActor();
 
 	// ==================================================
 	// json

@@ -18,6 +18,9 @@ public:
 	static bool LoadScene(Scene* scene, const std::string& filePath);
 	static bool SaveScene(Scene* scene, const std::string& filePath);
 
+	static bool LoadPrefab(Scene* scene, const std::string& filePath);
+	static bool SavePrefab(Actor* actor, const std::string& filePath);
+
 private:
 	// ロード
 	static void LoadRenderer(const nlohmann::json& json, Renderer* renderer);

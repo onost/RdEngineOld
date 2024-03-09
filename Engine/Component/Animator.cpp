@@ -12,6 +12,7 @@ Animator::Animator(Actor* owner)
 	, mAnimation(nullptr)
 	, mCurrTime(0.0f)
 	, mIsLoop(true)
+	, mIsEnd(false)
 	, mAnimName()
 {
 
@@ -30,6 +31,10 @@ void Animator::Update(float deltaTime)
 		if (mIsLoop)
 		{
 			mCurrTime = std::fmod(mCurrTime, mAnimation->GetDuration());
+		}
+		else if (mCurrTime >= mAnimation->GetDuration())
+		{
+			mIsEnd = true;
 		}
 	}
 }
@@ -124,4 +129,6 @@ void Animator::SetAnimation(Animation* anim)
 	}
 	mAnimation = anim;
 	mCurrTime = 0.0f;
+	//
+	mAnimName = mAnimation->GetName();
 }

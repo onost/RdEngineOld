@@ -69,4 +69,5 @@ protected:
 	// 開発用
 	Actor* mActorForDev;
 	Actor::Type mActorType;
+	std::string mPrefabName;
 };

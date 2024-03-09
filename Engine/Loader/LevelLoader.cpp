@@ -101,6 +101,74 @@ bool LevelLoader::SaveScene(Scene* scene, const std::string& fileName)
 }
 
 // ==================================================
+// Prefab
+// ==================================================
+
+bool LevelLoader::LoadPrefab(Scene* scene, const std::string& filePath)
+{
+	std::ifstream file(filePath.c_str());
+	if (!file)
+	{
+		return false;
+	}
+	nlohmann::json data;
+	file >> data;
+
+	// -------------------- ここから --------------------
+
+	uint32_t type = 0;
+	JsonHelper::GetUint(data, "Type", type);
+	// アクターを作成
+	Actor* actor = Actor::kCreateFuncs[type](scene);
+	actor->Load(data);
+
+	// 子アクター
+	if (data.contains("Children"))
+	{
+		LoadChildren(data["Children"], actor);
+	}
+	// コンポーネント
+	if (data.contains("Components"))
+	{
+		LoadComponents(data["Components"], actor);
+	}
+
+	// -------------------- ここまで --------------------
+
+	return true;
+}
+
+bool LevelLoader::SavePrefab(Actor* actor, const std::string& filePath)
+{
+	std::ofstream file(filePath.c_str());
+	if (!file)
+	{
+		return false;
+	}
+	nlohmann::json data;
+
+	// -------------------- ここから --------------------
+
+	uint32_t type = static_cast<uint32_t>(actor->GetType());
+	JsonHelper::SetUint(data, "Type", type);
+	// セーブ
+	actor->Save(data);
+	// 子アクター
+	if (actor->GetChildren().size() > 0)
+	{
+		SaveChildren(data["Children"], actor);
+	}
+	// コンポーネント
+	SaveComponents(data["Components"], actor);
+
+	// -------------------- ここまで --------------------
+
+	file << data.dump(4) << std::endl;
+	//file << data << std::endl;
+	return true;
+}
+
+// ==================================================
 // ロード
 // ==================================================
 
