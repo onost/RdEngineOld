@@ -31,6 +31,16 @@ void LightManager::Initialize()
 		mSpotLights[i].mInner = cosf(MyMath::ToRadians(20.0f));
 		mSpotLights[i].mOuter = cosf(MyMath::ToRadians(30.0f));
 	}
+	for (uint32_t i = 0; i < kCircleShadowCount; ++i)
+	{
+		mCircleShadows[i].mDirection = Vector3(0.0f, -1.0f, 0.0f);
+		mCircleShadows[i].mIntensity = 0.0f;
+		mCircleShadows[i].mPosition = Vector3(0.0f, 5.0f, 0.0f);
+		mCircleShadows[i].mRadius = 10.0f;
+		mCircleShadows[i].mDecay = 1.0f;
+		mCircleShadows[i].mInner = cosf(MyMath::ToRadians(20.0f));
+		mCircleShadows[i].mOuter = cosf(MyMath::ToRadians(30.0f));
+	}
 
 	mCBuff = std::make_unique<ConstantBuffer>();
 	mCBuff->Create(sizeof(Constant));
@@ -59,6 +69,15 @@ void LightManager::Update()
 		// Cos
 		data->mSpotLights[i].mInner = cosf(MyMath::ToRadians(mSpotLights[i].mInner));
 		data->mSpotLights[i].mOuter = cosf(MyMath::ToRadians(mSpotLights[i].mOuter));
+	}
+	// Circle Shadow
+	for (uint32_t i = 0; i < kSpotLightCount; ++i)
+	{
+		data->mCircleShadows[i] = mCircleShadows[i];
+		data->mCircleShadows[i].mDirection.Normalize();
+		// Cos
+		data->mCircleShadows[i].mInner = cosf(MyMath::ToRadians(mCircleShadows[i].mInner));
+		data->mCircleShadows[i].mOuter = cosf(MyMath::ToRadians(mCircleShadows[i].mOuter));
 	}
 }
 
@@ -105,6 +124,18 @@ void LightManager::LoadLevel(const nlohmann::json& json)
 		JsonHelper::GetFloat(data[i], "Inner", mSpotLights[i].mInner);
 		JsonHelper::GetFloat(data[i], "Outer", mSpotLights[i].mOuter);
 	}
+	// Circle Shadow
+	for (uint32_t i = 0; i < kCircleShadowCount; ++i)
+	{
+		const nlohmann::json& data = json["Circle Shadow"];
+		JsonHelper::GetVector3(data[i], "Direction", mCircleShadows[i].mDirection);
+		JsonHelper::GetFloat(data[i], "Intensity", mCircleShadows[i].mIntensity);
+		JsonHelper::GetVector3(data[i], "Position", mCircleShadows[i].mPosition);
+		JsonHelper::GetFloat(data[i], "Radius", mCircleShadows[i].mRadius);
+		JsonHelper::GetFloat(data[i], "Decay", mCircleShadows[i].mDecay);
+		JsonHelper::GetFloat(data[i], "Inner", mCircleShadows[i].mInner);
+		JsonHelper::GetFloat(data[i], "Outer", mCircleShadows[i].mOuter);
+	}
 }
 
 void LightManager::SaveLevel(nlohmann::json& json)
@@ -139,6 +170,18 @@ void LightManager::SaveLevel(nlohmann::json& json)
 		JsonHelper::SetFloat(data[i], "Decay", mSpotLights[i].mDecay);
 		JsonHelper::SetFloat(data[i], "Inner", mSpotLights[i].mInner);
 		JsonHelper::SetFloat(data[i], "Outer", mSpotLights[i].mOuter);
+	}
+	// Circle Shadow
+	for (uint32_t i = 0; i < kCircleShadowCount; ++i)
+	{
+		nlohmann::json& data = json["Circle Shadow"];
+		JsonHelper::SetVector3(data[i], "Direction", mCircleShadows[i].mDirection);
+		JsonHelper::SetFloat(data[i], "Intensity", mCircleShadows[i].mIntensity);
+		JsonHelper::SetVector3(data[i], "Position", mCircleShadows[i].mPosition);
+		JsonHelper::SetFloat(data[i], "Radius", mCircleShadows[i].mRadius);
+		JsonHelper::SetFloat(data[i], "Decay", mCircleShadows[i].mDecay);
+		JsonHelper::SetFloat(data[i], "Inner", mCircleShadows[i].mInner);
+		JsonHelper::SetFloat(data[i], "Outer", mCircleShadows[i].mOuter);
 	}
 }
 
@@ -188,6 +231,22 @@ void LightManager::UpdateForDev()
 			ImGui::DragFloat("Decay", &mSpotLights[i].mDecay, 0.001f, 0.001f, 10.0f);
 			ImGui::DragFloat("Inner", &mSpotLights[i].mInner, 0.01f, 0.0f, mSpotLights[i].mOuter);
 			ImGui::DragFloat("Outer", &mSpotLights[i].mOuter, 0.01f, mSpotLights[i].mInner, 180.0f);
+			ImGui::TreePop();
+		}
+	}
+	ImGui::Separator();
+	// Spot Light
+	for (uint32_t i = 0; i < kCircleShadowCount; ++i)
+	{
+		if (ImGui::TreeNode(std::format("Circle Shadow [ {} ]", i).c_str()))
+		{
+			ImGui::DragFloat3("Direction", &mCircleShadows[i].mDirection.x, 0.01f);
+			ImGui::DragFloat("Intensity", &mCircleShadows[i].mIntensity, 0.001f, 0.0f, 100.0f);
+			ImGui::DragFloat3("Position", &mCircleShadows[i].mPosition.x, 0.01f);
+			ImGui::DragFloat("Radius", &mCircleShadows[i].mRadius, 0.01f, 0.0f, 1000.0f);
+			ImGui::DragFloat("Decay", &mCircleShadows[i].mDecay, 0.001f, 0.001f, 10.0f);
+			ImGui::DragFloat("Inner", &mCircleShadows[i].mInner, 0.01f, 0.0f, mCircleShadows[i].mOuter);
+			ImGui::DragFloat("Outer", &mCircleShadows[i].mOuter, 0.01f, mCircleShadows[i].mInner, 180.0f);
 			ImGui::TreePop();
 		}
 	}

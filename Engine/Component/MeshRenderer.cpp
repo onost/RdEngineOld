@@ -166,6 +166,12 @@ void MeshRenderer::UpdateModel()
 			{
 				mMatForDev->SetSpecular(spec);
 			}
+			// Is Shadow Cast
+			bool isShadowCast = mMatForDev->GetIsShadowCast();
+			if (ImGui::Checkbox("Is Shadow Cast", &isShadowCast))
+			{
+				mMatForDev->SetIsShadowCast(isShadowCast);
+			}
 			// Is Lighting
 			/*bool isLighting = mMatForDev->GetIsLighting();
 			if (ImGui::Checkbox("Is Lighting", &isLighting))

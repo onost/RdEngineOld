@@ -34,6 +34,7 @@ public:
 	float GetMass() const { return mMass; }
 	bool GetIsGround() const { return mIsGround; }
 	const Vector3& GetNormal() const { return mNormal; }
+	const Vector3& GetCurrNormal() const { return mCurrNormal; }
 	void SetForce(float force) { mForce = force; }
 
 private:

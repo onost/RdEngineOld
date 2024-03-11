@@ -3,6 +3,7 @@
 static const uint32_t kDirectionalLightCount = 5;
 static const uint32_t kPointLightCount = 5;
 static const uint32_t kSpotLightCount = 5;
+static const uint32_t kCircleShadowCount = 5;
 
 struct DirectionalLight
 {
@@ -32,11 +33,23 @@ struct SpotLight
     float cosOuter;
 };
 
+struct CircleShadow
+{
+    float32_t3 direction;
+    float intensity;
+    float32_t3 position;
+    float radius;
+    float decay;
+    float cosInner;
+    float cosOuter;
+};
+
 cbuffer cbuff3 : register(b3)
 {
     DirectionalLight gDirectionalLights[kDirectionalLightCount];
     PointLight gPointLights[kPointLightCount];
     SpotLight gSpotLights[kSpotLightCount];
+    CircleShadow gCircleShadows[kCircleShadowCount];
 }
 
 
@@ -114,6 +127,23 @@ float32_t3 CalcSpotLight(float32_t3 baseColor, float shininess, float32_t3 wpos,
         float32_t3 specular = float32_t3(1.0f, 1.0f, 1.0f) * gSpotLights[i].color.rgb * specularPow * factor * gSpotLights[i].intensity;
 
         outColor += diffuse + specular;
+    }
+    return outColor;
+}
+
+// Circle Shadow
+float32_t3 CalcCircleShadow(float32_t3 wpos, float32_t3 toEye)
+{
+    float32_t3 outColor = float32_t3(0.0f, 0.0f, 0.0f);
+    for (uint32_t i = 0; i < kCircleShadowCount; ++i)
+    {
+        float32_t3 direction = normalize(wpos - gCircleShadows[i].position);
+        float distance = length(gCircleShadows[i].position - wpos);
+        float factor = pow(saturate(-distance / gCircleShadows[i].radius + 1.0f), gCircleShadows[i].decay);
+        float angle = dot(direction, gCircleShadows[i].direction);
+        factor *= saturate((angle - gCircleShadows[i].cosOuter) / (gCircleShadows[i].cosInner - gCircleShadows[i].cosOuter));
+
+        outColor -= factor * gCircleShadows[i].intensity;
     }
     return outColor;
 }

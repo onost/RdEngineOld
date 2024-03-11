@@ -29,6 +29,10 @@ Player::Player(Scene* scene)
 	// メッシュ
 	auto mr = new MeshRenderer(this);
 	mr->SetModel(mScene->GetRenderer()->GetModel("Player.obj"));
+	for (auto m : mr->GetModel()->GetMaterials())
+	{
+		m.second->SetIsShadowCast(false);
+	}
 	// コライダー
 	auto sc = new SphereCollider(this);
 	sc->SetAttribute(Collider::Allies);// 味方
@@ -113,6 +117,12 @@ void Player::ActorUpdate(float deltaTime)
 	Vector3 f = Vector3(0.0f, 0.0f, 1.0f) * mTransform->mRotation;// forward
 	mTransform->mPosition += r * mVelocity.x * deltaTime;
 	mTransform->mPosition += f * mVelocity.z * deltaTime;
+
+	auto light = mScene->GetRenderer()->GetLightManager();
+	auto normal = mGravityBody->GetCurrNormal();
+	light->SetCircleShadowDirection(0, -normal);
+	light->SetCircleShadowPosition(0, mTransform->GetWorld().GetTranslation() + normal * 10.0f);
+	light->SetCircleShadowIntensity(0, 0.5f);
 }
 
 void Player::ActorOnCollisionStay(Actor* /*other*/, CollisionInfo* info)

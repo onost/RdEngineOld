@@ -10,6 +10,7 @@ struct Material
 {
     float32_t4 baseColor;
     float32_t1 shininess;
+    bool isShadowCast;
 };
 
 ConstantBuffer<Material> gMaterial : register(b2);
@@ -28,6 +29,10 @@ PsOutput main(VsOutput input)
         gMaterial.baseColor.rgb, gMaterial.shininess, input.wpos, input.wnorm, toEye); // Point Light
     lightColor += CalcSpotLight(
         gMaterial.baseColor.rgb, gMaterial.shininess, input.wpos, input.wnorm, toEye); // Spot Light
+    if (gMaterial.isShadowCast)
+    {
+        lightColor += CalcCircleShadow(input.wpos, toEye); // Circle Shadow
+    }
 
     output.color.rgb = lightColor;
     output.color.a = gMaterial.baseColor.a;

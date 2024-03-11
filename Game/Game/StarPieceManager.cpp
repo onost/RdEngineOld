@@ -4,6 +4,7 @@
 #include "Graphics/Renderer.h"
 #include "Scene/Scene.h"
 #include "Loader/LevelLoader.h"
+#include "RdEngine.h"
 
 StarPieceManager::StarPieceManager(Scene* scene)
 	: Actor(scene)
@@ -27,7 +28,7 @@ StarPieceManager::StarPieceManager(Scene* scene)
 
 void StarPieceManager::ActorUpdate(float deltaTime)
 {
-	const float kTimeMax = 2.0f;
+	const float kTimeMax = 2.5f;
 	if (mStarPieceCount >= kStarPieceMax &&
 		mTimer < kTimeMax)
 	{
@@ -37,6 +38,9 @@ void StarPieceManager::ActorUpdate(float deltaTime)
 			if (actor)
 			{
 				actor->SetState(State::kDead);
+				auto audio = gEngine->GetAudio();
+				auto data = audio->Load("Assets/Audio/Open.wav");
+				audio->Play(data);
 			}
 		}
 

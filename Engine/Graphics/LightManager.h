@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/ConstantBuffer.h"
+#include "CircleShadow.h"
 #include "DirectionalLight.h"
 #include "Helper/MyAssert.h"
 #include "PointLight.h"
@@ -14,6 +15,7 @@ public:
 	static const uint32_t kDirectionalLightCount = 5;
 	static const uint32_t kPointLightCount = 5;
 	static const uint32_t kSpotLightCount = 5;
+	static const uint32_t kCircleShadowCount = 5;
 
 public:
 	void Initialize();
@@ -39,6 +41,7 @@ private:
 		DirectionalLight mDirectionalLights[kDirectionalLightCount];
 		PointLight mPointLights[kPointLightCount];
 		SpotLight mSpotLights[kSpotLightCount];
+		CircleShadow mCircleShadows[kCircleShadowCount];
 	};
 
 	std::unique_ptr<ConstantBuffer> mCBuff;
@@ -46,6 +49,7 @@ private:
 	DirectionalLight mDirectionalLights[kDirectionalLightCount];
 	PointLight mPointLights[kPointLightCount];
 	SpotLight mSpotLights[kSpotLightCount];
+	CircleShadow mCircleShadows[kCircleShadowCount];
 
 public:
 #pragma region Accessor
@@ -179,46 +183,41 @@ public:
 		mPointLights[i].mDecay = decay;
 	}
 
-	// Spot Light
-	void SetSpotLightColor(uint32_t i, const Color& color)
+	// Circle Shadow
+	void SetCircleShadowDirection(uint32_t i, const Vector3& direction)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
-		mSpotLights[i].mColor = color;
+		MyAssert(i >= 0 && i < kCircleShadowCount);
+		mCircleShadows[i].mDirection = direction;
 	}
-	void SetSpotLightDirection(uint32_t i, const Vector3& direction)
+	void SetCircleShadowIntensity(uint32_t i, float intensity)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
-		mSpotLights[i].mDirection = direction;
+		MyAssert(i >= 0 && i < kCircleShadowCount);
+		mCircleShadows[i].mIntensity = intensity;
 	}
-	void SetSpotLightIntensity(uint32_t i, float intensity)
+	void SetCircleShadowPosition(uint32_t i, const Vector3& position)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
-		mSpotLights[i].mIntensity = intensity;
+		MyAssert(i >= 0 && i < kCircleShadowCount);
+		mCircleShadows[i].mPosition = position;
 	}
-	void SetSpotLightPosition(uint32_t i, const Vector3& position)
+	void SetCircleShadowRadius(uint32_t i, float radius)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
-		mSpotLights[i].mPosition = position;
+		MyAssert(i >= 0 && i < kCircleShadowCount);
+		mCircleShadows[i].mRadius = radius;
 	}
-	void SetSpotLightRadius(uint32_t i, float radius)
+	void SetCircleShadowDecay(uint32_t i, float decay)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
-		mSpotLights[i].mRadius = radius;
+		MyAssert(i >= 0 && i < kCircleShadowCount);
+		mCircleShadows[i].mDecay = decay;
 	}
-	void SetSpotLightDecay(uint32_t i, float decay)
+	void SetCircleShadowInner(uint32_t i, float inner)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
-		mSpotLights[i].mDecay = decay;
+		MyAssert(i >= 0 && i < kCircleShadowCount);
+		mCircleShadows[i].mInner = inner;
 	}
-	void SetSpotLightInner(uint32_t i, float inner)
+	void SetCircleShadowOuter(uint32_t i, float outer)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
-		mSpotLights[i].mInner = inner;
-	}
-	void SetSpotLightOuter(uint32_t i, float outer)
-	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
-		mSpotLights[i].mOuter = outer;
+		MyAssert(i >= 0 && i < kCircleShadowCount);
+		mCircleShadows[i].mOuter = outer;
 	}
 #pragma endregion Accessor
 };

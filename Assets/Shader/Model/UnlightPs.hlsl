@@ -10,6 +10,7 @@ struct Material
 {
     float32_t4 baseColor;
     float32_t1 shininess;
+    bool isShadowCast;
 };
 
 ConstantBuffer<Material> gMaterial : register(b2);
