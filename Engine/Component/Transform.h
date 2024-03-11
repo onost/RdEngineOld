@@ -13,6 +13,7 @@ public:
 	Transform(Actor* owner);
 	void UpdateLocal();
 	void UpdateWorld(Transform* parent = nullptr);
+	void RenderForDev(Primitive* prim);
 	void Bind(ID3D12GraphicsCommandList* cmdList, uint32_t rootParamIdx);
 
 	void Copy(Matrix4 world);

@@ -6,6 +6,7 @@
 #include "Component/ParticleRenderer.h"
 #include "Component/SkinnedMeshRenderer.h"
 #include "Editor.h"
+#include <ImGui/imgui_internal.h>
 //#include "Loader/ObjLoader.h"
 #include "Loader/ModelLoader.h"
 #include "Model/ModelCommon.h"
@@ -115,6 +116,29 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 			}
 			ImGui::EndDragDropTarget();
 		}
+
+		auto scene = gEngine->GetSceneManager()->GetCurrScene();
+		if (scene)
+		{
+			auto actor = scene->GetActorForDev();
+			if (actor)
+			{
+				float windowWidth = (float)ImGui::GetWindowWidth();
+				float windowHeight = (float)ImGui::GetWindowHeight();
+				ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+				//float viewManipulateRight = ImGui::GetWindowPos().x + windowWidth;
+				//float viewManipulateTop = ImGui::GetWindowPos().y;
+				//ImGuiWindow* window = ImGui::GetCurrentWindow();
+				//auto gizmoWindowFlags = ImGui::IsWindowHovered() && ImGui::IsMouseHoveringRect(window->InnerRect.Min, window->InnerRect.Max) ? ImGuiWindowFlags_NoMove : 0;
+
+				auto world = actor->mTransform->GetWorld();
+				auto view = mCurrCamera->GetView();
+				ImGuizmo::Manipulate(&view.m[0][0], &mCurrCamera->GetProj().m[0][0], ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, &world.m[0][0]);
+				/*auto dist = Length(actor->mTransform->GetWorld().GetTranslation() - mCurrCamera->GetPosition());
+				ImGuizmo::ViewManipulate(&view.m[0][0], dist, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010);*/
+			}
+		}
+
 		ImGui::End();
 	}
 	else
