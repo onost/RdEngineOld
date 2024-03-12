@@ -4,6 +4,7 @@
 #include <ImGui/imgui_impl_dx12.h>
 #include <ImGui/imgui_impl_win32.h>
 #include <ImGui/imgui_stdlib.h>
+#include <ImGui/ImGuizmo.h>
 #include <magic_enum/magic_enum.hpp>
 #include <string>
 #include <vector>

@@ -1,6 +1,10 @@
 #include "Transform.h"
+#include "Actor/Actor.h"
 #include "Editor.h"
+#include "Graphics/Camera.h"
+#include "Graphics/Renderer.h"
 #include "Helper/JsonHelper.h"
+#include "Scene/Scene.h"
 
 Transform::Transform(Actor* owner)
 	: Component(owner, 0)
@@ -10,6 +14,7 @@ Transform::Transform(Actor* owner)
 	, mCBuff(nullptr)
 	, mLocal(Matrix4::kIdentity)
 	, mWorld(Matrix4::kIdentity)
+	, mTWorld(Matrix4::kIdentity)
 {
 	mCBuff = std::make_unique<ConstantBuffer>();
 	mCBuff->Create(sizeof(Matrix4));
@@ -25,10 +30,12 @@ void Transform::UpdateWorld(Transform* parent)
 {
 	UpdateLocal();
 	mWorld = mLocal;
+	mTWorld = mLocal;
 	if (parent)
 	{
 		// ワールド行列
 		mWorld *= parent->GetWorld();
+		mTWorld *= parent->GetWorld();
 	}
 	mCBuff->Copy(mWorld);
 }
@@ -89,4 +96,13 @@ void Transform::UpdateForDev()
 		ImGui::DragFloat3("Position", &mPosition.x, 0.05f);
 		ImGui::TreePop();
 	}
+}
+
+void Transform::RenderForDev(Primitive* /*prim*/)
+{
+	/*auto renderer = mOwner->GetScene()->GetRenderer();
+	auto camera = renderer->GetCurrCamera();
+	//auto m = Matrix4::kIdentity;
+	ImGuizmo::DrawCubes(&camera->GetView().m[0][0], &camera->GetProj().m[0][0], &mWorld.m[0][0], 1);
+	ImGuizmo::Manipulate(&camera->GetView().m[0][0], &camera->GetProj().m[0][0], ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, &mWorld.m[0][0]);*/
 }

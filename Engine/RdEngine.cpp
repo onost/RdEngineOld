@@ -215,6 +215,9 @@ void RdEngine::Render()
 		Console::ShowConsole();
 	}
 	// エディタ終了
+	/*UpdateForDev();
+	mRenderer->UpdateForDev();
+	mSceneManager->UpdateForDev();*/
 	Editor::PostProcess();
 
 	// 最終レンダーターゲットへ描画
