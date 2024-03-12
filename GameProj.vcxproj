@@ -186,6 +186,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Game\PlayerCamera.cpp" />
     <ClCompile Include="Game\Game\StarPiece.cpp" />
     <ClCompile Include="Game\Game\StarPieceManager.cpp" />
+    <ClCompile Include="Game\Game\Meteorite.cpp" />
+    <ClCompile Include="Game\Game\MeteoriteChip.cpp" />
+    <ClCompile Include="Game\Game\MeteoriteEmitter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Audio\Audio.h" />
@@ -289,6 +292,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Game\PlayerCamera.h" />
     <ClInclude Include="Game\Game\StarPiece.h" />
     <ClInclude Include="Game\Game\StarPieceManager.h" />
+    <ClInclude Include="Game\Game\Meteorite.h" />
+    <ClInclude Include="Game\Game\MeteoriteChip.h" />
+    <ClInclude Include="Game\Game\MeteoriteEmitter.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="External\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

@@ -15,7 +15,7 @@ public:
 	static const uint32_t kDirectionalLightCount = 5;
 	static const uint32_t kPointLightCount = 5;
 	static const uint32_t kSpotLightCount = 5;
-	static const uint32_t kCircleShadowCount = 5;
+	static const uint32_t kCircleShadowCount = 10;
 
 public:
 	void Initialize();

@@ -34,7 +34,9 @@ public:
 		Player,
 		PlayerCamera,
 		StarPiece,
-		StarPieceManager
+		StarPieceManager,
+		Meteorite,
+		MeteoriteEmitter
 		//Attractor
 		//
 	};

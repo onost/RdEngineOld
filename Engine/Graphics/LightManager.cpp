@@ -71,7 +71,7 @@ void LightManager::Update()
 		data->mSpotLights[i].mOuter = cosf(MyMath::ToRadians(mSpotLights[i].mOuter));
 	}
 	// Circle Shadow
-	for (uint32_t i = 0; i < kSpotLightCount; ++i)
+	for (uint32_t i = 0; i < kCircleShadowCount; ++i)
 	{
 		data->mCircleShadows[i] = mCircleShadows[i];
 		data->mCircleShadows[i].mDirection.Normalize();
@@ -128,13 +128,16 @@ void LightManager::LoadLevel(const nlohmann::json& json)
 	for (uint32_t i = 0; i < kCircleShadowCount; ++i)
 	{
 		const nlohmann::json& data = json["Circle Shadow"];
-		JsonHelper::GetVector3(data[i], "Direction", mCircleShadows[i].mDirection);
-		JsonHelper::GetFloat(data[i], "Intensity", mCircleShadows[i].mIntensity);
-		JsonHelper::GetVector3(data[i], "Position", mCircleShadows[i].mPosition);
-		JsonHelper::GetFloat(data[i], "Radius", mCircleShadows[i].mRadius);
-		JsonHelper::GetFloat(data[i], "Decay", mCircleShadows[i].mDecay);
-		JsonHelper::GetFloat(data[i], "Inner", mCircleShadows[i].mInner);
-		JsonHelper::GetFloat(data[i], "Outer", mCircleShadows[i].mOuter);
+		if (data.size() > i)
+		{
+			JsonHelper::GetVector3(data[i], "Direction", mCircleShadows[i].mDirection);
+			JsonHelper::GetFloat(data[i], "Intensity", mCircleShadows[i].mIntensity);
+			JsonHelper::GetVector3(data[i], "Position", mCircleShadows[i].mPosition);
+			JsonHelper::GetFloat(data[i], "Radius", mCircleShadows[i].mRadius);
+			JsonHelper::GetFloat(data[i], "Decay", mCircleShadows[i].mDecay);
+			JsonHelper::GetFloat(data[i], "Inner", mCircleShadows[i].mInner);
+			JsonHelper::GetFloat(data[i], "Outer", mCircleShadows[i].mOuter);
+		}
 	}
 }
 

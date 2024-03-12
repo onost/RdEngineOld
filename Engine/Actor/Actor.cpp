@@ -13,6 +13,8 @@
 #include "Game/PlayerCamera.h"
 #include "Game/StarPiece.h"
 #include "Game/StarPieceManager.h"
+#include "Game/Meteorite.h"
+#include "Game/MeteoriteEmitter.h"
 
 const std::vector<std::function<Actor* (Scene*)>> Actor::kCreateFuncs =
 {
@@ -26,7 +28,9 @@ const std::vector<std::function<Actor* (Scene*)>> Actor::kCreateFuncs =
 	&Actor::Create<Player>,
 	&Actor::Create<PlayerCamera>,
 	&Actor::Create<StarPiece>,
-	&Actor::Create<StarPieceManager>
+	&Actor::Create<StarPieceManager>,
+	&Actor::Create<Meteorite>,
+	&Actor::Create<MeteoriteEmitter>,
 	//&Actor::Create<Attractor>
 	//
 };
