@@ -73,7 +73,12 @@ void Renderer::PreRendering(ID3D12GraphicsCommandList* cmdList)
 // シーン描画後
 void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 {
+	//Editor::PostProcess();///
+	//Editor::Draw(cmdList);///
+
 	mMainRt->PostRendering(cmdList);
+
+	//Editor::PreProcess();
 
 	// ==================================================
 	// ポストエフェクト
@@ -98,24 +103,25 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 	if (gEngine->GetState() == RdEngine::State::kDev)
 	{
 		// ImGuiへ描画
-		ImGui::Begin("Game");
-		ImVec2 size = ImGui::GetWindowSize();
-		ImGui::Image(
-			ImTextureID(texture->GetDescHandle().ptr),
-			ImVec2(size.x, Window::kHeight * size.x / Window::kWidth));
-		// モデルのドラッグアンドドロップでメッシュレンダラー付のアクターを作成
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (auto payload = ImGui::AcceptDragDropPayload("MODEL_PAYLOAD"))
-			{
-				auto model = *(Model**)(payload->Data);
-				auto actor = new Actor(gEngine->GetSceneManager()->GetCurrScene());
-				auto mr = new MeshRenderer(actor);
-				mr->SetModel(model);
-				actor->SetName(Helper::RemoveExtension(model->GetName()));
-			}
-			ImGui::EndDragDropTarget();
-		}
+		//static ImGuiWindowFlags gizmoWindowFlags = 0;
+		ImGui::Begin("Game Screen", 0, ImGuiWindowFlags_NoMove);
+		//ImVec2 size = ImGui::GetWindowSize();
+		//ImGui::Image(
+		//	ImTextureID(texture->GetDescHandle().ptr),
+		//	ImVec2(size.x, Window::kHeight * size.x / Window::kWidth));
+		//// モデルのドラッグアンドドロップでメッシュレンダラー付のアクターを作成
+		//if (ImGui::BeginDragDropTarget())
+		//{
+		//	if (auto payload = ImGui::AcceptDragDropPayload("MODEL_PAYLOAD"))
+		//	{
+		//		auto model = *(Model**)(payload->Data);
+		//		auto actor = new Actor(gEngine->GetSceneManager()->GetCurrScene());
+		//		auto mr = new MeshRenderer(actor);
+		//		mr->SetModel(model);
+		//		actor->SetName(Helper::RemoveExtension(model->GetName()));
+		//	}
+		//	ImGui::EndDragDropTarget();
+		//}
 
 		auto scene = gEngine->GetSceneManager()->GetCurrScene();
 		if (scene)
@@ -123,19 +129,49 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 			auto actor = scene->GetActorForDev();
 			if (actor)
 			{
+				//auto min = ImGui::GetItemRectMin();
+				//auto max = ImGui::GetItemRectMax();
+				//auto w = max.x - min.x;
+				//auto h = max.y - min.y;
+				//ImGuizmo::SetRect(min.x, min.y, w, h);
 				float windowWidth = (float)ImGui::GetWindowWidth();
 				float windowHeight = (float)ImGui::GetWindowHeight();
 				ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
-				//float viewManipulateRight = ImGui::GetWindowPos().x + windowWidth;
-				//float viewManipulateTop = ImGui::GetWindowPos().y;
-				//ImGuiWindow* window = ImGui::GetCurrentWindow();
-				//auto gizmoWindowFlags = ImGui::IsWindowHovered() && ImGui::IsMouseHoveringRect(window->InnerRect.Min, window->InnerRect.Max) ? ImGuiWindowFlags_NoMove : 0;
+				float viewManipulateRight = ImGui::GetWindowPos().x + windowWidth;
+				float viewManipulateTop = ImGui::GetWindowPos().y;
+				/*ImGuiWindow* window = ImGui::GetCurrentWindow();
+				gizmoWindowFlags = ImGui::IsWindowHovered() && ImGui::IsMouseHoveringRect(window->InnerRect.Min, window->InnerRect.Max) ? ImGuiWindowFlags_NoMove : 0;*/
 
-				auto world = actor->mTransform->GetWorld();
+
+				ImVec2 size = ImGui::GetWindowSize();
+				ImGui::Image(
+					ImTextureID(texture->GetDescHandle().ptr),
+					ImVec2(size.x, Window::kHeight * size.x / Window::kWidth));
+				// モデルのドラッグアンドドロップでメッシュレンダラー付のアクターを作成
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (auto payload = ImGui::AcceptDragDropPayload("MODEL_PAYLOAD"))
+					{
+						auto model = *(Model**)(payload->Data);
+						auto actor2 = new Actor(gEngine->GetSceneManager()->GetCurrScene());
+						auto mr = new MeshRenderer(actor2);
+						mr->SetModel(model);
+						actor2->SetName(Helper::RemoveExtension(model->GetName()));
+					}
+					ImGui::EndDragDropTarget();
+				}
+
+
+				ImGuizmo::SetDrawlist();
+				auto world = actor->mTransform->GetTWorld();
 				auto view = mCurrCamera->GetView();
 				ImGuizmo::Manipulate(&view.m[0][0], &mCurrCamera->GetProj().m[0][0], ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, &world.m[0][0]);
-				/*auto dist = Length(actor->mTransform->GetWorld().GetTranslation() - mCurrCamera->GetPosition());
-				ImGuizmo::ViewManipulate(&view.m[0][0], dist, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010);*/
+				auto dist = Length(actor->mTransform->GetWorld().GetTranslation() - mCurrCamera->GetPosition());
+				ImGuizmo::ViewManipulate(&view.m[0][0], dist, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010);
+
+				actor->mTransform->mScale = world.GetScale();
+				actor->mTransform->mRotation = world.GetRotation();
+				actor->mTransform->mPosition = world.GetTranslation();
 			}
 		}
 
@@ -241,6 +277,7 @@ void Renderer::DrawFinalSprite(ID3D12GraphicsCommandList* cmdList)
 		cmdList->RSSetViewports(1, &viewport);
 		mFinalSprite->Draw(Vector2(float(Window::kWidth), float(Window::kHeight)));
 		SpriteCommon::PostRendering();
+		//Editor::Draw(cmdList);
 	}
 }
 

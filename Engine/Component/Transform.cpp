@@ -14,6 +14,7 @@ Transform::Transform(Actor* owner)
 	, mCBuff(nullptr)
 	, mLocal(Matrix4::kIdentity)
 	, mWorld(Matrix4::kIdentity)
+	, mTWorld(Matrix4::kIdentity)
 {
 	mCBuff = std::make_unique<ConstantBuffer>();
 	mCBuff->Create(sizeof(Matrix4));
@@ -29,10 +30,12 @@ void Transform::UpdateWorld(Transform* parent)
 {
 	UpdateLocal();
 	mWorld = mLocal;
+	mTWorld = mLocal;
 	if (parent)
 	{
 		// ワールド行列
 		mWorld *= parent->GetWorld();
+		mTWorld *= parent->GetWorld();
 	}
 	mCBuff->Copy(mWorld);
 }
