@@ -60,18 +60,24 @@ void Meteorite::ActorOnCollisionEnter(Actor* owner, CollisionInfo*)
 		auto light = mScene->GetRenderer()->GetLightManager();
 		light->SetCircleShadowIntensity(mShadowIndex, 0.0f);
 
-		auto chip = new MeteoriteChip(mScene);
-		chip->mTransform->mPosition = mTransform->mPosition;
-		auto r = Random::Rand(
-			Vector3(-MyMath::k2Pi, -MyMath::k2Pi, -MyMath::k2Pi),
-			Vector3(MyMath::k2Pi, MyMath::k2Pi, MyMath::k2Pi)) * 0.5f;
-		chip->mTransform->mRotation = ToQuaternion(
-			Matrix4::CreateRotateX(r.x) *
-			Matrix4::CreateRotateY(r.y) *
-			Matrix4::CreateRotateZ(r.z));
-		chip->mTransform->mScale = Vector3::kOne * 3.0f;
-		chip->SetDownVec(Normalize(mVelocity));
-		chip->SetVelocity(-mVelocity);
-		chip->mTransform->UpdateWorld();
+		for (uint32_t i = 0; i < 3; ++i)
+		{
+			auto chip = new MeteoriteChip(mScene);
+			chip->mTransform->mPosition = mTransform->mPosition;
+			auto r = Random::Rand(
+				Vector3(-MyMath::k2Pi, -MyMath::k2Pi, -MyMath::k2Pi),
+				Vector3(MyMath::k2Pi, MyMath::k2Pi, MyMath::k2Pi)) * 0.5f;
+			chip->mTransform->mRotation = ToQuaternion(
+				Matrix4::CreateRotateX(r.x) *
+				Matrix4::CreateRotateY(r.y) *
+				Matrix4::CreateRotateZ(r.z));
+			chip->mTransform->mScale = Vector3::kOne * 3.0f;
+			chip->SetDownVec(Normalize(mVelocity) * 2.0f);
+
+			Vector3 vel = Random::Rand(Vector3(-0.5f, -0.5f, -0.5f), Vector3(0.5f, 0.5f, 0.5f));
+
+			chip->SetVelocity(vel);
+			chip->mTransform->UpdateWorld();
+		}
 	}
 }
