@@ -106,7 +106,7 @@
                 },
                 {
                     "Is Visible": true,
-                    "Model": "Planet.gltf",
+                    "Model": "RedPlanet.obj",
                     "Order": 100,
                     "Shader Type": 0,
                     "Texture": "Assets/Texture/Default.png",
@@ -201,7 +201,7 @@
                 },
                 {
                     "Is Visible": true,
-                    "Model": "Planet.gltf",
+                    "Model": "Planet2.obj",
                     "Order": 100,
                     "Shader Type": 0,
                     "Texture": "Assets/Texture/Default.png",
@@ -230,7 +230,7 @@
                 {
                     "Position": [
                         55.0,
-                        97.5,
+                        99.0,
                         0.0
                     ],
                     "Rotation": [
@@ -240,15 +240,15 @@
                         0.0
                     ],
                     "Scale": [
-                        7.0,
-                        5.0,
-                        7.0
+                        0.699999988079071,
+                        0.699999988079071,
+                        0.699999988079071
                     ],
                     "Type": 10
                 },
                 {
                     "Is Visible": true,
-                    "Model": "Ground.obj",
+                    "Model": "Hill.gltf",
                     "Order": 100,
                     "Shader Type": 0,
                     "Texture": "Assets/Texture/Default.png",
@@ -279,9 +279,9 @@
                     "Is Trigger": false,
                     "Response Attr": 15,
                     "Size": [
-                        1.0,
-                        1.0,
-                        1.0
+                        10.0,
+                        5.0,
+                        10.0
                     ],
                     "Type": 3
                 }
@@ -306,15 +306,15 @@
                         0.0
                     ],
                     "Scale": [
-                        10.0,
-                        10.0,
-                        5.0
+                        1.0,
+                        1.0,
+                        1.0
                     ],
                     "Type": 10
                 },
                 {
                     "Is Visible": true,
-                    "Model": "Ground.obj",
+                    "Model": "Hill2.gltf",
                     "Order": 100,
                     "Shader Type": 0,
                     "Texture": "Assets/Texture/Default.png",
@@ -345,9 +345,9 @@
                     "Is Trigger": false,
                     "Response Attr": 15,
                     "Size": [
-                        1.0,
-                        1.0,
-                        1.0
+                        10.0,
+                        10.0,
+                        5.0
                     ],
                     "Type": 3
                 }
@@ -366,21 +366,21 @@
                         0.0
                     ],
                     "Rotation": [
-                        1.0,
+                        0.7071067094802856,
                         0.0,
                         0.0,
-                        0.0
+                        0.7071068286895752
                     ],
                     "Scale": [
-                        5.0,
-                        10.0,
-                        10.0
+                        0.9999150633811951,
+                        0.9999150633811951,
+                        1.0
                     ],
                     "Type": 10
                 },
                 {
                     "Is Visible": true,
-                    "Model": "Ground.obj",
+                    "Model": "Hill.gltf",
                     "Order": 100,
                     "Shader Type": 0,
                     "Texture": "Assets/Texture/Default.png",
@@ -411,9 +411,9 @@
                     "Is Trigger": false,
                     "Response Attr": 15,
                     "Size": [
-                        1.0,
-                        1.0,
-                        1.0
+                        10.0,
+                        5.0,
+                        10.0
                     ],
                     "Type": 3
                 }
@@ -428,7 +428,7 @@
                 {
                     "Position": [
                         30.0,
-                        11.0,
+                        12.0,
                         0.0
                     ],
                     "Rotation": [
@@ -2174,6 +2174,91 @@
                     0.0
                 ],
                 "Radius": 40.0
+            },
+            {
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 0.9396926164627075,
+                "Intensity": 0.0,
+                "Outer": 0.8660253882408142,
+                "Position": [
+                    0.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 10.0
+            },
+            {
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 0.9396926164627075,
+                "Intensity": 0.0,
+                "Outer": 0.8660253882408142,
+                "Position": [
+                    0.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 10.0
+            },
+            {
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 0.9396926164627075,
+                "Intensity": 0.0,
+                "Outer": 0.8660253882408142,
+                "Position": [
+                    0.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 10.0
+            },
+            {
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 0.9396926164627075,
+                "Intensity": 0.0,
+                "Outer": 0.8660253882408142,
+                "Position": [
+                    0.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 10.0
+            },
+            {
+                "Decay": 1.0,
+                "Direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "Inner": 0.9396926164627075,
+                "Intensity": 0.0,
+                "Outer": 0.8660253882408142,
+                "Position": [
+                    0.0,
+                    5.0,
+                    0.0
+                ],
+                "Radius": 10.0
             },
             {
                 "Decay": 1.0,

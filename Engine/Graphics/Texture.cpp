@@ -17,7 +17,7 @@ bool Texture::Create(const std::string& filePath)
 	DirectX::ScratchImage scratchImage = {};
 	HRESULT hr = DirectX::LoadFromWICFile(
 		Helper::ConvertToWstr(mPath).c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, scratchImage);
-	if (hr == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND))
+	if (hr == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND) || hr == HRESULT_FROM_WIN32(ERROR_INVALID_NAME))
 	{
 		return false;
 	}
