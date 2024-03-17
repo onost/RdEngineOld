@@ -10,6 +10,7 @@
 
 #include "GravityBody.h"
 #include "Attractor.h"
+#include "Component/SkinnedMeshRenderer.h"
 
 Player::Player(Scene* scene)
 	: Actor(scene)
@@ -24,15 +25,18 @@ Player::Player(Scene* scene)
 	, mGravityPow(0.0f)
 	, mGroundDist(0.3f)
 	, mMaxGround(60.0f)
+	, mHp(3)
+	, mInvincibleTimer(0.0f)
 	, mGravityBody(nullptr)
+	, mRenderer(nullptr)
 {
 	// メッシュ
-	auto mr = new MeshRenderer(this);
+	/*auto mr = new MeshRenderer(this);
 	mr->SetModel(mScene->GetRenderer()->GetModel("Player.obj"));
 	for (auto m : mr->GetModel()->GetMaterials())
 	{
 		m.second->SetIsShadowCast(false);
-	}
+	}*/
 	// コライダー
 	auto sc = new SphereCollider(this);
 	sc->SetAttribute(Collider::Allies);// 味方
@@ -123,6 +127,20 @@ void Player::ActorUpdate(float deltaTime)
 	light->SetCircleShadowDirection(0, -normal);
 	light->SetCircleShadowPosition(0, mTransform->GetWorld().GetTranslation() + normal * 10.0f);
 	light->SetCircleShadowIntensity(0, 0.5f);
+
+	if (mHp <= 0)
+	{
+		auto actor = mScene->GetActor("GameOverSprite");
+		if (actor)
+		{
+			auto component = actor->GetComponent(Component::Type::SpriteRenderer);
+			SpriteRenderer* sprite = dynamic_cast<SpriteRenderer*>(component);
+			if (sprite)
+			{
+				sprite->SetIsVisible(true);
+			}
+		}
+	}
 }
 
 void Player::ActorOnCollisionStay(Actor* /*other*/, CollisionInfo* info)
@@ -146,7 +164,7 @@ void Player::ActorOnCollisionStay(Actor* /*other*/, CollisionInfo* info)
 void Player::ActorOnTriggerEnter(Actor* other)
 {
 	// ゴール！
-	if (other->GetName() == "GoalFlag")
+	if (other->GetName() == "GoalFlag" && mHp > 0)
 	{
 		auto actor = mScene->GetActor("GoalSprite");
 		auto component = actor->GetComponent(Component::Type::SpriteRenderer);
@@ -155,6 +173,14 @@ void Player::ActorOnTriggerEnter(Actor* other)
 		{
 			sprite->SetIsVisible(true);
 		}
+	}
+}
+
+void Player::ActorOnCollisionEnter(Actor* other, CollisionInfo*)
+{
+	if (other->GetName() == "Meteorite" && mInvincibleTimer <= 0.0f)
+	{
+		--mHp;
 	}
 }
 

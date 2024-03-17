@@ -4,6 +4,7 @@
 class ParticleRenderer;
 class Attractor;
 class GravityBody;
+class SkinnedMeshRenderer;
 
 // プレイヤー
 class Player : public Actor
@@ -14,6 +15,7 @@ public:
 	void ActorInput(const Input::State& input) override;
 	void ActorUpdate(float deltaTime) override;
 	void ActorOnCollisionStay(Actor* other, CollisionInfo* info) override;
+	void ActorOnCollisionEnter(Actor* other, CollisionInfo* info) override;
 	void ActorOnTriggerEnter(Actor* other) override;
 	void ActorUpdateForDev() override;
 	void ActorRenderForDev(Primitive* prim);
@@ -44,6 +46,10 @@ private:
 	float mGravityPow;
 	float mGroundDist;
 	float mMaxGround;
+
+	uint32_t mHp;
+	SkinnedMeshRenderer* mRenderer;
+	float mInvincibleTimer;
 
 	// 重力
 	GravityBody* mGravityBody;

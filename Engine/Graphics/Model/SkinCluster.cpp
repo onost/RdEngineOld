@@ -37,7 +37,7 @@ void SkinCluster::Create(Mesh* mesh, Skeleton* skeleton)
 				{
 					curr.mWeights[i] = w.mWeight;
 					curr.mJointIndices[i] = (*it).second;
-					//break;
+					break;
 				}
 			}
 		}

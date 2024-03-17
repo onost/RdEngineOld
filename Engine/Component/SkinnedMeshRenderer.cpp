@@ -146,19 +146,25 @@ void SkinnedMeshRenderer::UpdateForDev()
 
 void SkinnedMeshRenderer::RenderForDev(Primitive* prim)
 {
-	if (mModel->GetMeshes()[0]->GetSkeleton() && mCurrAnim)
+	if (mModel)
 	{
-		auto& joints = mModel->GetMeshes()[0]->GetSkeleton()->GetJoints();
-		std::vector<Vector3> positions(joints.size());
-		auto currPoses = mModel->GetMeshes()[0]->GetCurrPoses();
-		for (uint32_t i = 0; i < joints.size(); ++i)
+		if (mModel->GetMeshes()[0]->GetSkeleton() && mCurrAnim)
 		{
-			positions[i] = (currPoses[i] * mOwner->mTransform->GetWorld()).GetTranslation();
-			prim->DrawSphere(positions[i], 0.2f, Color::kWhite);// radius = 0.2f
-			auto parent = joints[i].mParent;
-			if (parent)
+			auto& joints = mModel->GetMeshes()[0]->GetSkeleton()->GetJoints();
+			std::vector<Vector3> positions(joints.size());
+			auto currPoses = mModel->GetMeshes()[0]->GetCurrPoses();
+			if (currPoses.size() > 0)
 			{
-				prim->DrawLine3(positions[i], positions[*parent], Color::kWhite);
+				for (uint32_t i = 0; i < joints.size(); ++i)
+				{
+					positions[i] = (currPoses[i] * mOwner->mTransform->GetWorld()).GetTranslation();
+					prim->DrawSphere(positions[i], 0.2f, Color::kWhite);// radius = 0.2f
+					auto parent = joints[i].mParent;
+					if (parent)
+					{
+						prim->DrawLine3(positions[i], positions[*parent], Color::kWhite);
+					}
+				}
 			}
 		}
 	}

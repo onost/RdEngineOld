@@ -445,14 +445,6 @@
                     "Type": 10
                 },
                 {
-                    "Is Visible": true,
-                    "Model": "Player.obj",
-                    "Order": 100,
-                    "Shader Type": 0,
-                    "Texture": "Assets/Texture/Default.png",
-                    "Type": 6
-                },
-                {
                     "Attribute": 2,
                     "Center": [
                         0.0,
@@ -474,6 +466,15 @@
                     ],
                     "Push Dist": 1.0,
                     "Type": 12
+                },
+                {
+                    "Curr Anim": "Astronaut.gltf/Armature|mixamo.com|Layer0",
+                    "Is Visible": true,
+                    "Model": "Astronaut.gltf",
+                    "Order": 100,
+                    "Shader Type": 0,
+                    "Texture": "Assets/Texture/Default.png",
+                    "Type": 7
                 }
             ],
             "Gravity": 1.0,
@@ -2119,6 +2120,59 @@
             "Order": 100,
             "State": 0,
             "Type": 11
+        },
+        {
+            "Components": [
+                {
+                    "Position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Rotation": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Type": 10
+                },
+                {
+                    "Blend": 1,
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Draw Order": 200,
+                    "Is Flip X": false,
+                    "Is Flip Y": false,
+                    "Is Visible": false,
+                    "Order": 100,
+                    "Pivot": [
+                        0.0,
+                        0.0
+                    ],
+                    "Rect": [
+                        0.0,
+                        0.0,
+                        1280.0,
+                        720.0
+                    ],
+                    "Texture": "Assets/Texture/GameOver.png",
+                    "Type": 5
+                }
+            ],
+            "Name": "GameOverSprite",
+            "Order": 100,
+            "State": 0,
+            "Type": 0
         },
         {
             "Components": [
