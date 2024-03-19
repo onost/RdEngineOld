@@ -7,36 +7,34 @@
 // すべてのコライダーをテスト
 void CollisionManager::TestAllCollider()
 {
-	// 色を白へ
-	/*for (auto& c : mColliders)
-	{
-		c->SetColor(Color::kWhite);
-	}*/
-
+	// StayかExitか
 	mStayPairs.clear();
 	mExitPairs.clear();
-	for (auto& pair : mCollisionPairs)
+	for (auto& pair : mAllPairs)
 	{
-		Collider* a = pair.a;
-		Collider* b = pair.b;
-		if ((a->mAttribute & b->mResponse) &&
-			(b->mAttribute & a->mResponse))
+		Collider* a = pair.mCollider1;
+		Collider* b = pair.mCollider2;
+		// Aの属性とBの反応属性が一致かつBの属性とAの反応属性が一致
+		if ((a->mAttribute & b->mResponse) && (b->mAttribute & a->mResponse))
 		{
 			CollisionInfo info = {};
 			if (a->Dispatch(b, info))
 			{
-				pair.info = info;
-				mStayPairs.emplace_back(pair);
+				// まだ衝突している
+				pair.mInfo = info;
+				mStayPairs.emplace_back(pair);// Stay
 			}
 			else
 			{
-				pair.info = info;
-				mExitPairs.emplace_back(pair);
+				// もう衝突していない
+				pair.mInfo = info;
+				mExitPairs.emplace_back(pair);// Exit
 			}
 		}
 	}
 
-	mCollisionPairs.clear();
+	// すべてのコライダーをテスト
+	mAllPairs.clear();
 	mEnterPairs.clear();
 	for (size_t i = 0; i < mColliders.size(); ++i)
 	{
@@ -44,25 +42,23 @@ void CollisionManager::TestAllCollider()
 		{
 			Collider* a = mColliders[i];
 			Collider* b = mColliders[j];
-			if ((a->mAttribute & b->mResponse) &&
-				(b->mAttribute & a->mResponse))
+			// Aの属性とBの反応属性が一致かつBの属性とAの反応属性が一致
+			if ((a->mAttribute & b->mResponse) && (b->mAttribute & a->mResponse))
 			{
 				CollisionInfo info = {};
 				if (a->Dispatch(b, info))
 				{
 					CollisionPair pair = {};
-					pair.a = a;
-					pair.b = b;
-					pair.info = info;
-
-					mCollisionPairs.emplace_back(pair);
-					if (!IsInStayPair(a, b))
+					pair.mCollider1 = a;
+					pair.mCollider2 = b;
+					pair.mInfo = info;
+					// 追加
+					mAllPairs.emplace_back(pair);
+					// StayではなかったらEnter
+					if (!IsStayPair(a, b))
 					{
 						mEnterPairs.emplace_back(pair);
 					}
-
-					//a->SetColor(Color::kRed);
-					//b->SetColor(Color::kRed);
 				}
 			}
 		}
@@ -71,68 +67,69 @@ void CollisionManager::TestAllCollider()
 	// Enter
 	for (auto& pair : mEnterPairs)
 	{
-		Actor* aOwner = pair.a->GetOwner();
-		Actor* bOwner = pair.b->GetOwner();
-		if (pair.a->mIsTrigger || pair.b->mIsTrigger)
+		Actor* owner1 = pair.mCollider1->GetOwner();
+		Actor* owner2 = pair.mCollider2->GetOwner();
+		// どちらかのコライダーがトリガーであればOnTriggerEnter
+		if (pair.mCollider1->mIsTrigger || pair.mCollider2->mIsTrigger)
 		{
-			aOwner->OnTriggerEnter(bOwner);
-			bOwner->OnTriggerEnter(aOwner);
+			owner1->OnTriggerEnter(owner2);
+			owner2->OnTriggerEnter(owner1);
 		}
+		// どちらもトリガーでなければOnCollisionEnter
 		else
 		{
-			aOwner->OnCollisionEnter(bOwner, &pair.info);
-			CollisionInfo i = pair.info;
-			i.mNormal *= -1.0f;
-			bOwner->OnCollisionEnter(aOwner, &i);
+			owner1->OnCollisionEnter(owner2, &pair.mInfo);
+			CollisionInfo info = pair.mInfo;
+			info.mNormal *= -1.0f;// 反転
+			owner2->OnCollisionEnter(owner1, &info);
 		}
 	}
 	// Stay
 	for (auto& pair : mStayPairs)
 	{
-		Actor* aOwner = pair.a->GetOwner();
-		Actor* bOwner = pair.b->GetOwner();
-		if (pair.a->mIsTrigger || pair.b->mIsTrigger)
+		Actor* owner1 = pair.mCollider1->GetOwner();
+		Actor* owner2 = pair.mCollider2->GetOwner();
+		if (pair.mCollider1->mIsTrigger || pair.mCollider2->mIsTrigger)
 		{
-			aOwner->OnTriggerStay(bOwner);
-			bOwner->OnTriggerStay(aOwner);
+			owner1->OnTriggerStay(owner2);
+			owner2->OnTriggerStay(owner1);
 		}
 		else
 		{
-			aOwner->OnCollisionStay(bOwner, &pair.info);
-			CollisionInfo i = pair.info;
-			i.mNormal *= -1.0f;
-			bOwner->OnCollisionStay(aOwner, &i);
+			owner1->OnCollisionStay(owner2, &pair.mInfo);
+			CollisionInfo info = pair.mInfo;
+			info.mNormal *= -1.0f;
+			owner2->OnCollisionStay(owner1, &info);
 		}
 	}
 	// Exit
 	for (auto& pair : mExitPairs)
 	{
-		Actor* aOwner = pair.a->GetOwner();
-		Actor* bOwner = pair.b->GetOwner();
-		if (pair.a->mIsTrigger || pair.b->mIsTrigger)
+		Actor* owner1 = pair.mCollider1->GetOwner();
+		Actor* owner2 = pair.mCollider2->GetOwner();
+		if (pair.mCollider1->mIsTrigger || pair.mCollider2->mIsTrigger)
 		{
-			aOwner->OnTriggerExit(bOwner);
-			bOwner->OnTriggerExit(aOwner);
+			owner1->OnTriggerExit(owner2);
+			owner2->OnTriggerExit(owner1);
 		}
 		else
 		{
-			aOwner->OnCollisionExit(bOwner, &pair.info);
-			CollisionInfo i = pair.info;
-			i.mNormal *= -1.0f;
-			bOwner->OnCollisionExit(aOwner, &i);
+			owner1->OnCollisionExit(owner2, &pair.mInfo);
+			CollisionInfo info = pair.mInfo;
+			info.mNormal *= -1.0f;
+			owner2->OnCollisionExit(owner1, &info);
 		}
 	}
 }
 
 // レイキャスト
-bool CollisionManager::Raycast(
-	const Ray& ray, RaycastInfo& info, Collider::Attribute attribute)
+bool CollisionManager::Raycast(const Ray& ray, RaycastInfo& info, CollisionAttr attr)
 {
 	bool isHit = false;
 	float minT = MyMath::kInfinity;
 	for (auto& c : mColliders)
 	{
-		if (!(c->mAttribute & attribute) ||
+		if (!(c->mAttribute & attr) ||
 			c->mIsTrigger)//
 		{
 			continue;
@@ -206,26 +203,41 @@ void CollisionManager::AddCollider(Collider* collider)
 // コライダーを削除
 void CollisionManager::RemoveCollider(Collider* collider)
 {
+	auto it = std::find(mColliders.begin(), mColliders.end(), collider);
+	if (it != mColliders.end())
 	{
-		auto it = std::find(mColliders.begin(), mColliders.end(), collider);
-		if (it != mColliders.end())
+		std::iter_swap(it, mColliders.end() - 1);
+		mColliders.pop_back();
+	}
+	RemoveFromAllPairs(collider);
+}
+
+bool CollisionManager::IsStayPair(Collider* a, Collider* b)
+{
+	for (auto& pair : mStayPairs)
+	{
+		if (pair.mCollider1 == a &&
+			pair.mCollider2 == b)
 		{
-			std::iter_swap(it, mColliders.end() - 1);
-			mColliders.pop_back();
+			return true;
 		}
 	}
+	return false;
+}
+
+// 全ペアに、あるコライダーが含まれているペアを削除
+void CollisionManager::RemoveFromAllPairs(Collider* collider)
+{
+	auto it = mAllPairs.begin();
+	for (; it != mAllPairs.end();)
 	{
-		auto it = mCollisionPairs.begin();
-		for (; it != mCollisionPairs.end();)
+		if (it->mCollider1 == collider || it->mCollider2 == collider)
 		{
-			if (it->a == collider || it->b == collider)
-			{
-				it = mCollisionPairs.erase(it);
-			}
-			else
-			{
-				++it;
-			}
+			it = mAllPairs.erase(it);
+		}
+		else
+		{
+			++it;
 		}
 	}
 }

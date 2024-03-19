@@ -192,6 +192,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Audio\Audio.h" />
+    <ClInclude Include="Engine\Collision\CollisionAttr.h" />
     <ClInclude Include="Engine\Component\Animator.h" />
     <ClInclude Include="Engine\Graphics\CircleShadow.h" />
     <ClInclude Include="Engine\Graphics\Model\SkinCluster.h" />

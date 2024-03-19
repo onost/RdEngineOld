@@ -44,7 +44,7 @@ void GravityBody::Update(float deltaTime)
 		mOwner->mTransform->mPosition,
 		mOwner->mTransform->mPosition - mNormal);
 	RaycastInfo info = {};
-	if (mOwner->GetScene()->GetCollisionManager()->Raycast(ray, info, Collider::Terrain))
+	if (mOwner->GetScene()->GetCollisionManager()->Raycast(ray, info, CollisionAttr::Terrain))
 	{
 		// トリガー以外
 		if (!info.mCollider->GetIsTrigger())

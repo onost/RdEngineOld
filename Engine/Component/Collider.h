@@ -2,6 +2,7 @@
 #include "Collision/Collision.h"
 #include "Color.h"
 #include "Component.h"
+#include "Collision/CollisionAttr.h"
 
 class SphereCollider;
 class BoxCollider;
@@ -13,7 +14,7 @@ class Collider : public Component
 	friend class CollisionManager;
 public:
 	// 属性
-	enum Attribute : uint32_t
+	/*enum Attribute : uint32_t
 	{
 		Terrain = 1 << 0,
 		Allies = 1 << 1,
@@ -21,7 +22,7 @@ public:
 		Planet = 1 << 3,
 
 		kAll = 0xFFFFFFFF
-	};
+	};*/
 
 	Collider(Actor* owner);
 	virtual ~Collider();
@@ -49,17 +50,26 @@ public:
 	bool GetIsTrigger() const { return mIsTrigger; }
 	void SetIsTrigger(bool isTrigger) { mIsTrigger = isTrigger; }
 	// Attribute
-	void SetAttribute(Attribute attr) { mAttribute = attr; }
+	/*void SetAttribute(Attribute attr) { mAttribute = attr; }
 	void AddAttribute(Attribute attr) { mAttribute = Attribute(uint32_t(mAttribute) | uint32_t(attr)); }
 	void RemoveAttribute(Attribute attr) { mAttribute = Attribute(uint32_t(mAttribute) & uint32_t(~attr)); }
 	void SetResponse(Attribute attr) { mResponse = attr; }
 	void AddResponse(Attribute attr) { mResponse = Attribute(uint32_t(mResponse) | uint32_t(attr)); }
-	void RemoveResponse(Attribute attr) { mResponse = Attribute(uint32_t(mResponse) & uint32_t(~attr)); }
+	void RemoveResponse(Attribute attr) { mResponse = Attribute(uint32_t(mResponse) & uint32_t(~attr)); }*/
 	//void SetColor(const Color& color) { mColor = color; }
 
+	void SetAttribute(CollisionAttr attr) { mAttribute = attr; }
+	void AddAttribute(CollisionAttr attr) { mAttribute = CollisionAttr(uint32_t(mAttribute) | uint32_t(attr)); }
+	void RemoveAttribute(CollisionAttr attr) { mAttribute = CollisionAttr(uint32_t(mAttribute) & ~uint32_t(attr)); }
+	void SetResponse(CollisionAttr attr) { mResponse = attr; }
+	void AddResponse(CollisionAttr attr) { mResponse = CollisionAttr(uint32_t(mResponse) | uint32_t(attr)); }
+	void RemoveResponse(CollisionAttr attr) { mResponse = CollisionAttr(uint32_t(mResponse) & ~uint32_t(attr)); }
+
 protected:
-	Attribute mAttribute;
-	Attribute mResponse;
+	//Attribute mAttribute;
+	//Attribute mResponse;
+	CollisionAttr mAttribute;
+	CollisionAttr mResponse;
 	bool mIsTrigger;
 protected:
 	//Color mColor;// 開発用

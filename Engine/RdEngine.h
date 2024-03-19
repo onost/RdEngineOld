@@ -39,6 +39,7 @@ public:
 	CollisionManager* GetCollisionManager() const { return mCollisionManager.get(); }
 	SceneManager* GetSceneManager() const { return mSceneManager.get(); }
 	Audio* GetAudio() const { return mAudio.get(); }
+	bool GetIsMaximum() const { return mIsMaximum; }
 
 private:
 	// ゲームループ用
@@ -52,6 +53,8 @@ private:
 
 	// 開発用
 	void UpdateForDev();
+
+	void ShowState();
 
 public:
 	// エンジン名
@@ -69,6 +72,11 @@ private:
 	std::unique_ptr<CollisionManager> mCollisionManager;
 	std::unique_ptr<SceneManager> mSceneManager;
 	std::unique_ptr<Audio> mAudio;
+	Texture* mStartTex;
+	Texture* mStopTex;
+	Texture* mPauseTex;
+	Texture* mStepTex;
+	bool mIsMaximum = false;
 };
 
 extern std::unique_ptr<RdEngine> gEngine;

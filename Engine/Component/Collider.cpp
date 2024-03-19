@@ -7,8 +7,10 @@
 
 Collider::Collider(Actor* owner)
 	: Component(owner)
-	, mAttribute(Attribute(0))
-	, mResponse(Attribute(0))
+	//, mAttribute(Attribute(0))
+	//, mResponse(Attribute(0))
+	, mAttribute(CollisionAttr(0))
+	, mResponse(CollisionAttr(0))
 	, mIsTrigger(false)
 {
 	mOwner->GetScene()->GetCollisionManager()->AddCollider(this);
@@ -29,12 +31,14 @@ void Collider::Load(const nlohmann::json& json)
 	uint32_t attr;
 	if (JsonHelper::GetUint(json, "Attribute", attr))
 	{
-		mAttribute = Attribute(attr);
+		//mAttribute = Attribute(attr);
+		mAttribute = CollisionAttr(attr);
 	}
 	uint32_t responseAttr;
 	if (JsonHelper::GetUint(json, "Response Attr", responseAttr))
 	{
-		mResponse = Attribute(responseAttr);
+		//mResponse = Attribute(responseAttr);
+		mResponse = CollisionAttr(responseAttr);
 	}
 	JsonHelper::GetBool(json, "Is Trigger", mIsTrigger);
 }
@@ -53,14 +57,22 @@ void Collider::Save(nlohmann::json& json)
 
 void Collider::UpdateForDev()
 {
-	auto attrCount = magic_enum::enum_count<Attribute>();
+	//auto attrCount = magic_enum::enum_count<Attribute>();
+	auto attrCount = magic_enum::enum_count<CollisionAttr>();
 	if (ImGui::TreeNode("Attribute"))
 	{
 		for (uint32_t i = 0; i < attrCount; ++i)
 		{
-			Attribute attr = magic_enum::enum_value<Attribute>(i);
+			/*Attribute attr = magic_enum::enum_value<Attribute>(i);
 			bool isCheck = ((mAttribute & attr) != 0);
 			if (ImGui::Checkbox(magic_enum::enum_name<Attribute>(attr).data(), &isCheck))
+			{
+				if (isCheck) AddAttribute(attr);
+				else RemoveAttribute(attr);
+			}*/
+			CollisionAttr attr = magic_enum::enum_value<CollisionAttr>(i);
+			bool isCheck = ((uint32_t(mAttribute) & uint32_t(attr)) != 0);
+			if (ImGui::Checkbox(magic_enum::enum_name<CollisionAttr>(attr).data(), &isCheck))
 			{
 				if (isCheck) AddAttribute(attr);
 				else RemoveAttribute(attr);
@@ -72,9 +84,17 @@ void Collider::UpdateForDev()
 	{
 		for (uint32_t i = 0; i < attrCount; ++i)
 		{
-			Attribute attr = magic_enum::enum_value<Attribute>(i);
+			/*Attribute attr = magic_enum::enum_value<Attribute>(i);
 			bool isCheck = ((mResponse & attr) != 0);
 			if (ImGui::Checkbox(magic_enum::enum_name<Attribute>(attr).data(), &isCheck))
+			{
+				if (isCheck) AddResponse(attr);
+				else RemoveResponse(attr);
+			}*/
+
+			CollisionAttr attr = magic_enum::enum_value<CollisionAttr>(i);
+			bool isCheck = ((uint32_t(mAttribute) & uint32_t(attr)) != 0);
+			if (ImGui::Checkbox(magic_enum::enum_name<CollisionAttr>(attr).data(), &isCheck))
 			{
 				if (isCheck) AddResponse(attr);
 				else RemoveResponse(attr);

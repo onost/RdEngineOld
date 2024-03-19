@@ -461,3 +461,16 @@ void Actor::SetOrder(uint32_t order)
 		mScene->SortActors();
 	}
 }
+
+// 親スケールを計算
+Vector3 GetAllScale(Actor* actor)
+{
+	Actor* a = actor;
+	Vector3 result = Vector3::kOne;
+	while (a->GetParent())
+	{
+		result *= a->mTransform->mScale;
+		a = a->GetParent();
+	}
+	return result;
+}

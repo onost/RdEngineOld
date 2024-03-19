@@ -100,11 +100,18 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 
 
 
-	if (gEngine->GetState() == RdEngine::State::kDev)
+	if (gEngine->GetState() == RdEngine::State::kDev && (gEngine->GetGameState() == RdEngine::GameState::kDev || !gEngine->GetIsMaximum()))
 	{
+		ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, -1.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(-1.0f, -1.0f));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(-1.0f, -1.0f));
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(-1.0f, -1.0f));
 		// ImGuiへ描画
 		//static ImGuiWindowFlags gizmoWindowFlags = 0;
-		ImGui::Begin("Game Screen", 0, ImGuiWindowFlags_NoMove);
+
+		ImGui::Begin("Game Screen", 0, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+		ImVec2 size = ImGui::GetWindowSize();
+		//ImGui::SetWindowSize(ImVec2(size.x, Window::kHeight * size.x / Window::kWidth));
 		//ImVec2 size = ImGui::GetWindowSize();
 		//ImGui::Image(
 		//	ImTextureID(texture->GetDescHandle().ptr),
@@ -129,21 +136,7 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 			auto actor = scene->GetActorForDev();
 			if (actor)
 			{
-				//auto min = ImGui::GetItemRectMin();
-				//auto max = ImGui::GetItemRectMax();
-				//auto w = max.x - min.x;
-				//auto h = max.y - min.y;
-				//ImGuizmo::SetRect(min.x, min.y, w, h);
-				float windowWidth = (float)ImGui::GetWindowWidth();
-				float windowHeight = (float)ImGui::GetWindowHeight();
-				ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
-				float viewManipulateRight = ImGui::GetWindowPos().x + windowWidth;
-				float viewManipulateTop = ImGui::GetWindowPos().y;
-				/*ImGuiWindow* window = ImGui::GetCurrentWindow();
-				gizmoWindowFlags = ImGui::IsWindowHovered() && ImGui::IsMouseHoveringRect(window->InnerRect.Min, window->InnerRect.Max) ? ImGuiWindowFlags_NoMove : 0;*/
 
-
-				ImVec2 size = ImGui::GetWindowSize();
 				ImGui::Image(
 					ImTextureID(texture->GetDescHandle().ptr),
 					ImVec2(size.x, Window::kHeight * size.x / Window::kWidth));
@@ -161,21 +154,51 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 					ImGui::EndDragDropTarget();
 				}
 
+				//if (!gEngine->GetIsMaximum())
+				{
 
-				ImGuizmo::SetDrawlist();
-				auto world = actor->mTransform->GetTWorld();
-				auto view = mCurrCamera->GetView();
-				ImGuizmo::Manipulate(&view.m[0][0], &mCurrCamera->GetProj().m[0][0], ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, &world.m[0][0]);
-				auto dist = Length(actor->mTransform->GetWorld().GetTranslation() - mCurrCamera->GetPosition());
-				ImGuizmo::ViewManipulate(&view.m[0][0], dist, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010);
+					//auto min = ImGui::GetItemRectMin();
+					//auto max = ImGui::GetItemRectMax();
+					//auto w = max.x - min.x;
+					//auto h = max.y - min.y;
+					//ImGuizmo::SetRect(min.x, min.y, w, h);
+					//float windowWidth = (float)ImGui::GetWindowWidth();
+					//float windowHeight = (float)ImGui::GetWindowHeight();
+					ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, size.x, Window::kHeight * size.x / Window::kWidth);
+					//float viewManipulateRight = ImGui::GetWindowPos().x + windowWidth;
+					//float viewManipulateTop = ImGui::GetWindowPos().y;
+					/*ImGuiWindow* window = ImGui::GetCurrentWindow();
+					gizmoWindowFlags = ImGui::IsWindowHovered() && ImGui::IsMouseHoveringRect(window->InnerRect.Min, window->InnerRect.Max) ? ImGuiWindowFlags_NoMove : 0;*/
 
-				actor->mTransform->mScale = world.GetScale();
-				actor->mTransform->mRotation = world.GetRotation();
-				actor->mTransform->mPosition = world.GetTranslation();
+
+
+					ImGuizmo::SetDrawlist();
+					auto world = actor->mTransform->GetWorld();
+					auto view = mCurrCamera->GetView();
+					ImGuizmo::Manipulate(&view.m[0][0], &mCurrCamera->GetProj().m[0][0], ImGuizmo::TRANSLATE, ImGuizmo::WORLD, &world.m[0][0]);
+					/*auto dist = Length(actor->mTransform->GetWorld().GetTranslation() - mCurrCamera->GetPosition());
+					ImGuizmo::ViewManipulate(&view.m[0][0], dist, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010);*/
+
+					auto p = actor->GetParent();
+					Matrix4 pm = Matrix4::kIdentity;
+					if (p)
+					{
+						pm = p->mTransform->GetWorld();
+					}
+
+					world = Inverse(pm) * world;
+					actor->mTransform->mScale = world.GetScale();
+					actor->mTransform->mRotation = world.GetRotation();
+					actor->mTransform->mPosition = world.GetTranslation();
+				}
 			}
 		}
 
 		ImGui::End();
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
+		ImGui::PopStyleVar();
 	}
 	else
 	{
@@ -193,7 +216,8 @@ void Renderer::DrawScene(ID3D12GraphicsCommandList* cmdList)
 
 	// カメラ
 	if (mIsDebugCamera &&
-		gEngine->GetState() == RdEngine::State::kDev)
+		gEngine->GetState() == RdEngine::State::kDev &&
+		(gEngine->GetGameState() == RdEngine::GameState::kDev || !gEngine->GetIsMaximum()))
 	{
 		mCurrCamera = mDebugCamera->GetCamera();
 	}
@@ -258,7 +282,7 @@ void Renderer::DrawScene(ID3D12GraphicsCommandList* cmdList)
 
 void Renderer::DrawFinalSprite(ID3D12GraphicsCommandList* cmdList)
 {
-	if (gEngine->GetState() == RdEngine::State::kDev)
+	if (gEngine->GetState() == RdEngine::State::kDev && (gEngine->GetGameState() == RdEngine::GameState::kDev || !gEngine->GetIsMaximum()))
 	{
 		// エディタ上に表示
 		Editor::Draw(cmdList);
@@ -277,7 +301,7 @@ void Renderer::DrawFinalSprite(ID3D12GraphicsCommandList* cmdList)
 		cmdList->RSSetViewports(1, &viewport);
 		mFinalSprite->Draw(Vector2(float(Window::kWidth), float(Window::kHeight)));
 		SpriteCommon::PostRendering();
-		//Editor::Draw(cmdList);
+		Editor::Draw(cmdList);
 	}
 }
 
@@ -540,15 +564,22 @@ void Renderer::UpdateForDev()
 
 	// テクスチャ
 	ImGui::Begin("Texture", nullptr, ImGuiWindowFlags_NoMove);
+	auto currWndSize = ImGui::GetWindowSize();
+	float currWidth = 0.0f;
 	uint32_t i = 0;
 	for (auto& texture : mTextures.GetResources())
 	{
 		Texture* t = texture.second.get();
 		if (t)
 		{
-			if (i > 0)
+			currWidth += 60.0f;
+			if (i > 0 && currWidth < currWndSize.x)
 			{
 				ImGui::SameLine(0.0f, 20.0f);
+			}
+			else
+			{
+				currWidth = 60.0f;
 			}
 			// Group
 			ImGui::BeginGroup();
@@ -561,10 +592,10 @@ void Renderer::UpdateForDev()
 				ImGui::EndDragDropSource();
 			}
 			// 文字列が長い
-			if (texName.length() >= 10)
+			if (texName.length() >= 7)
 			{
-				texName[7] = texName[8] = texName[9] = '.';
-				texName[10] = '\0';
+				texName[4] = texName[5] = texName[6] = '.';
+				texName[7] = '\0';
 			}
 			ImGui::Text(texName.c_str());
 			ImGui::EndGroup();
@@ -574,6 +605,7 @@ void Renderer::UpdateForDev()
 	ImGui::End();
 
 	// モデル
+	currWidth = 0.0f;
 	ImGui::Begin("Model", nullptr, ImGuiWindowFlags_NoMove);
 	i = 0;
 	for (auto& model : mModels.GetResources())
@@ -581,9 +613,14 @@ void Renderer::UpdateForDev()
 		Model* m = model.second.get();
 		if (m)
 		{
-			if (i > 0)
+			currWidth += size.x + 20.0f;
+			if (i > 0 && currWidth < currWndSize.x)
 			{
 				ImGui::SameLine(0.0f, 20.0f);
+			}
+			else
+			{
+				currWidth = 60.0f;
 			}
 			// Group
 			ImGui::BeginGroup();
@@ -595,10 +632,10 @@ void Renderer::UpdateForDev()
 				ImGui::Text(modelName.c_str());
 				ImGui::EndDragDropSource();
 			}
-			if (modelName.length() >= 10)
+			if (modelName.length() >= 7)
 			{
-				modelName[7] = modelName[8] = modelName[9] = '.';
-				modelName[10] = '\0';
+				modelName[4] = modelName[5] = modelName[6] = '.';
+				modelName[7] = '\0';
 			}
 			ImGui::Text(modelName.c_str());
 			ImGui::EndGroup();

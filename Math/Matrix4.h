@@ -13,6 +13,7 @@ public:
 	Matrix4(float m[4][4]);
 	Vector3 GetScale() const;
 	Quaternion GetRotation() const;
+	Quaternion GetRotation(const Vector3& scale) const;
 	Vector3 GetTranslation() const;
 
 	static Matrix4 CreateScale(const Vector3& scale);

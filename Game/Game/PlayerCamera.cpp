@@ -74,7 +74,7 @@ void PlayerCamera::ActorUpdate(float deltaTime)
 		// カメラが埋まらないように
 		Ray ray = Ray(mTarget->mTransform->mPosition + corrPos, mTransform->mPosition + b * mLeeway);// 少し長め
 		RaycastInfo info = {};
-		Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));
+		CollisionAttr attr = CollisionAttr(CollisionAttr::All & ~CollisionAttr::Allies);
 		if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
 		{
 			float dist = Length(info.mPoint - ray.mStart);

@@ -200,6 +200,7 @@
     <ClInclude Include="Game\Game\Meteorite.h" />
     <ClInclude Include="Game\Game\MeteoriteChip.h" />
     <ClInclude Include="Game\Game\MeteoriteEmitter.h" />
+    <ClInclude Include="Engine\Collision\CollisionAttr.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="External\ImGui\LICENSE.txt" />

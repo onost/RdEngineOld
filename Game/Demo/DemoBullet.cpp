@@ -18,9 +18,9 @@ DemoBullet::DemoBullet(Scene* scene)
 	// コライダー
 	auto sc = new SphereCollider(this);
 	sc->SetSphere({ {0.0f,0.0f,0.0f},1.0f });
-	sc->SetAttribute(Collider::Allies);
-	sc->AddResponse(Collider::Terrain);
-	sc->AddResponse(Collider::Enemies);
+	sc->SetAttribute(CollisionAttr::Allies);
+	sc->AddResponse(CollisionAttr::Terrain);
+	sc->AddResponse(CollisionAttr::Enemies);
 	sc->SetIsTrigger(true);
 }
 

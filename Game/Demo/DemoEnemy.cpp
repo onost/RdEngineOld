@@ -18,8 +18,8 @@ DemoEnemy::DemoEnemy(Scene* scene)
 	mr->SetModel(mScene->GetRenderer()->GetModel("Player.obj"));
 	// コライダー
 	auto bc = new BoxCollider(this);
-	bc->SetAttribute(Collider::Enemies);// 敵
-	bc->SetResponse(Collider::kAll);
+	bc->SetAttribute(CollisionAttr::Enemies);// 敵
+	bc->SetResponse(CollisionAttr::All);
 	bc->SetBox({ {0.0f,0.0f,0.0f},{1.0f,1.0f,1.0f} });
 }
 
@@ -54,7 +54,7 @@ void DemoEnemy::ActorUpdate(float deltaTime)
 	// 地面
 	Ray ray = Ray(mTransform->mPosition, mTransform->mPosition + Vector3(0.0f, -1.0f, 0.0f));// 下へ
 	RaycastInfo info = {};
-	if (mScene->GetCollisionManager()->Raycast(ray, info, Collider::Terrain))
+	if (mScene->GetCollisionManager()->Raycast(ray, info, CollisionAttr::Terrain))
 	{
 		float dist = Length(info.mPoint - ray.mStart);
 		if (dist <= mRadius + 0.1f)

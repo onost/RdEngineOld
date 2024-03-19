@@ -82,6 +82,11 @@ void RdEngine::Initialize()
 
 	Editor::Initialize(mWindow.get());
 	Random::Initialize();
+
+	mStartTex = mRenderer->GetTexture("Assets/Texture/Start.png");
+	mStopTex = mRenderer->GetTexture("Assets/Texture/Stop.png");
+	mPauseTex = mRenderer->GetTexture("Assets/Texture/Pause.png");
+	mStepTex = mRenderer->GetTexture("Assets/Texture/Step.png");
 }
 
 void RdEngine::Terminate()
@@ -161,9 +166,18 @@ void RdEngine::Update()
 	const float kDeltaTime = 1.0f / 60.0f;
 	if (mState == State::kDev)
 	{
-		UpdateForDev();
-		mRenderer->UpdateForDev();
-		mSceneManager->UpdateForDev();
+		if (mGameState == GameState::kDev || !mIsMaximum)//
+		{
+			UpdateForDev();
+			mRenderer->UpdateForDev();
+			mSceneManager->UpdateForDev();
+		}
+		else
+		{
+			ImGui::Begin("State");
+			ShowState();
+			ImGui::End();
+		}
 		// デバッグカメラ
 		if (mRenderer->GetIsDebugCamera())
 		{
@@ -202,17 +216,23 @@ void RdEngine::Render()
 	// デバッグ用描画
 	if (mState == State::kDev)
 	{
-		Primitive* prim = mRenderer->GetPrimitive();
-		prim->PreRendering(cmdList);
-		mRenderer->RenderForDev();
-		mSceneManager->RenderForDev(prim);
-		prim->PostRendering();
+		if (mGameState == GameState::kDev || !mIsMaximum)//
+		{
+			Primitive* prim = mRenderer->GetPrimitive();
+			prim->PreRendering(cmdList);
+			mRenderer->RenderForDev();
+			mSceneManager->RenderForDev(prim);
+			prim->PostRendering();
+		}
 	}
 	mRenderer->PostRendering(cmdList);
 
 	if (mState == State::kDev)
 	{
-		Console::ShowConsole();
+		if (mGameState == GameState::kDev || !mIsMaximum)//
+		{
+			Console::ShowConsole();
+		}
 	}
 	// エディタ終了
 	/*UpdateForDev();
@@ -269,75 +289,86 @@ void RdEngine::Save()
 void RdEngine::UpdateForDev()
 {
 	ImGui::Begin("Game", nullptr, ImGuiWindowFlags_NoMove);
-	if (mGameState == GameState::kStep)
-	{
-		mGameState = GameState::kPause;
-	}
-	switch (mGameState)
-	{
-	case GameState::kDev:
-		if (ImGui::Button("Game"))
-		{
-			mGameState = GameState::kPlay;
-			mRenderer->SetIsDebugCamera(false);
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Pause"))
-		{
-			mGameState = GameState::kPause;
-			mRenderer->SetIsDebugCamera(false);
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Step"))
-		{
-			mGameState = GameState::kStep;
-			mRenderer->SetIsDebugCamera(false);
-		}
-		break;
-	case GameState::kPlay:
-		if (ImGui::Button("Dev"))
-		{
-			mGameState = GameState::kDev;
-			mSceneManager->Reset();
-			mRenderer->SetIsDebugCamera(true);
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Pause"))
-		{
-			mGameState = GameState::kPause;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Step"))
-		{
-			mGameState = GameState::kStep;
-		}
-		break;
-	case GameState::kPause:
-		if (ImGui::Button("Dev"))
-		{
-			mGameState = GameState::kDev;
-			mSceneManager->Reset();
-			mRenderer->SetIsDebugCamera(true);
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Play"))
-		{
-			mGameState = GameState::kPlay;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Step"))
-		{
-			mGameState = GameState::kStep;
-		}
-		break;
-	}
+	
+	ShowState();
+
 	// デバッグカメラ
 	bool isDebugCamera = mRenderer->GetIsDebugCamera();
 	if (ImGui::Checkbox("Is Debug Camera", &isDebugCamera))
 	{
 		mRenderer->SetIsDebugCamera(isDebugCamera);
 	}
+	ImGui::Checkbox("Is Maximum", &mIsMaximum);
+
 	ImGui::End();
+}
+
+void RdEngine::ShowState()
+{
+	if (mGameState == GameState::kStep)
+	{
+		mGameState = GameState::kPause;
+	}
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(-1.0f, -1.0f));
+	switch (mGameState)
+	{
+	case GameState::kDev:
+		if (ImGui::ImageButton((void*)(intptr_t)mStartTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+		{
+			mGameState = GameState::kPlay;
+			mRenderer->SetIsDebugCamera(false);
+		}
+		ImGui::SameLine();
+		if (ImGui::ImageButton((void*)(intptr_t)mPauseTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+		{
+			mGameState = GameState::kPause;
+			mRenderer->SetIsDebugCamera(false);
+		}
+		ImGui::SameLine();
+		if (ImGui::ImageButton((void*)(intptr_t)mStepTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+		{
+			mGameState = GameState::kStep;
+			mRenderer->SetIsDebugCamera(false);
+		}
+		break;
+	case GameState::kPlay:
+		if (ImGui::ImageButton((void*)(intptr_t)mStopTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+		{
+			mGameState = GameState::kDev;
+			mSceneManager->Reset();
+			mRenderer->SetIsDebugCamera(true);
+		}
+		ImGui::SameLine();
+		if (ImGui::ImageButton((void*)(intptr_t)mPauseTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+		{
+			mGameState = GameState::kPause;
+		}
+		ImGui::SameLine();
+		if (ImGui::ImageButton((void*)(intptr_t)mStepTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+		{
+			mGameState = GameState::kStep;
+		}
+		break;
+	case GameState::kPause:
+		if (ImGui::ImageButton((void*)(intptr_t)mStopTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+		{
+			mGameState = GameState::kDev;
+			mSceneManager->Reset();
+			mRenderer->SetIsDebugCamera(true);
+		}
+		ImGui::SameLine();
+		if (ImGui::ImageButton((void*)(intptr_t)mStartTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+		{
+			mGameState = GameState::kPlay;
+		}
+		ImGui::SameLine();
+		if (ImGui::ImageButton((void*)(intptr_t)mStepTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+		{
+			mGameState = GameState::kStep;
+		}
+		break;
+	}
+	ImGui::PopStyleVar();
 }
 
 std::unique_ptr<RdEngine> gEngine = nullptr;

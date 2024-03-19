@@ -172,3 +172,5 @@ protected:
 	// コンポーネントタイプ
 	Component::Type mCompType;// 開発用
 };
+
+Vector3 GetAllScale(Actor* actor);

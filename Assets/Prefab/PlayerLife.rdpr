@@ -1,0 +1,53 @@
+{
+    "Components": [
+        {
+            "Position": [
+                20.0,
+                20.0,
+                0.0
+            ],
+            "Rotation": [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.20000000298023224,
+                0.20000000298023224,
+                1.0
+            ],
+            "Type": 10
+        },
+        {
+            "Blend": 1,
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Draw Order": 200,
+            "Is Flip X": false,
+            "Is Flip Y": false,
+            "Is Visible": true,
+            "Order": 100,
+            "Pivot": [
+                0.0,
+                0.0
+            ],
+            "Rect": [
+                0.0,
+                0.0,
+                465.0,
+                396.0
+            ],
+            "Texture": "Assets/Texture/Heart.png",
+            "Type": 5
+        }
+    ],
+    "Name": "PlayerLife",
+    "Order": 100,
+    "State": 0,
+    "Type": 0
+}

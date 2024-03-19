@@ -221,6 +221,32 @@ Quaternion Matrix4::GetRotation() const
 	return ToQuaternion(Matrix4(tmp));
 }
 
+Quaternion Matrix4::GetRotation(const Vector3& scale) const
+{
+	/*Vector3 x = Normalize(Vector3(m[0][0], m[0][1], m[0][2]));
+	Vector3 y = Normalize(Vector3(m[1][0], m[1][1], m[1][2]));
+	Vector3 z = Normalize(Vector3(m[2][0], m[2][1], m[2][2]));
+	float tmp[4][4] =
+	{
+		{ x.x, x.y, x.z, 0.0f },
+		{ y.x, y.y, y.z, 0.0f },
+		{ z.x, z.y, z.z, 0.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f }
+	};
+	return ToQuaternion(Matrix4(tmp));*/
+	Vector3 x = Vector3(m[0][0] / scale.x, m[1][0] / scale.x, m[2][0] / scale.x);
+	Vector3 y = Vector3(m[0][1] / scale.y, m[1][1] / scale.y, m[2][1] / scale.y);
+	Vector3 z = Vector3(m[0][2] / scale.z, m[1][2] / scale.z, m[2][2] / scale.z);
+	float tmp[4][4] =
+	{
+		{ x.x, y.x, z.x, 0.0f },
+		{ x.y, y.y, z.y, 0.0f },
+		{ x.z, y.z, z.z, 0.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f }
+	};
+	return ToQuaternion(Matrix4(tmp));
+}
+
 Vector3 Matrix4::GetTranslation() const
 {
 	return Vector3(m[3][0], m[3][1], m[3][2]);

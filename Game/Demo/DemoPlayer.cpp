@@ -35,7 +35,7 @@ DemoPlayer::DemoPlayer(Scene* scene)
 	mr->SetModel(mScene->GetRenderer()->GetModel("Player.obj"));
 	// コライダー
 	auto sc = new SphereCollider(this);
-	sc->SetAttribute(Collider::Allies);// 味方
+	sc->SetAttribute(CollisionAttr::Allies);// 味方
 	sc->SetSphere({ {0.0f,0.0f,0.0f},mRadius });
 
 	// 砂煙
@@ -157,7 +157,7 @@ void DemoPlayer::ActorUpdate(float deltaTime)
 		ray.mStart.y += -mVelocity.y * deltaTime;
 	}
 	RaycastInfo info = {};
-	Collider::Attribute attr = Collider::Attribute(uint32_t(Collider::kAll) & ~uint32_t(Collider::Allies));// 味方以外
+	CollisionAttr attr = CollisionAttr(CollisionAttr::All & ~CollisionAttr::Allies);// 味方以外
 	if (mScene->GetCollisionManager()->Raycast(ray, info, attr))
 	{
 		float dist = Length(info.mPoint - ray.mStart);
