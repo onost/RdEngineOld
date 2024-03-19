@@ -17,7 +17,7 @@ Model* ModelLoader::LoadModel(const std::string& modelName)
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile((filePath + modelName).c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
 	//aiProcess_Triangulate: 三角形化
-	MyAssert(scene->HasMeshes());
+	//MyAssert(scene->HasMeshes());
 
 	Model* model = new Model();
 	std::vector<std::string> materialNames;

@@ -143,6 +143,33 @@ void Player::ActorUpdate(float deltaTime)
 	Vector3 f = Vector3(0.0f, 0.0f, 1.0f) * mTransform->mRotation;// forward
 	mTransform->mPosition += r * mVelocity.x * deltaTime;
 	mTransform->mPosition += f * mVelocity.z * deltaTime;
+	if (mRenderer)
+	{
+		if (!mGravityBody->GetIsGround())
+		{
+			if (mRenderer->GetAnimation()->GetName() != "Jump.gltf/Armature|mixamo.com|Layer0.001")
+			{
+				mRenderer->PlayAnimation(mScene->GetRenderer()->GetAnimation("Jump.gltf/Armature|mixamo.com|Layer0.001"));
+				mRenderer->SetIsLoop(false);
+			}
+		}
+		else if (Length(mVelocity) > 0.0f && mIsGround)
+		{
+			if (mRenderer->GetAnimation()->GetName() != "Astronaut.gltf/Armature|mixamo.com|Layer0")
+			{
+				mRenderer->PlayAnimation(mScene->GetRenderer()->GetAnimation("Astronaut.gltf/Armature|mixamo.com|Layer0"));
+				mRenderer->SetIsLoop(true);
+			}
+		}
+		else
+		{
+			if (mRenderer->GetAnimation()->GetName() != "Idle.gltf/Armature|mixamo.com|Layer0")
+			{
+				mRenderer->PlayAnimation(mScene->GetRenderer()->GetAnimation("Idle.gltf/Armature|mixamo.com|Layer0"));
+				mRenderer->SetIsLoop(true);
+			}
+		}
+	}
 
 	auto light = mScene->GetRenderer()->GetLightManager();
 	auto normal = mGravityBody->GetCurrNormal();

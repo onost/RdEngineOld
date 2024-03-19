@@ -643,6 +643,54 @@ void Renderer::UpdateForDev()
 		}
 	}
 	ImGui::End();
+
+	// モデル
+	currWidth = 0.0f;
+	ImGui::Begin("Animation" , nullptr, ImGuiWindowFlags_NoMove);
+	ImGui::InputText("Name", &mAnimName);
+	if (ImGui::Button("Create"))
+	{
+		/*mSceneNames.push_back(
+			std::format("Scene {}", mSceneNames.size()));*/// デフォルト名
+		ModelLoader::LoadAnimation(mAnimName);
+	}
+
+	i = 0;
+	for (auto& animation : mAnimations.GetResources())
+	{
+		Animation* anim = animation.second.get();
+		if (anim)
+		{
+			currWidth += size.x + 20.0f;
+			if (i > 0 && currWidth < currWndSize.x)
+			{
+				ImGui::SameLine(0.0f, 20.0f);
+			}
+			else
+			{
+				currWidth = 60.0f;
+			}
+			// Group
+			ImGui::BeginGroup();
+			ImGui::Image((void*)(intptr_t)fileTex->GetDescHandle().ptr, size);
+			auto animName = anim->GetName();
+			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))// ドラッグ
+			{
+				ImGui::SetDragDropPayload("ANIM_PAYLOAD", &anim, sizeof(anim));
+				ImGui::Text(animName.c_str());
+				ImGui::EndDragDropSource();
+			}
+			if (animName.length() >= 7)
+			{
+				animName[4] = animName[5] = animName[6] = '.';
+				animName[7] = '\0';
+			}
+			ImGui::Text(animName.c_str());
+			ImGui::EndGroup();
+			++i;
+		}
+	}
+	ImGui::End();
 }
 
 void Renderer::RenderForDev()

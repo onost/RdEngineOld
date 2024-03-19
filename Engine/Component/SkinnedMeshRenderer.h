@@ -37,10 +37,12 @@ public:
 	Type GetType() const override { return Type::SkinnedMeshRenderer; }
 	float GetCurrTime() const { return mCurrTime; }
 	Animation* GetAnimation() const { return mCurrAnim; }
+	void SetIsLoop(bool isLoop) { mIsLoop = isLoop; }
 
 private:
 	// アニメーション
 	float mCurrTime;
 	Animation* mCurrAnim;
 	std::string mAnimName;
+	bool mIsLoop;
 };

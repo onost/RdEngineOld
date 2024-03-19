@@ -126,4 +126,6 @@ private:
 	std::unique_ptr<GaussianBlur> mGaussianBlur;
 	bool mIsGaussianBlur = false;
 	float mGaussianPower = 20.0f;
+
+	std::string mAnimName;
 };

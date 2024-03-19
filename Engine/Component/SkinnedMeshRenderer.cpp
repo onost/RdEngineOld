@@ -11,6 +11,7 @@ SkinnedMeshRenderer::SkinnedMeshRenderer(Actor* owner)
 	, mCurrTime(0.0f)
 	, mCurrAnim(nullptr)
 	, mAnimName()
+	, mIsLoop(true)
 {
 	mOwner->GetScene()->GetRenderer()->AddSkinnedMesh(this);
 }
@@ -26,7 +27,7 @@ void SkinnedMeshRenderer::Update(float deltaTime)
 	{
 		// アニメーションを更新
 		mCurrTime += deltaTime;
-		if (mCurrTime >= mCurrAnim->GetDuration())
+		if (mCurrTime >= mCurrAnim->GetDuration() && mIsLoop)
 		{
 			mCurrTime -= mCurrAnim->GetDuration();
 		}
