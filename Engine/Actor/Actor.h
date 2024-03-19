@@ -132,6 +132,11 @@ public:
 	void SetOrder(uint32_t order);
 	void SetState(State state) { mState = state; }
 
+	// ==================================================
+	// Instantiate
+	// ==================================================
+	Actor* Instantiate(const std::string& name);
+
 protected:
 	// ==================================================
 	// アクター固有

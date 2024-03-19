@@ -6,6 +6,7 @@
 #include "Scene/Scene.h"
 #include "Random.h"
 #include "MeteoriteChip.h"
+#include "RdEngine.h"
 
 Meteorite::Meteorite(Scene* scene)
 	: Actor(scene)
@@ -59,6 +60,10 @@ void Meteorite::ActorOnCollisionEnter(Actor* owner, CollisionInfo*)
 		mState = State::kDead;
 		auto light = mScene->GetRenderer()->GetLightManager();
 		light->SetCircleShadowIntensity(mShadowIndex, 0.0f);
+
+		auto audio = gEngine->GetAudio();
+		auto data = audio->Load("Assets/Audio/Meteo.wav");
+		audio->Play(data);
 
 		for (uint32_t i = 0; i < 3; ++i)
 		{

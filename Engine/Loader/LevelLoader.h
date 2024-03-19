@@ -18,7 +18,7 @@ public:
 	static bool LoadScene(Scene* scene, const std::string& filePath);
 	static bool SaveScene(Scene* scene, const std::string& filePath);
 
-	static bool LoadPrefab(Scene* scene, const std::string& filePath);
+	static Actor* LoadPrefab(Scene* scene, const std::string& filePath);
 	static bool SavePrefab(Actor* actor, const std::string& filePath);
 
 private:

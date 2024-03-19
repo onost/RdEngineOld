@@ -7,6 +7,7 @@
 #include "Graphics/Renderer.h"
 #include "Helper/JsonHelper.h"
 #include "Scene/Scene.h"
+#include "RdEngine.h"
 
 #include "GravityBody.h"
 #include "Attractor.h"
@@ -27,7 +28,7 @@ Player::Player(Scene* scene)
 	, mMaxGround(60.0f)
 	, mHp(3)
 	, mInvincibleTimer(0.0f)
-	, mGravityBody(nullptr)
+	, mDamage(nullptr)
 	, mRenderer(nullptr)
 {
 	// メッシュ
@@ -43,6 +44,12 @@ Player::Player(Scene* scene)
 	sc->SetSphere({ {0.0f,0.0f,0.0f},mRadius });
 
 	mGravityBody = new GravityBody(this);
+
+	for (uint32_t i = 0; i < 3; ++i)
+	{
+		mHpUI[i] = Instantiate("PlayerLife");
+		mHpUI[i]->mTransform->mPosition = Vector3(20.0f + i * 100.0f, 20.0f, 0.0f);
+	}
 }
 
 void Player::ActorInput(const Input::State& input)
@@ -107,6 +114,21 @@ void Player::ActorInput(const Input::State& input)
 
 void Player::ActorUpdate(float deltaTime)
 {
+	if (!mDamage)
+	{
+		auto actor = mScene->GetActor("DamageSprite");
+		if (actor)
+		{
+			auto component = actor->GetComponent(Component::Type::SpriteRenderer);
+			mDamage = dynamic_cast<SpriteRenderer*>(component);
+		}
+	}
+	if (!mRenderer)
+	{
+		auto component = GetComponent(Component::Type::SkinnedMeshRenderer);
+		mRenderer = dynamic_cast<SkinnedMeshRenderer*>(component);
+	}
+
 	// ==================================================
 	// 回転
 	// ==================================================
@@ -139,6 +161,40 @@ void Player::ActorUpdate(float deltaTime)
 			{
 				sprite->SetIsVisible(true);
 			}
+		}
+	}
+
+	mInvincibleTimer = MyMath::Max(0.0f, mInvincibleTimer - deltaTime);
+	if (mDamage)
+	{
+		if (mInvincibleTimer > 0.0f)
+		{
+			auto color = mDamage->GetColor();
+			if ((mInvincibleTimer <= 2.0f && mInvincibleTimer > 1.9f))
+			{
+				color.a += 0.2f;
+			}
+			else
+			{
+				color.a -= 0.05f;
+			}
+			mDamage->SetColor(color);
+
+			if (std::fmodf(mInvincibleTimer, 0.2f) > 0.1f)
+			{
+				mRenderer->SetIsVisible(true);
+			}
+			else
+			{
+				mRenderer->SetIsVisible(false);
+			}
+		}
+		else
+		{
+			auto color = mDamage->GetColor();
+			color.a = 0.0f;
+			mDamage->SetColor(color);
+			mRenderer->SetIsVisible(true);
 		}
 	}
 }
@@ -180,6 +236,27 @@ void Player::ActorOnCollisionEnter(Actor* other, CollisionInfo*)
 {
 	if (other->GetName() == "Meteorite" && mInvincibleTimer <= 0.0f)
 	{
+		if (mHp <= 3 && mHp > 0)
+		{
+			auto comp = mHpUI[mHp - 1]->GetComponent(Component::Type::SpriteRenderer);
+			if (comp)
+			{
+				auto sprite = dynamic_cast<SpriteRenderer*>(comp);
+				if (sprite)
+				{
+					sprite->SetIsVisible(false);
+				}
+			}
+
+			if (mHp > 1)
+			{
+				mInvincibleTimer = 2.0f;
+			}
+
+			auto audio = gEngine->GetAudio();
+			auto data = audio->Load("Assets/Audio/Damage.wav");
+			audio->Play(data);
+		}
 		--mHp;
 	}
 }

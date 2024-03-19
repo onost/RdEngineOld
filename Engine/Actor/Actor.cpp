@@ -2,6 +2,7 @@
 #include "Editor.h"
 #include "Helper/JsonHelper.h"
 #include "Scene/Scene.h"
+#include "Loader/LevelLoader.h"
 
 //#include "Demo/Tanuki01.h"
 //#include "Demo/Tanuki02.h"
@@ -473,4 +474,10 @@ Vector3 GetAllScale(Actor* actor)
 		a = a->GetParent();
 	}
 	return result;
+}
+
+Actor* Actor::Instantiate(const std::string& name)
+{
+	auto instance = LevelLoader::LoadPrefab(mScene, "Assets/Prefab/" + name + ".rdpr");
+	return instance;
 }

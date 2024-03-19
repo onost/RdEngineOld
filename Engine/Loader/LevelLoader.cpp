@@ -104,12 +104,12 @@ bool LevelLoader::SaveScene(Scene* scene, const std::string& fileName)
 // Prefab
 // ==================================================
 
-bool LevelLoader::LoadPrefab(Scene* scene, const std::string& filePath)
+Actor* LevelLoader::LoadPrefab(Scene* scene, const std::string& filePath)
 {
 	std::ifstream file(filePath.c_str());
 	if (!file)
 	{
-		return false;
+		return nullptr;
 	}
 	nlohmann::json data;
 	file >> data;
@@ -135,7 +135,7 @@ bool LevelLoader::LoadPrefab(Scene* scene, const std::string& filePath)
 
 	// -------------------- ここまで --------------------
 
-	return true;
+	return actor;
 }
 
 bool LevelLoader::SavePrefab(Actor* actor, const std::string& filePath)

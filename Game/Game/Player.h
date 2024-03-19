@@ -1,10 +1,12 @@
 #pragma once
 #include "Actor/Actor.h"
+#include "Color.h"
 
 class ParticleRenderer;
 class Attractor;
 class GravityBody;
 class SkinnedMeshRenderer;
+class SpriteRenderer;
 
 // プレイヤー
 class Player : public Actor
@@ -48,9 +50,12 @@ private:
 	float mMaxGround;
 
 	uint32_t mHp;
-	SkinnedMeshRenderer* mRenderer;
 	float mInvincibleTimer;
+	SpriteRenderer* mDamage;
+	SkinnedMeshRenderer* mRenderer;
 
 	// 重力
 	GravityBody* mGravityBody;
+
+	Actor* mHpUI[3];
 };
