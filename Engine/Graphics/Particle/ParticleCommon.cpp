@@ -14,7 +14,7 @@ std::unique_ptr<ConstantBuffer> ParticleCommon::mCBuff;
 
 void ParticleCommon::Initialize(Renderer* renderer)
 {
-	MyAssert(renderer);
+	MY_ASSERT(renderer);
 	mRenderer = renderer;
 
 	// ルートシグネチャ
@@ -91,7 +91,7 @@ void ParticleCommon::Initialize(Renderer* renderer)
 // レンダリング前
 void ParticleCommon::PreRendering(ID3D12GraphicsCommandList* cmdList)
 {
-	MyAssert(cmdList);
+	MY_ASSERT(cmdList);
 	mCmdList = cmdList;
 	mRootSignature.Bind(mCmdList);
 	mPsos[uint32_t(Blend::Normal)].Bind(mCmdList);
@@ -120,6 +120,6 @@ void ParticleCommon::PostRendering()
 
 void ParticleCommon::SetBlend(Blend blend)
 {
-	MyAssert(mCmdList);
+	MY_ASSERT(mCmdList);
 	mPsos[uint32_t(blend)].Bind(mCmdList);
 }

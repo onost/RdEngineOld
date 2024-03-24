@@ -17,7 +17,7 @@ Material::Material()
 
 void Material::Create(Renderer* renderer)
 {
-	MyAssert(renderer);
+	MY_ASSERT(renderer);
 	Constant initData = {};
 	initData.mBaseColor = mBaseColor;
 	initData.mSpecular = mSpecular;
@@ -25,12 +25,12 @@ void Material::Create(Renderer* renderer)
 	mCBuff = std::make_unique<ConstantBuffer>();
 	mCBuff->Create(sizeof(Constant), &initData);
 	mTexture = renderer->GetTexture(mTexturePath);
-	MyAssert(mTexture);
+	MY_ASSERT(mTexture);
 }
 
 void Material::Bind(ID3D12GraphicsCommandList* cmdList, uint32_t matRootParamIdx, uint32_t texRootParamIdx)
 {
-	MyAssert(cmdList);
+	MY_ASSERT(cmdList);
 	Constant data = {};
 	data.mBaseColor = mBaseColor;
 	data.mSpecular = mSpecular;

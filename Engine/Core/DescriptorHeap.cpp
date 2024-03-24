@@ -2,31 +2,54 @@
 #include "GraphicsEngine.h"
 #include "Helper/MyAssert.h"
 
-void DescriptorHeap::Create(
-	D3D12_DESCRIPTOR_HEAP_TYPE heapType, uint32_t numDescs, bool shaderVisible)
+DescriptorHeap::DescriptorHeap()
+	: mDesc()
+	, mDescriptorHeap(nullptr)
+	, mDescriptorPool()
+	, mIncrementSize(0)
 {
-	D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-	desc.Type = heapType;
-	desc.NumDescriptors = numDescs;
-	desc.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	auto device = gGraphicsEngine->GetDevice();
-	[[maybe_unused]] HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&mDescHeap));
-	MyAssert(SUCCEEDED(hr));
-	mNumDescs = numDescs;
-	mDescSize = device->GetDescriptorHandleIncrementSize(heapType);
-	mStartHandle.mCpuHandle = mDescHeap->GetCPUDescriptorHandleForHeapStart();
-	if (shaderVisible)
-	{
-		mStartHandle.mGpuHandle = mDescHeap->GetGPUDescriptorHandleForHeapStart();
-	}
+
 }
 
-DescriptorHandle DescriptorHeap::Allocate()
+// デスクリプタヒープを作成
+void DescriptorHeap::Create(D3D12_DESCRIPTOR_HEAP_TYPE type, uint32_t numDescs, bool isShaderVisible)
 {
-	MyAssert(mIndex < mNumDescs);
-	DescriptorHandle handle = mStartHandle;
-	handle.mCpuHandle.ptr += mDescSize * mIndex;
-	handle.mGpuHandle.ptr += mDescSize * mIndex;
-	++mIndex;
-	return handle;
+	mDesc.Type = type;
+	mDesc.NumDescriptors = numDescs;
+	mDesc.Flags = isShaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	auto device = gGraphicsEngine->GetDevice();
+	[[maybe_unused]] HRESULT hr = device->CreateDescriptorHeap(&mDesc, IID_PPV_ARGS(&mDescriptorHeap));
+	MY_ASSERT(SUCCEEDED(hr));
+	// プールを初期化
+	mDescriptorPool.Initialize(numDescs);
+	// インクリメントサイズを取得
+	mIncrementSize = device->GetDescriptorHandleIncrementSize(type);
+}
+
+// デスクリプタハンドルを割り当て
+DescriptorHandle* DescriptorHeap::Alloc()
+{
+	auto initFunc = [&](uint32_t i, DescriptorHandle& descHandle)
+		{
+			// CPUハンドルを計算
+			descHandle.mCpuHandle = mDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+			descHandle.mCpuHandle.ptr += mIncrementSize * i;
+			// GPUハンドルを計算
+			if (mDesc.Flags == D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE)
+			{
+				descHandle.mGpuHandle = mDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+				descHandle.mGpuHandle.ptr += mIncrementSize * i;
+			}
+		};
+	return mDescriptorPool.Alloc(initFunc);
+}
+
+// デスクリプタハンドルを解放
+void DescriptorHeap::Free(DescriptorHandle*& descHandle)
+{
+	if (descHandle)
+	{
+		mDescriptorPool.Free(descHandle);
+		descHandle = nullptr;
+	}
 }

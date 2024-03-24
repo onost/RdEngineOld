@@ -72,7 +72,7 @@ inline Vector4 operator*(float a, const Vector4& v)
 inline Vector4 operator/(const Vector4& v, float a)
 {
 	float oneOverA = 1.0f / a;
-	MyAssert(fabsf(oneOverA) > 0.001f);
+	MY_ASSERT(fabsf(oneOverA) > 0.001f);
 	return Vector4(v.x * oneOverA, v.y * oneOverA, v.z * oneOverA, v.w * oneOverA);
 }
 
@@ -103,7 +103,7 @@ inline Vector4& operator*=(Vector4& v, float a)
 inline Vector4& operator/=(Vector4& v, float a)
 {
 	float oneOverA = 1.0f / a;
-	MyAssert(fabsf(oneOverA) > 0.001f);
+	MY_ASSERT(fabsf(oneOverA) > 0.001f);
 	v *= oneOverA;
 	return v;
 }

@@ -12,11 +12,11 @@ Microsoft::WRL::ComPtr<IDxcIncludeHandler> Shader::mIncludeHandler = nullptr;
 void Shader::Initialize()
 {
 	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&mDxcUtils));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&mDxcCompiler));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	hr = mDxcUtils->CreateDefaultIncludeHandler(&mIncludeHandler);
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 }
 
 bool Shader::LoadVs(const std::string& filePath)
@@ -65,18 +65,18 @@ bool Shader::Compile(const std::string& filePath, const std::string& profile)
 	hr = mDxcCompiler->Compile(
 		&source, arguments, _countof(arguments),
 		mIncludeHandler.Get(), IID_PPV_ARGS(&result));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 
 	Microsoft::WRL::ComPtr<IDxcBlobUtf8> error = nullptr;
 	result->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&error), nullptr);
 	if (error && error->GetStringLength() != 0)
 	{
-		Helper::WriteToConsole(std::format("{}", error->GetStringPointer()));
+		//Helper::WriteToConsole(std::format("{}", error->GetStringPointer()));
 		return false;
 	}
 
 	hr = result->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&mBlob), nullptr);
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 
 	return true;
 }

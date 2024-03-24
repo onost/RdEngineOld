@@ -11,7 +11,7 @@
 
 void GraphicsEngine::Initialize(Window* window)
 {
-	MyAssert(window);
+	MY_ASSERT(window);
 
 	CreateDevice();
 	CreateCommand();
@@ -108,7 +108,7 @@ void GraphicsEngine::WaitGpu()
 
 void GraphicsEngine::SetSrvHeap()
 {
-	ID3D12DescriptorHeap* descHeaps[] = { mSrvHeap.Get() };
+	ID3D12DescriptorHeap* descHeaps[] = { mSrvHeap.GetHeap().Get()};
 	mCmdList->SetDescriptorHeaps(1, descHeaps);
 }
 
@@ -125,7 +125,7 @@ void GraphicsEngine::CreateDevice()
 #endif
 	// DXGIファクトリーを作成
 	HRESULT hr = CreateDXGIFactory(IID_PPV_ARGS(&mFactory));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	Microsoft::WRL::ComPtr<IDXGIAdapter4> useAdapter;
 	// パフォーマンス順でアダプタを取得
 	for (uint32_t i = 0;
@@ -139,8 +139,8 @@ void GraphicsEngine::CreateDevice()
 		{
 			if (!(desc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE))
 			{
-				Helper::WriteToConsole(
-					Helper::ConvertToStr(std::format(L"Use adapter: {}\n", desc.Description)));
+				/*Helper::WriteToConsole(
+					Helper::ConvertToStr(std::format(L"Use adapter: {}\n", desc.Description)));*/
 				break;
 			}
 		}
@@ -159,11 +159,11 @@ void GraphicsEngine::CreateDevice()
 		hr = D3D12CreateDevice(useAdapter.Get(), featureLevels[i], IID_PPV_ARGS(&mDevice));
 		if (SUCCEEDED(hr))
 		{
-			Helper::WriteToConsole(std::format("Feature level: {}\n", str[i]));
+			//Helper::WriteToConsole(std::format("Feature level: {}\n", str[i]));
 			break;
 		}
 	}
-	MyAssert(mDevice != nullptr);
+	MY_ASSERT(mDevice != nullptr);
 #ifdef _DEBUG
 	Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue;
 	if (SUCCEEDED(mDevice->QueryInterface(IID_PPV_ARGS(&infoQueue))))
@@ -190,15 +190,15 @@ void GraphicsEngine::CreateCommand()
 	D3D12_COMMAND_QUEUE_DESC desc = {};
 	// コマンドキューを作成
 	HRESULT hr = mDevice->CreateCommandQueue(&desc, IID_PPV_ARGS(&mCmdQueue));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	// コマンドアロケータを作成
 	hr = mDevice->CreateCommandAllocator(
 		D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&mCmdAllocator));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	// コマンドリストを作成
 	hr = mDevice->CreateCommandList(
 		0, D3D12_COMMAND_LIST_TYPE_DIRECT, mCmdAllocator.Get(), nullptr, IID_PPV_ARGS(&mCmdList));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 }
 
 void GraphicsEngine::CreateSwapChain(Window* window)
@@ -215,7 +215,7 @@ void GraphicsEngine::CreateSwapChain(Window* window)
 	[[maybe_unused]] HRESULT hr = mFactory->CreateSwapChainForHwnd(
 		mCmdQueue.Get(), window->GetHWnd(), &desc, nullptr, nullptr,
 		reinterpret_cast<IDXGISwapChain1**>(mSwapChain.GetAddressOf()));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 }
 
 void GraphicsEngine::CreateDescHeaps()
@@ -232,8 +232,8 @@ void GraphicsEngine::CreateRtv()
 	{
 		// バックバッファを取得
 		[[maybe_unused]] HRESULT hr = mSwapChain->GetBuffer(i, IID_PPV_ARGS(&mBackBuffs[i]));
-		MyAssert(SUCCEEDED(hr));
-		mRtvHandles[i] = mRtvHeap.Allocate().mCpuHandle;
+		MY_ASSERT(SUCCEEDED(hr));
+		mRtvHandles[i] = mRtvHeap.Alloc()->mCpuHandle;
 		// レンダーターゲットビューを作成
 		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
 		rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -259,8 +259,8 @@ void GraphicsEngine::CreateDsv()
 	[[maybe_unused]] HRESULT hr = mDevice->CreateCommittedResource(
 		&GraphicsCommon::gHeapDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_DEPTH_WRITE,
 		&clearValue, IID_PPV_ARGS(&mDepthBuff));
-	MyAssert(SUCCEEDED(hr));
-	mDsvHandle = mDsvHeap.Allocate().mCpuHandle;
+	MY_ASSERT(SUCCEEDED(hr));
+	mDsvHandle = mDsvHeap.Alloc()->mCpuHandle;
 	// 深度ステンシルビューを作成
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
@@ -273,9 +273,9 @@ void GraphicsEngine::CreateFence()
 	// フェンスを作成
 	[[maybe_unused]] HRESULT hr = mDevice->CreateFence(
 		mFenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	mFenceEvent = CreateEvent(nullptr, false, false, nullptr);
-	MyAssert(mFenceEvent);
+	MY_ASSERT(mFenceEvent);
 }
 
-std::unique_ptr<GraphicsEngine> gGraphicsEngine = nullptr;
+std::shared_ptr<GraphicsEngine> gGraphicsEngine = nullptr;

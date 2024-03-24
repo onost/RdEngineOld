@@ -12,7 +12,7 @@ Matrix4 SpriteCommon::mProjMat = Matrix4::kIdentity;
 
 void SpriteCommon::Initialize(Renderer* renderer)
 {
-	MyAssert(renderer);
+	MY_ASSERT(renderer);
 
 	// ルートシグネチャ
 	mRootSignature.Initialize(2, 1);
@@ -66,7 +66,7 @@ void SpriteCommon::Initialize(Renderer* renderer)
 // レンダリング前
 void SpriteCommon::PreRendering(ID3D12GraphicsCommandList* cmdList)
 {
-	MyAssert(cmdList);
+	MY_ASSERT(cmdList);
 	mCmdList = cmdList;
 	mRootSignature.Bind(mCmdList);
 	mPipelineStates[uint32_t(Blend::Normal)].Bind(mCmdList);
@@ -82,6 +82,6 @@ void SpriteCommon::PostRendering()
 // パイプラインステートをセット
 void SpriteCommon::SetBlend(Blend blend)
 {
-	MyAssert(mCmdList);
+	MY_ASSERT(mCmdList);
 	mPipelineStates[uint32_t(blend)].Bind(mCmdList);
 }

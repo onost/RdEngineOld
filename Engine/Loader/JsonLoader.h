@@ -7,13 +7,13 @@ class RdEngine;
 class Renderer;
 class Scene;
 
-class LevelLoader
+class JsonLoader
 {
 public:
 	static const std::string kLevelPath;
 
-	static bool LoadSystem(RdEngine* engine, const std::string& filePath);
-	static bool SaveSystem(RdEngine* engine, const std::string& filePath);
+	static bool Load(RdEngine* engine, const std::string& filePath);
+	static bool Save(RdEngine* engine, const std::string& filePath);
 
 	static bool LoadScene(Scene* scene, const std::string& filePath);
 	static bool SaveScene(Scene* scene, const std::string& filePath);

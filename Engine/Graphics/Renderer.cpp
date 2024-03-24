@@ -28,8 +28,6 @@ void Renderer::Initialize()
 	ModelCommon::Initialize(this);
 	// パーティクル
 	ParticleCommon::Initialize(this);
-	// デバッグカメラ
-	mDebugCamera = std::make_unique<DebugCamera>();
 	// ライト管理
 	mLightManager = std::make_unique<LightManager>();
 	mLightManager->Initialize();
@@ -100,7 +98,7 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 
 
 
-	if (gEngine->GetState() == RdEngine::State::kDev && (gEngine->GetGameState() == RdEngine::GameState::kDev || !gEngine->GetIsMaximum()))
+	if (Editor::IsEditor() && (Editor::gEditorState == Editor::EditorState::kEdit || !Editor::mIsMaximum))
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, -1.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(-1.0f, -1.0f));
@@ -149,7 +147,7 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 						auto actor2 = new Actor(gEngine->GetSceneManager()->GetCurrScene());
 						auto mr = new MeshRenderer(actor2);
 						mr->SetModel(model);
-						actor2->SetName(Helper::RemoveExtension(model->GetName()));
+						actor2->SetName(Helper::ExcludeExtension(model->GetName()));
 					}
 					ImGui::EndDragDropTarget();
 				}
@@ -208,18 +206,18 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 }
 
 // シーン描画
-void Renderer::DrawScene(ID3D12GraphicsCommandList* cmdList)
+void Renderer::RenderScene(ID3D12GraphicsCommandList* cmdList)
 {
 	// ==================================================
 	// 前処理
 	// ==================================================
 
 	// カメラ
-	if (mIsDebugCamera &&
-		gEngine->GetState() == RdEngine::State::kDev &&
-		(gEngine->GetGameState() == RdEngine::GameState::kDev || !gEngine->GetIsMaximum()))
+	if (Editor::mIsDebugCamera &&
+		Editor::IsEditor() &&
+		(Editor::gEditorState == Editor::EditorState::kEdit || !Editor::mIsMaximum))
 	{
-		mCurrCamera = mDebugCamera->GetCamera();
+		mCurrCamera = Editor::mDebugCamera->GetCamera();
 	}
 	else if (mGameCamera)
 	{
@@ -280,9 +278,10 @@ void Renderer::DrawScene(ID3D12GraphicsCommandList* cmdList)
 	SpriteCommon::PostRendering();
 }
 
-void Renderer::DrawFinalSprite(ID3D12GraphicsCommandList* cmdList)
+void Renderer::RenderFinal(ID3D12GraphicsCommandList* cmdList)
 {
-	if (gEngine->GetState() == RdEngine::State::kDev && (gEngine->GetGameState() == RdEngine::GameState::kDev || !gEngine->GetIsMaximum()))
+	if (Editor::IsEditor() &&
+		(Editor::gEditorState == Editor::EditorState::kEdit || !Editor::mIsMaximum))
 	{
 		// エディタ上に表示
 		Editor::Draw(cmdList);
@@ -584,7 +583,7 @@ void Renderer::UpdateForDev()
 			// Group
 			ImGui::BeginGroup();
 			ImGui::Image((void*)(intptr_t)t->GetDescHandle().ptr, ImVec2(40.0f, 40.0f));
-			auto texName = Helper::GetFileName(t->GetPath());
+			auto texName = Helper::ExtractFileName(t->GetPath());
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))// ドラッグ
 			{
 				ImGui::SetDragDropPayload("TEXTURE_PAYLOAD", &t, sizeof(t));
@@ -693,9 +692,16 @@ void Renderer::UpdateForDev()
 	ImGui::End();
 }
 
-void Renderer::RenderForDev()
+void Renderer::RenderDebug(ID3D12GraphicsCommandList* cmdList)
 {
-	mPrimitive->DrawGrid();
+	if (Editor::gEditorState == Editor::EditorState::kEdit || !Editor::mIsMaximum)//
+	{
+		Primitive* prim = GetPrimitive();
+		prim->PreRendering(cmdList);
+		mPrimitive->DrawGrid();
+		gEngine->GetSceneManager()->RenderForDev(prim);
+		prim->PostRendering();
+	}
 }
 
 // ==================================================
@@ -714,4 +720,16 @@ void Renderer::SetGameCamera(CameraComponent* camera)
 	}
 	mGameCamera = camera;
 	mGameCamera->SetIsMain(true);
+}
+
+
+void Renderer::Render(ID3D12GraphicsCommandList* cmdList)
+{
+	PreRendering(cmdList);
+	RenderScene(cmdList);
+	if (Editor::IsEditor())
+	{
+		RenderDebug(cmdList);
+	}
+	PostRendering(cmdList);
 }

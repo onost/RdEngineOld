@@ -12,7 +12,7 @@ DebugCamera::DebugCamera()
 
 }
 
-void DebugCamera::Input(const Input::State& input)
+void DebugCamera::Input(const InputSystem::State& input)
 {
 	mRotVel = Vector3::kZero;
 	mVelocity = Vector3::kZero;

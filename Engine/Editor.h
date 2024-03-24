@@ -1,4 +1,6 @@
 #pragma once
+#include "Actor/DebugCamera.h"
+#include "Input/InputSystem.h"
 #include <d3d12.h>
 #include <ImGui/imgui.h>
 #include <ImGui/imgui_impl_dx12.h>
@@ -11,6 +13,9 @@
 
 class Actor;
 class Window;
+class Renderer;
+class SceneManager;
+class RdEngine;
 
 // コンソール
 namespace Console
@@ -22,8 +27,50 @@ namespace Console
 
 namespace Editor
 {
+	// エンジンの状態
+	//enum class EngineState
+	//{
+	//	kEditor,// エディタ
+	//	kGame// ゲーム
+	//};
+
+	// エディタの状態
+	enum class EditorState
+	{
+		kEdit,
+		kPlay,
+		kStop,
+		kStep
+	};
+
+	// エンジンの状態
+	//extern EngineState gEngineState;
+	extern bool gIsGame;
+	// エディタの状態
+	extern EditorState gEditorState;
+
+	inline bool IsEditor() { return !gIsGame; }
+	inline bool IsUpdate() { return gIsGame || (gEditorState == EditorState::kPlay) || (gEditorState == EditorState::kStep); }
+
+
+	// デバッグ用カメラ
+	extern std::shared_ptr<DebugCamera> mDebugCamera;
+	extern bool mIsDebugCamera;
+
+	extern bool mIsMaximum;
+
+	inline bool IsShowEditor()
+	{
+		return
+			IsEditor() &&
+			(gEditorState == EditorState::kEdit || !mIsMaximum);
+	}
+
 	void Initialize(Window* window);
 	void Terminate();
+
+	void Input(const InputSystem::State& input);
+	void Update(float deltaTime);
 
 	void PreProcess();
 	void PostProcess();
@@ -55,4 +102,8 @@ namespace Editor
 
 	// アクターツリーを表示
 	void ActorTree(const std::vector<Actor*>& actors, Actor*& actorForDev);
+
+	// 開発用
+	void ShowEditor(RdEngine* engine);
+	void ShowState(Renderer* renderer,SceneManager*sceneManager);
 }

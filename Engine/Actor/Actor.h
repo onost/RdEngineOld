@@ -1,7 +1,7 @@
 #pragma once
 #include "Component/Component.h"
 #include "Component/Transform.h"
-#include "Input/Input.h"
+#include "Input/InputSystem.h"
 #include <magic_enum/magic_enum.hpp>
 #include <nlohmann/json.hpp>
 #include <string>
@@ -45,7 +45,7 @@ public:
 	virtual ~Actor();
 
 	// 基本
-	void ProcessInput(const Input::State& input);
+	void ProcessInput(const InputSystem::State& input);
 	void Update(float deltaTime);
 	void LastUpdate(float deltaTime);
 	void UpdateWorld(Actor* parent = nullptr);
@@ -141,7 +141,7 @@ protected:
 	// ==================================================
 	// アクター固有
 	// ==================================================
-	virtual void ActorInput(const Input::State&) {}
+	virtual void ActorInput(const InputSystem::State&) {}
 	virtual void ActorUpdate(float) {}
 	virtual void ActorLastUpdate(float) {}
 	// Collision

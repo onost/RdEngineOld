@@ -12,7 +12,7 @@
 #include "DemoCamera.h"
 
 #include "RdEngine.h"
-#include "Audio/Audio.h"
+#include "Audio/AudioSystem.h"
 
 DemoPlayer::DemoPlayer(Scene* scene)
 	: Actor(scene)
@@ -45,7 +45,7 @@ DemoPlayer::DemoPlayer(Scene* scene)
 	mSandSmoke = new ParticleRenderer(sandSmoker);// パーティクル
 }
 
-void DemoPlayer::ActorInput(const Input::State& input)
+void DemoPlayer::ActorInput(const InputSystem::State& input)
 {
 	// ==================================================
 	// 移動

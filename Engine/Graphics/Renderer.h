@@ -32,9 +32,11 @@ public:
 	void PostRendering(ID3D12GraphicsCommandList* cmdList);
 
 	// シーン描画
-	void DrawScene(ID3D12GraphicsCommandList* cmdList);
+	void RenderScene(ID3D12GraphicsCommandList* cmdList);
 	// 最終結果を描画
-	void DrawFinalSprite(ID3D12GraphicsCommandList* cmdList);
+	void RenderFinal(ID3D12GraphicsCommandList* cmdList);
+
+	void Render(ID3D12GraphicsCommandList* cmdList);
 
 	// スプライトコンポーネントをソート
 	void SortSprites(SpriteRenderer* sprite);
@@ -72,18 +74,18 @@ public:
 	// 開発用
 	// ==================================================
 	void UpdateForDev();
-	void RenderForDev();
+	void RenderDebug(ID3D12GraphicsCommandList* cmdList);
 
 	// ==================================================
 	// ヘルパー関数
 	// ==================================================
 	Camera* GetCurrCamera() const { return mCurrCamera; }
-	DebugCamera* GetDebugCamera() const { return mDebugCamera.get(); }
-	bool GetIsDebugCamera()const { return mIsDebugCamera; }
+	//DebugCamera* GetDebugCamera() const { return mDebugCamera.get(); }
+	//bool GetIsDebugCamera()const { return mIsDebugCamera; }
 	Primitive* GetPrimitive() const { return mPrimitive.get(); }
 	LightManager* GetLightManager() const { return mLightManager.get(); }
 	void SetGameCamera(CameraComponent* camera);// cpp
-	void SetIsDebugCamera(bool isDebugCamera) { mIsDebugCamera = isDebugCamera; }
+	//void SetIsDebugCamera(bool isDebugCamera) { mIsDebugCamera = isDebugCamera; }
 
 private:
 	void Load();
@@ -111,8 +113,8 @@ private:
 	// カメラ
 	Camera* mCurrCamera;
 	CameraComponent* mGameCamera;
-	std::unique_ptr<DebugCamera> mDebugCamera;// デバッグカメラ
-	bool mIsDebugCamera = true;
+	//std::unique_ptr<DebugCamera> mDebugCamera;// デバッグカメラ
+	//bool mIsDebugCamera = true;
 	// ライト管理
 	std::unique_ptr<LightManager> mLightManager;
 	// プリミティブ

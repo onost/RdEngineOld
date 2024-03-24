@@ -2,7 +2,7 @@
 #include "Editor.h"
 #include "Helper/JsonHelper.h"
 #include "Scene/Scene.h"
-#include "Loader/LevelLoader.h"
+#include "Loader/JsonLoader.h"
 
 //#include "Demo/Tanuki01.h"
 //#include "Demo/Tanuki02.h"
@@ -74,7 +74,7 @@ Actor::~Actor()
 	}
 }
 
-void Actor::ProcessInput(const Input::State& input)
+void Actor::ProcessInput(const InputSystem::State& input)
 {
 	if (mState == State::kAlive)
 	{
@@ -478,6 +478,6 @@ Vector3 GetAllScale(Actor* actor)
 
 Actor* Actor::Instantiate(const std::string& name)
 {
-	auto instance = LevelLoader::LoadPrefab(mScene, "Assets/Prefab/" + name + ".rdpr");
+	auto instance = JsonLoader::LoadPrefab(mScene, "Assets/Prefab/" + name + ".rdpr");
 	return instance;
 }

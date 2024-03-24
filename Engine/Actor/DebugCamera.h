@@ -1,13 +1,13 @@
 #pragma once
 #include "Graphics/Camera.h"
-#include "Input/Input.h"
+#include "Input/InputSystem.h"
 #include <memory>
 
 class DebugCamera
 {
 public:
 	DebugCamera();
-	void Input(const Input::State& input);
+	void Input(const InputSystem::State& input);
 	void Update(float deltaTime);
 	Camera* GetCamera() const { return mCamera.get(); }
 

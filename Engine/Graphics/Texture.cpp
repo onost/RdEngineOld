@@ -11,7 +11,7 @@ const std::string Texture::kTexturePath = "Assets/Texture/";
 bool Texture::Create(const std::string& filePath)
 {
 	mPath = filePath;
-	Helper::WriteToConsole(std::format("Create: \"{}\"\n", mPath.c_str()));
+	//Helper::WriteToConsole(std::format("Create: \"{}\"\n", mPath.c_str()));
 
 	// テクスチャを読み込む
 	DirectX::ScratchImage scratchImage = {};
@@ -21,12 +21,12 @@ bool Texture::Create(const std::string& filePath)
 	{
 		return false;
 	}
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	// ミップマップを作成
 	DirectX::ScratchImage mipImage = {};
 	hr = GenerateMipMaps(scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(),
 		DirectX::TEX_FILTER_SRGB, 0, mipImage);
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 
 	DirectX::TexMetadata metadata = mipImage.GetMetadata();
 	mDesc.Dimension = D3D12_RESOURCE_DIMENSION(metadata.dimension);
@@ -41,7 +41,7 @@ bool Texture::Create(const std::string& filePath)
 	hr = device->CreateCommittedResource(
 		&GraphicsCommon::gHeapDefault, D3D12_HEAP_FLAG_NONE, &mDesc, D3D12_RESOURCE_STATE_COPY_DEST,
 		nullptr, IID_PPV_ARGS(mResource.ReleaseAndGetAddressOf()));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 
 	std::vector<D3D12_SUBRESOURCE_DATA> subresource;
 	DirectX::PrepareUpload(device, mipImage.GetImages(), mipImage.GetImageCount(), mipImage.GetMetadata(), subresource);
@@ -59,7 +59,7 @@ bool Texture::Create(const std::string& filePath)
 	hr = device->CreateCommittedResource(
 		&GraphicsCommon::gHeapUpload, D3D12_HEAP_FLAG_NONE, &intermediateDesc, D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr, IID_PPV_ARGS(&intermediateResource));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	auto cmdList = gGraphicsEngine->GetCmdList();
 	UpdateSubresources(cmdList, mResource.Get(), intermediateResource, 0, 0, UINT(subresource.size()), subresource.data());
 	D3D12_RESOURCE_BARRIER barrier = {};
@@ -79,9 +79,9 @@ bool Texture::Create(const std::string& filePath)
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
-	auto handle = gGraphicsEngine->GetSrvHeap().Allocate();
-	device->CreateShaderResourceView(mResource.Get(), &srvDesc, handle.mCpuHandle);
-	mDescHandle = handle.mGpuHandle;
+	auto handle = gGraphicsEngine->GetSrvHeap().Alloc();
+	device->CreateShaderResourceView(mResource.Get(), &srvDesc, handle->mCpuHandle);
+	mDescHandle = handle->mGpuHandle;
 
 	return true;
 }
@@ -98,9 +98,9 @@ void Texture::Create(ID3D12Resource* resource)
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Texture2D.MipLevels = 1;
-	auto handle = gGraphicsEngine->GetSrvHeap().Allocate();
-	gGraphicsEngine->GetDevice()->CreateShaderResourceView(mResource.Get(), &srvDesc, handle.mCpuHandle);
-	mDescHandle = handle.mGpuHandle;
+	auto handle = gGraphicsEngine->GetSrvHeap().Alloc();
+	gGraphicsEngine->GetDevice()->CreateShaderResourceView(mResource.Get(), &srvDesc, handle->mCpuHandle);
+	mDescHandle = handle->mGpuHandle;
 }
 
 void Texture::Bind(ID3D12GraphicsCommandList* cmdList, uint32_t rootParamIdx)

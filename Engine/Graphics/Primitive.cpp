@@ -7,7 +7,7 @@
 
 void Primitive::Initialize(Renderer* renderer)
 {
-	MyAssert(renderer);
+	MY_ASSERT(renderer);
 	mRenderer = renderer;
 
 	// ルートシグネチャ
@@ -67,7 +67,7 @@ void Primitive::Initialize(Renderer* renderer)
 // レンダリング前
 void Primitive::PreRendering(ID3D12GraphicsCommandList* cmdList)
 {
-	MyAssert(cmdList);
+	MY_ASSERT(cmdList);
 	mCmdList = cmdList;
 	mIndex = 0;
 	// カメラ
@@ -437,7 +437,7 @@ void Primitive::DrawGrid(uint32_t gridNum)
 	//LineList3(v);
 	// グリッド用
 	uint32_t vSize = uint32_t(v.size());
-	MyAssert(mIndex + vSize < kMaxVertex);
+	MY_ASSERT(mIndex + vSize < kMaxVertex);
 	auto data = static_cast<Vertex*>(mVBuff->GetData());
 	std::copy(v.begin(), v.end(), &data[mIndex]);
 	mRootSignature.Bind(mCmdList);
@@ -452,9 +452,9 @@ void Primitive::DrawGrid(uint32_t gridNum)
 // Line List 2D
 void Primitive::LineList2(const std::vector<Vertex>& v)
 {
-	MyAssert(mCmdList);
+	MY_ASSERT(mCmdList);
 	uint32_t size = uint32_t(v.size());
-	MyAssert(mIndex + size < kMaxVertex);
+	MY_ASSERT(mIndex + size < kMaxVertex);
 	auto data = static_cast<Vertex*>(mVBuff->GetData());
 	std::copy(v.begin(), v.end(), &data[mIndex]);
 	mRootSignature.Bind(mCmdList);
@@ -469,9 +469,9 @@ void Primitive::LineList2(const std::vector<Vertex>& v)
 // Line List 3D
 void Primitive::LineList3(const std::vector<Vertex>& v)
 {
-	MyAssert(mCmdList);
+	MY_ASSERT(mCmdList);
 	uint32_t size = uint32_t(v.size());
-	MyAssert(mIndex + size < kMaxVertex);
+	MY_ASSERT(mIndex + size < kMaxVertex);
 	auto data = static_cast<Vertex*>(mVBuff->GetData());
 	std::copy(v.begin(), v.end(), &data[mIndex]);
 	mRootSignature.Bind(mCmdList);
@@ -486,9 +486,9 @@ void Primitive::LineList3(const std::vector<Vertex>& v)
 // Triangle List 2D
 void Primitive::TriList2(const std::vector<Vertex>& v)
 {
-	MyAssert(mCmdList);
+	MY_ASSERT(mCmdList);
 	uint32_t size = uint32_t(v.size());
-	MyAssert(mIndex + size < kMaxVertex);
+	MY_ASSERT(mIndex + size < kMaxVertex);
 	auto data = static_cast<Vertex*>(mVBuff->GetData());
 	std::copy(v.begin(), v.end(), &data[mIndex]);
 	mRootSignature.Bind(mCmdList);

@@ -61,7 +61,7 @@ void Meteorite::ActorOnCollisionEnter(Actor* owner, CollisionInfo*)
 		auto light = mScene->GetRenderer()->GetLightManager();
 		light->SetCircleShadowIntensity(mShadowIndex, 0.0f);
 
-		auto audio = gEngine->GetAudio();
+		auto audio = gEngine->GetAudioSystem();
 		auto data = audio->Load("Assets/Audio/Meteo.wav");
 		audio->Play(data);
 

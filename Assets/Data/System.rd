@@ -1,7 +1,6 @@
 {
     "Scenes": [
         "Demo",
-        "Game",
-        "Jump.gltf"
+        "Game"
     ]
 }

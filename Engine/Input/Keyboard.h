@@ -4,7 +4,7 @@
 // キーボード
 class Keyboard
 {
-	friend class Input;
+	friend class InputSystem;
 public:
 	bool GetKey(uint8_t keyCode) const;
 	bool GetKeyUp(uint8_t keyCode) const;

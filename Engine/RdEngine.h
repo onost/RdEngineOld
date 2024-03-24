@@ -1,60 +1,42 @@
 #pragma once
-#include "Audio/Audio.h"
+#include "Audio/AudioSystem.h"
 #include "Collision/CollisionManager.h"
 #include "Graphics/Renderer.h"
-#include "Input/Input.h"
+#include "Input/InputSystem.h"
 #include "Scene/SceneManager.h"
 #include "Window.h"
 #include <memory>
 
+// RDエンジン
 class RdEngine
 {
 public:
-	enum class State
-	{
-		kDev,	// 開発
-		kGame	// ゲーム
-	};
-	enum class GameState
-	{
-		kDev,	// 開発
-		kPlay,	// プレイ
-		kPause,	// 停止
-		kStep	// コマ送り
-	};
-
-	// 実行
-	void Run();
-	// 終了
-	void Stop() { mIsRunning = false; }
+	RdEngine();
 
 	void Initialize();
 	void Terminate();
+	// エンジンを実行
+	void Run();
+	// エンジンを終了
+	void Stop() { mIsRunning = false; }
 
-	State GetState() const { return mState; }
-	GameState GetGameState() const { return mGameState; }
-	Window* GetWindow() const { return mWindow.get(); }
-	Input* GetInput() const { return mInput.get(); }
-	Renderer* GetRenderer() const { return mRenderer.get(); }
-	CollisionManager* GetCollisionManager() const { return mCollisionManager.get(); }
-	SceneManager* GetSceneManager() const { return mSceneManager.get(); }
-	Audio* GetAudio() const { return mAudio.get(); }
-	bool GetIsMaximum() const { return mIsMaximum; }
+	// アクセッサ
+	std::shared_ptr<Window> GetWindow() const { return mWindow; }
+	std::shared_ptr<InputSystem> GetInputSystem() const { return mInputSystem; }
+	std::shared_ptr<Renderer> GetRenderer() const { return mRenderer; }
+	std::shared_ptr<AudioSystem> GetAudioSystem() const { return mAudioSystem; }
+	std::shared_ptr<CollisionManager> GetCollisionManager() const { return mCollisionManager; }
+	std::shared_ptr<SceneManager> GetSceneManager() const { return mSceneManager; }
 
 private:
-	// ゲームループ用
-	void ProcessInput();
+	// ゲームループ用のヘルパー関数
+	void Input();
 	void Update();
 	void Render();
 
-	// json
-	void Load();
-	void Save();
-
-	// 開発用
-	void UpdateForDev();
-
-	void ShowState();
+	// エンジン用ファイル
+	void LoadFile();
+	void SaveFile();
 
 public:
 	// エンジン名
@@ -63,20 +45,18 @@ public:
 	static const uint32_t kVersion[3];
 
 private:
-	bool mIsRunning;
-	State mState;
-	GameState mGameState;
-	std::unique_ptr<Window> mWindow;
-	std::unique_ptr<Input> mInput;
-	std::unique_ptr<Renderer> mRenderer;
-	std::unique_ptr<CollisionManager> mCollisionManager;
-	std::unique_ptr<SceneManager> mSceneManager;
-	std::unique_ptr<Audio> mAudio;
-	Texture* mStartTex;
-	Texture* mStopTex;
-	Texture* mPauseTex;
-	Texture* mStepTex;
-	bool mIsMaximum = false;
+	bool mIsRunning;// 実行中か
+
+	std::shared_ptr<Window> mWindow;
+	std::shared_ptr<InputSystem> mInputSystem;
+	std::shared_ptr<Renderer> mRenderer;
+	std::shared_ptr<AudioSystem> mAudioSystem;
+	std::shared_ptr<CollisionManager> mCollisionManager;
+	std::shared_ptr<SceneManager> mSceneManager;
+
+	// エンジン用ファイルパス
+	std::string mFilePath;
 };
 
+// グローバル
 extern std::unique_ptr<RdEngine> gEngine;

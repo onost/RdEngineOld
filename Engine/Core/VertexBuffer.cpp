@@ -17,7 +17,7 @@ void VertexBuffer::Create(uint32_t size, uint32_t stride, void* initData)
 	[[maybe_unused]] HRESULT hr = gGraphicsEngine->GetDevice()->CreateCommittedResource(
 		&GraphicsCommon::gHeapUpload, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr, IID_PPV_ARGS(&mResource));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	// 頂点バッファビュー
 	mView.BufferLocation = mResource->GetGPUVirtualAddress();
 	mView.SizeInBytes = size;

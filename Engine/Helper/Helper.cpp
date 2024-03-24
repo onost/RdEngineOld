@@ -3,49 +3,60 @@
 
 namespace Helper
 {
-	void WriteToConsole(const std::string& str)
-	{
-		printf(str.c_str());
-	}
-
-	void WriteToOutput(const std::string& str)
+	// 出力ウィンドウへ出力
+	void WriteToOutputWindow(const std::string& str)
 	{
 		OutputDebugStringA(str.c_str());
 	}
 
+	// マルチバイト文字をワイド文字へ変換
 	std::wstring ConvertToWstr(const std::string& str)
 	{
 		if (str.empty())
 		{
 			return std::wstring();
 		}
-		auto sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, str.data(), int(str.size()), nullptr, 0);
+
+		// 必要なサイズを取得
+		auto sizeNeeded = MultiByteToWideChar(
+			CP_UTF8, 0, str.data(), int(str.size()), nullptr, 0);
 		if (sizeNeeded < 1)
 		{
 			return std::wstring();
 		}
+
 		std::wstring result(sizeNeeded, 0);
-		MultiByteToWideChar(CP_UTF8, 0, str.data(), int(str.size()), result.data(), sizeNeeded);
+		// ワイド文字へ変換
+		MultiByteToWideChar(
+			CP_UTF8, 0, str.data(), int(str.size()), result.data(), sizeNeeded);
 		return result;
 	}
 
-	std::string ConvertToStr(const std::wstring& str)
+	// ワイド文字をマルチバイト文字へ変換
+	std::string ConvertToStr(const std::wstring& wstr)
 	{
-		if (str.empty())
+		if (wstr.empty())
 		{
 			return std::string();
 		}
-		auto sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, str.data(), int(str.size()), nullptr, 0, nullptr, nullptr);
+
+		// 必要なサイズを取得
+		auto sizeNeeded = WideCharToMultiByte(
+			CP_UTF8, 0, wstr.data(), int(wstr.size()), nullptr, 0, nullptr, nullptr);
 		if (sizeNeeded < 1)
 		{
 			return std::string();
 		}
+
 		std::string result(sizeNeeded, 0);
-		WideCharToMultiByte(CP_UTF8, 0, str.data(), int(str.size()), result.data(), sizeNeeded, nullptr, nullptr);
+		// マルチバイト文字へ変換
+		WideCharToMultiByte(
+			CP_UTF8, 0, wstr.data(), int(wstr.size()), result.data(), sizeNeeded, nullptr, nullptr);
 		return result;
 	}
 
-	std::string GetFileName(const std::string& filePath)
+	// ファイルパスからファイル名を抽出
+	std::string ExtractFileName(const std::string& filePath)
 	{
 		auto pos = filePath.rfind('\\');
 		if (pos != std::string::npos)
@@ -60,19 +71,21 @@ namespace Helper
 		return filePath;
 	}
 
-	std::string GetExtension(const std::string& filePath)
+	// ファイル名から拡張子を抽出
+	std::string ExtractExtension(const std::string& fileName)
 	{
-		auto pos = filePath.rfind('.');
+		auto pos = fileName.rfind('.');
 		if (pos != std::string::npos)
 		{
-			return filePath.substr(pos + 1, filePath.size() - pos);
+			return fileName.substr(pos + 1, fileName.size() - pos);
 		}
-		return filePath;
+		return fileName;
 	}
 
-	std::string RemoveExtension(const std::string& fileName)
+	// ファイル名から拡張子を除外
+	std::string ExcludeExtension(const std::string& fileName)
 	{
-		auto pos = fileName.rfind(".");
+		auto pos = fileName.rfind('.');
 		if (pos != std::string::npos)
 		{
 			return fileName.substr(0, pos);

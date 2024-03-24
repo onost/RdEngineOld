@@ -15,7 +15,7 @@ std::unique_ptr<ConstantBuffer> ModelCommon::mCBuff;
 
 void ModelCommon::Initialize(Renderer* renderer)
 {
-	MyAssert(renderer);
+	MY_ASSERT(renderer);
 	mRenderer = renderer;
 
 	// ルートシグネチャ
@@ -115,7 +115,7 @@ void ModelCommon::Initialize(Renderer* renderer)
 // レンダリング前
 void ModelCommon::PreRendering(ID3D12GraphicsCommandList* cmdList)
 {
-	MyAssert(cmdList);
+	MY_ASSERT(cmdList);
 	mCmdList = cmdList;
 	mRootSignature.Bind(mCmdList);
 	mPsos[uint32_t(Type::Default)].Bind(mCmdList);// とりま
@@ -144,12 +144,12 @@ void ModelCommon::PostRendering()
 
 void ModelCommon::SetPso(Type type)
 {
-	MyAssert(mCmdList);
+	MY_ASSERT(mCmdList);
 	mPsos[uint32_t(type)].Bind(mCmdList);
 }
 
 void ModelCommon::SetSkinnedPso(Type type)
 {
-	MyAssert(mCmdList);
+	MY_ASSERT(mCmdList);
 	mSkinnedPsos[uint32_t(type)].Bind(mCmdList);
 }

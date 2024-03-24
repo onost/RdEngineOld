@@ -1,103 +1,69 @@
 #include "RdEngine.h"
 #include "Core/GraphicsEngine.h"
 #include "Editor.h"
-#include "Loader/LevelLoader.h"
+#include "Loader/JsonLoader.h"
 #include "Random.h"
+
+std::unique_ptr<RdEngine> gEngine = nullptr;
 
 // エンジン名
 const std::string RdEngine::kName = "RD ENGINE";
 // バージョン
-const uint32_t RdEngine::kVersion[] = { 0,7,0 };
+const uint32_t RdEngine::kVersion[3] = { 1,0,0 };
 
-// 実行
-void RdEngine::Run()
+RdEngine::RdEngine()
+	: mIsRunning(true)
+	, mInputSystem(nullptr)
+	, mRenderer(nullptr)
+	, mAudioSystem(nullptr)
+	, mCollisionManager(nullptr)
+	, mSceneManager(nullptr)
+	, mFilePath("Assets/Data/System.rd")
 {
-	// ==================================================
-	// 初期化
-	// ==================================================
-	Initialize();
-	std::string str = "Initialization completed!\n";
-	Helper::WriteToConsole(str);
-	//Console::Log(str);
 
-	// ==================================================
-	// ゲームループ
-	// ==================================================
-	str = std::format("{} is running...\n", kName);
-	Helper::WriteToConsole(str);
-	//Console::Log(str);
-	// ゲームループ
-	while (!mWindow->ProcessMessage() && mIsRunning)
-	{
-		ProcessInput();
-		Update();
-		Render();
-	}
-
-	// ==================================================
-	// 終了処理
-	// ==================================================
-	Terminate();
-	str = "Termination completed!\n";
-	Helper::WriteToConsole(str);
-	//Console::Log(str);
 }
 
 void RdEngine::Initialize()
 {
-	// エンジン名とバージョンを出力
-	std::string str = std::format(
-		"{} Ver.{}.{}.{}\n", kName, kVersion[0], kVersion[1], kVersion[2]);
-	Helper::WriteToConsole(str);
-	Console::Log(str);
+	// エンジン名とバージョンをコンソールへ出力
+	Console::Log(std::format(
+		"{} Ver.{}.{}.{}\n", kName, kVersion[0], kVersion[1], kVersion[2]));
 
-	mIsRunning = true;
-	mState = State::kDev;
-	//mState = State::kGame;
-	mGameState = GameState::kDev;
+	// COMを初期化
+	[[maybe_unused]] HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
+	MY_ASSERT(SUCCEEDED(hr));
 
-	// インスタンス作成
-	mWindow = std::make_unique<Window>();
-	gGraphicsEngine = std::make_unique<GraphicsEngine>();
-	mInput = std::make_unique<Input>();
-	mRenderer = std::make_unique<Renderer>();
-	mCollisionManager = std::make_unique<CollisionManager>();
-	mSceneManager = std::make_unique<SceneManager>();
-	mAudio = std::make_unique<Audio>();
+	// インスタンスを作成
+	mWindow = std::make_shared<Window>();
+	gGraphicsEngine = std::make_shared<GraphicsEngine>();
+	mInputSystem = std::make_shared<InputSystem>();
+	mRenderer = std::make_shared<Renderer>();
+	mAudioSystem = std::make_shared<AudioSystem>();
+	mCollisionManager = std::make_shared<CollisionManager>();
+	mSceneManager = std::make_shared<SceneManager>();
 
-	// システムファイル
-	Load();
+	// ファイルを読み込む
+	LoadFile();
 
 	// 初期化
-	[[maybe_unused]] HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
-	MyAssert(SUCCEEDED(hr));
 	mWindow->Initialize();
 	gGraphicsEngine->Initialize(mWindow.get());
-	mInput->Initialize(mWindow.get());
+	mInputSystem->Initialize(mWindow.get());
 	mRenderer->Initialize();
+	mAudioSystem->Initialize();
 	//mCollisionManager->Initialize();
 	mSceneManager->Initialize();
-	mAudio->Initialize();
-	//auto audio01 = mAudio->Load("Assets/Audio/Audio01.wav");
-
-	Editor::Initialize(mWindow.get());
 	Random::Initialize();
-
-	mStartTex = mRenderer->GetTexture("Assets/Texture/Start.png");
-	mStopTex = mRenderer->GetTexture("Assets/Texture/Stop.png");
-	mPauseTex = mRenderer->GetTexture("Assets/Texture/Pause.png");
-	mStepTex = mRenderer->GetTexture("Assets/Texture/Step.png");
+	Editor::Initialize(mWindow.get());
 }
 
 void RdEngine::Terminate()
 {
-	// システムファイル
-	Save();
+	// ファイルへ保存
+	SaveFile();
+
 	Editor::Terminate();
-	if (mAudio)
-	{
-		mAudio->Terminate();
-	}
+
 	if (mSceneManager)
 	{
 		mSceneManager->Terminate();
@@ -106,13 +72,17 @@ void RdEngine::Terminate()
 	{
 		mCollisionManager->Terminate();
 	}*/
+	if (mAudioSystem)
+	{
+		mAudioSystem->Terminate();
+	}
 	/*if (mRenderer)
 	{
 		mRenderer->Terminate();
 	}*/
-	if (mInput)
+	if (mInputSystem)
 	{
-		mInput->Terminate();
+		mInputSystem->Terminate();
 	}
 	if (gGraphicsEngine)
 	{
@@ -125,250 +95,108 @@ void RdEngine::Terminate()
 	CoUninitialize();
 }
 
-// ==================================================
-// 入力
-// ==================================================
-void RdEngine::ProcessInput()
+// エンジンを実行
+void RdEngine::Run()
 {
-	// 更新前
-	mSceneManager->PreUpdate();
-	Editor::PreProcess();
-	// 入力
-	mInput->Update();
-	auto state = mInput->GetState();
-	if (mState == State::kDev)
+	Initialize();
+	// ゲームループ
+	while (!mWindow->ProcessMessage())
 	{
-		// デバッグカメラ
-		if (mRenderer->GetIsDebugCamera())
-		{
-			mRenderer->GetDebugCamera()->Input(state);
-		}
-
-		switch (mGameState)
-		{
-		case GameState::kPlay:
-		case GameState::kStep:
-			mSceneManager->ProcessInput(state);
-			break;
-		}
+		if (!mIsRunning) break;
+		Input();
+		Update();
+		Render();
 	}
-	else// State::Game
-	{
-		mSceneManager->ProcessInput(state);
-	}
+	Terminate();
 }
 
 // ==================================================
-// 更新
+// ゲームループ用のヘルパー関数
 // ==================================================
+
+// 入力
+void RdEngine::Input()
+{
+	// 次のシーンへ
+	mSceneManager->TransNextScene();
+	// エディタここから
+	Editor::PreProcess();
+
+	// 入力
+	mInputSystem->Update();
+	const auto& inputState = mInputSystem->GetState();
+	Editor::Input(inputState);
+	if (Editor::IsUpdate())
+	{
+		mSceneManager->Input(inputState);
+	}
+}
+
+// 更新
 void RdEngine::Update()
 {
 	const float kDeltaTime = 1.0f / 60.0f;
-	if (mState == State::kDev)
-	{
-		if (mGameState == GameState::kDev || !mIsMaximum)//
-		{
-			UpdateForDev();
-			mRenderer->UpdateForDev();
-			mSceneManager->UpdateForDev();
-		}
-		else
-		{
-			ImGui::Begin("State");
-			ShowState();
-			ImGui::End();
-		}
-		// デバッグカメラ
-		if (mRenderer->GetIsDebugCamera())
-		{
-			mRenderer->GetDebugCamera()->Update(kDeltaTime);
-		}
 
-		switch (mGameState)
-		{
-		case GameState::kPlay:
-		case GameState::kStep:
-			mSceneManager->Update(kDeltaTime);
-			break;
-		}
-		mSceneManager->UpdateWorld();
-		mSceneManager->TestCollision();
+	// エディタ
+	if (Editor::IsEditor())
+	{
+		Editor::ShowEditor(this);
 	}
-	else// State::Game
+
+	// 更新
+	Editor::Update(kDeltaTime);
+	if (Editor::IsUpdate())
 	{
 		mSceneManager->Update(kDeltaTime);
+	}
+	else
+	{
+		// ワールド行列だけ更新
 		mSceneManager->UpdateWorld();
-		mSceneManager->TestCollision();
 	}
 }
 
-// ==================================================
 // 描画
-// ==================================================
 void RdEngine::Render()
 {
-	gGraphicsEngine->SetSrvHeap();
-
-	// メインレンダーターゲットへ描画
 	auto cmdList = gGraphicsEngine->GetCmdList();
-	mRenderer->PreRendering(cmdList);
-	mRenderer->DrawScene(cmdList);
-	// デバッグ用描画
-	if (mState == State::kDev)
-	{
-		if (mGameState == GameState::kDev || !mIsMaximum)//
-		{
-			Primitive* prim = mRenderer->GetPrimitive();
-			prim->PreRendering(cmdList);
-			mRenderer->RenderForDev();
-			mSceneManager->RenderForDev(prim);
-			prim->PostRendering();
-		}
-	}
-	mRenderer->PostRendering(cmdList);
+	gGraphicsEngine->SetSrvHeap();
+	mRenderer->Render(cmdList);
 
-	if (mState == State::kDev)
-	{
-		if (mGameState == GameState::kDev || !mIsMaximum)//
-		{
-			Console::ShowConsole();
-		}
-	}
-	// エディタ終了
-	/*UpdateForDev();
-	mRenderer->UpdateForDev();
-	mSceneManager->UpdateForDev();*/
+	// エディタここまで
 	Editor::PostProcess();
 
-	// 最終レンダーターゲットへ描画
 	gGraphicsEngine->PreRendering();
-	mRenderer->DrawFinalSprite(cmdList);
+	mRenderer->RenderFinal(cmdList);
 	gGraphicsEngine->PostRendering();
 }
 
 // ==================================================
-// json
+// エンジン用ファイル
 // ==================================================
 
-void RdEngine::Load()
+// ファイルを読み込む
+void RdEngine::LoadFile()
 {
-	// システムファイルを読み込む
-	std::string filePath = "Assets/Level/System.rdlv";
-	if (LevelLoader::LoadSystem(this, filePath))
+	if (JsonLoader::Load(this, mFilePath))
 	{
-		Helper::WriteToConsole(
-			std::format("Succeeded in loading: \"{}\"\n", filePath));
+		Console::Log(std::format("Success: Load \"{}\"\n", mFilePath));
 	}
 	else
 	{
-		Helper::WriteToConsole(
-			std::format("Failed to loading: \"{}\"\n", filePath));
+		Console::Log(std::format("Failure: Load \"{}\"\n", mFilePath));
 	}
 }
 
-void RdEngine::Save()
+// ファイルへ保存
+void RdEngine::SaveFile()
 {
-	// システムファイルを保存
-	std::string filePath = "Assets/Level/System.rdlv";
-	if (LevelLoader::SaveSystem(this, filePath))
+	if (JsonLoader::Save(this, mFilePath))
 	{
-		Helper::WriteToConsole(
-			std::format("Succeeded in loading: \"{}\"\n", filePath));
+		Console::Log(std::format("Success: Save \"{}\"\n", mFilePath));
 	}
 	else
 	{
-		Helper::WriteToConsole(
-			std::format("Failed to loading: \"{}\"\n", filePath));
+		Console::Log(std::format("Failure: Save \"{}\"\n", mFilePath));
 	}
 }
-
-// ==================================================
-// 開発用
-// ==================================================
-
-void RdEngine::UpdateForDev()
-{
-	ImGui::Begin("Game", nullptr, ImGuiWindowFlags_NoMove);
-	
-	ShowState();
-
-	// デバッグカメラ
-	bool isDebugCamera = mRenderer->GetIsDebugCamera();
-	if (ImGui::Checkbox("Is Debug Camera", &isDebugCamera))
-	{
-		mRenderer->SetIsDebugCamera(isDebugCamera);
-	}
-	ImGui::Checkbox("Is Maximum", &mIsMaximum);
-
-	ImGui::End();
-}
-
-void RdEngine::ShowState()
-{
-	if (mGameState == GameState::kStep)
-	{
-		mGameState = GameState::kPause;
-	}
-	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(-1.0f, -1.0f));
-	switch (mGameState)
-	{
-	case GameState::kDev:
-		if (ImGui::ImageButton((void*)(intptr_t)mStartTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
-		{
-			mGameState = GameState::kPlay;
-			mRenderer->SetIsDebugCamera(false);
-		}
-		ImGui::SameLine();
-		if (ImGui::ImageButton((void*)(intptr_t)mPauseTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
-		{
-			mGameState = GameState::kPause;
-			mRenderer->SetIsDebugCamera(false);
-		}
-		ImGui::SameLine();
-		if (ImGui::ImageButton((void*)(intptr_t)mStepTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
-		{
-			mGameState = GameState::kStep;
-			mRenderer->SetIsDebugCamera(false);
-		}
-		break;
-	case GameState::kPlay:
-		if (ImGui::ImageButton((void*)(intptr_t)mStopTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
-		{
-			mGameState = GameState::kDev;
-			mSceneManager->Reset();
-			mRenderer->SetIsDebugCamera(true);
-		}
-		ImGui::SameLine();
-		if (ImGui::ImageButton((void*)(intptr_t)mPauseTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
-		{
-			mGameState = GameState::kPause;
-		}
-		ImGui::SameLine();
-		if (ImGui::ImageButton((void*)(intptr_t)mStepTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
-		{
-			mGameState = GameState::kStep;
-		}
-		break;
-	case GameState::kPause:
-		if (ImGui::ImageButton((void*)(intptr_t)mStopTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
-		{
-			mGameState = GameState::kDev;
-			mSceneManager->Reset();
-			mRenderer->SetIsDebugCamera(true);
-		}
-		ImGui::SameLine();
-		if (ImGui::ImageButton((void*)(intptr_t)mStartTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
-		{
-			mGameState = GameState::kPlay;
-		}
-		ImGui::SameLine();
-		if (ImGui::ImageButton((void*)(intptr_t)mStepTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
-		{
-			mGameState = GameState::kStep;
-		}
-		break;
-	}
-	ImGui::PopStyleVar();
-}
-
-std::unique_ptr<RdEngine> gEngine = nullptr;

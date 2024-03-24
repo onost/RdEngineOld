@@ -3,6 +3,11 @@
 #include "Core/GraphicsEngine.h"
 #include "Helper/MyAssert.h"
 #include "Window.h"
+#include "Graphics/Texture.h"
+#include "Graphics/Renderer.h"
+#include "Input/InputSystem.h"
+#include "Scene/SceneManager.h"
+#include "RdEngine.h"
 
 namespace Console
 {
@@ -14,24 +19,38 @@ namespace Console
 	// コンソール画面を表示
 	void ShowConsole()
 	{
-		ImGui::Begin("Console", nullptr, ImGuiWindowFlags_NoMove);
-		for (auto& message : gMessages)
+		if (Editor::IsShowEditor())
 		{
-			ImGui::Text(message.c_str());
+			ImGui::Begin("Console", nullptr, ImGuiWindowFlags_NoMove);
+			for (auto& message : gMessages)
+			{
+				ImGui::Text(message.c_str());
+			}
+			ImGui::End();
 		}
-		ImGui::End();
 	}
 }
 
 namespace Editor
 {
+	//EngineState gEngineState;
+	bool gIsGame = false;
+	EditorState gEditorState;
+	bool mIsMaximum = false;
+	std::unique_ptr<Texture> mStartTex;
+	std::unique_ptr<Texture> mStopTex;
+	std::unique_ptr<Texture> mPauseTex;
+	std::unique_ptr<Texture> mStepTex;
+	std::shared_ptr<DebugCamera> mDebugCamera;
+	bool mIsDebugCamera = true;
+
 	void Initialize(Window* window)
 	{
-		MyAssert(window);
+		MY_ASSERT(window);
 
 		if (!ImGui::CreateContext())
 		{
-			MyAssert(false);
+			MY_ASSERT(false);
 		}
 		// フォント
 		std::string fontPath = "Assets/Font/Roboto-Regular.ttf";
@@ -41,15 +60,15 @@ namespace Editor
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		if (!ImGui_ImplWin32_Init(window->GetHWnd()))
 		{
-			MyAssert(false);
+			MY_ASSERT(false);
 		}
 		auto& srvHeap = gGraphicsEngine->GetSrvHeap();
-		auto handle = srvHeap.Allocate();
+		auto handle = srvHeap.Alloc();
 		if (!ImGui_ImplDX12_Init(
 			gGraphicsEngine->GetDevice(), 2, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-			srvHeap.Get(), handle.mCpuHandle, handle.mGpuHandle))
+			srvHeap.GetHeap().Get(), handle->mCpuHandle, handle->mGpuHandle))
 		{
-			MyAssert(false);
+			MY_ASSERT(false);
 		}
 
 		ImGuiStyle& style = ImGui::GetStyle();
@@ -97,6 +116,22 @@ namespace Editor
 		colors[ImGuiCol_TabActive] = ImVec4(1.0f, 0.5f, 0.5f, 1.0f);
 		colors[ImGuiCol_TabUnfocused] = ImVec4(0.0f, 0.0f, 0.0f, 0.52f);
 		colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.14f, 0.14f, 0.14f, 1.0f);
+
+		//Editor::gEngineState = Editor::EngineState::kEditor;
+		//mState = State::kGame;
+		Editor::gEditorState = Editor::EditorState::kEdit;
+
+		mStartTex = std::make_unique<Texture>();
+		mStopTex = std::make_unique<Texture>();
+		mPauseTex = std::make_unique<Texture>();
+		mStepTex = std::make_unique<Texture>();
+
+		mStartTex->Create("Assets/Texture/Start.png");
+		mStopTex->Create("Assets/Texture/Stop.png");
+		mPauseTex->Create("Assets/Texture/Pause.png");
+		mStepTex->Create("Assets/Texture/Step.png");
+		// デバッグカメラ
+		mDebugCamera = std::make_unique<DebugCamera>();
 	}
 
 	void Terminate()
@@ -105,6 +140,24 @@ namespace Editor
 		ImGui_ImplWin32_Shutdown();
 		ImGui::DestroyContext();
 	}
+
+
+	void Input(const InputSystem::State& input)
+	{
+		if (!gIsGame && mIsDebugCamera)
+		{
+			mDebugCamera->Input(input);
+		}
+	}
+
+	void Update(float deltaTime)
+	{
+		if (!gIsGame && mIsDebugCamera)
+		{
+			mDebugCamera->Update(deltaTime);
+		}
+	}
+
 
 	void PreProcess()
 	{
@@ -209,5 +262,105 @@ namespace Editor
 				}
 			}
 		}
+	}
+
+	void ShowEditor(RdEngine* engine)
+	{
+		if (Editor::gEditorState == Editor::EditorState::kEdit || !Editor::mIsMaximum)//
+		{
+			ImGui::Begin("Game", nullptr, ImGuiWindowFlags_NoMove);
+
+			ShowState(engine->GetRenderer().get(), engine->GetSceneManager().get());
+
+			// デバッグカメラ
+			//bool isDebugCamera = renderer->GetIsDebugCamera();
+			if (ImGui::Checkbox("Is Debug Camera", &mIsDebugCamera))
+			{
+				//renderer->SetIsDebugCamera(isDebugCamera);
+			}
+			ImGui::Checkbox("Is Maximum", &mIsMaximum);
+
+			ImGui::End();
+
+			engine->GetRenderer()->UpdateForDev();
+			engine->GetSceneManager()->UpdateForDev();
+
+
+			Console::ShowConsole();
+		}
+		else
+		{
+			ImGui::Begin("State");
+			Editor::ShowState(engine->GetRenderer().get(), engine->GetSceneManager().get());
+			ImGui::End();
+		}
+	}
+
+	void ShowState(Renderer*, SceneManager* sceneManager)
+	{
+		if (Editor::gEditorState == Editor::EditorState::kStep)
+		{
+			Editor::gEditorState = Editor::EditorState::kStop;
+		}
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(-1.0f, -1.0f));
+		switch (Editor::gEditorState)
+		{
+		case Editor::EditorState::kEdit:
+			if (ImGui::ImageButton((void*)(intptr_t)mStartTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+			{
+				Editor::gEditorState = Editor::EditorState::kPlay;
+				mIsDebugCamera = false;
+			}
+			ImGui::SameLine();
+			if (ImGui::ImageButton((void*)(intptr_t)mPauseTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+			{
+				Editor::gEditorState = Editor::EditorState::kStop;
+				mIsDebugCamera = false;
+			}
+			ImGui::SameLine();
+			if (ImGui::ImageButton((void*)(intptr_t)mStepTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+			{
+				Editor::gEditorState = Editor::EditorState::kStep;
+				mIsDebugCamera = false;
+			}
+			break;
+		case Editor::EditorState::kPlay:
+			if (ImGui::ImageButton((void*)(intptr_t)mStopTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+			{
+				Editor::gEditorState = Editor::EditorState::kEdit;
+				sceneManager->Reset();
+				mIsDebugCamera = true;
+			}
+			ImGui::SameLine();
+			if (ImGui::ImageButton((void*)(intptr_t)mPauseTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+			{
+				Editor::gEditorState = Editor::EditorState::kStop;
+			}
+			ImGui::SameLine();
+			if (ImGui::ImageButton((void*)(intptr_t)mStepTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+			{
+				Editor::gEditorState = Editor::EditorState::kStep;
+			}
+			break;
+		case Editor::EditorState::kStop:
+			if (ImGui::ImageButton((void*)(intptr_t)mStopTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+			{
+				Editor::gEditorState = Editor::EditorState::kEdit;
+				sceneManager->Reset();
+				mIsDebugCamera = true;
+			}
+			ImGui::SameLine();
+			if (ImGui::ImageButton((void*)(intptr_t)mStartTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+			{
+				Editor::gEditorState = Editor::EditorState::kPlay;
+			}
+			ImGui::SameLine();
+			if (ImGui::ImageButton((void*)(intptr_t)mStepTex->GetDescHandle().ptr, ImVec2(24.0f, 24.0f)))
+			{
+				Editor::gEditorState = Editor::EditorState::kStep;
+			}
+			break;
+		}
+		ImGui::PopStyleVar();
 	}
 }

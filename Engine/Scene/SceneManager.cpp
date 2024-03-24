@@ -22,7 +22,7 @@ void SceneManager::Terminate()
 	}
 }
 
-void SceneManager::PreUpdate()
+void SceneManager::TransNextScene()
 {
 	// 次のシーンへ
 	if (mNextScene)
@@ -36,7 +36,7 @@ void SceneManager::PreUpdate()
 	}
 }
 
-void SceneManager::ProcessInput(const Input::State& input)
+void SceneManager::Input(const InputSystem::State& input)
 {
 	if (mCurrScene)
 	{
@@ -49,6 +49,10 @@ void SceneManager::Update(float deltaTime)
 	if (mCurrScene)
 	{
 		mCurrScene->Update(deltaTime);
+
+		mCurrScene->UpdateWorld();
+
+		mCurrScene->TestCollision();
 	}
 }
 

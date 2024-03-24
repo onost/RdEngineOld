@@ -43,7 +43,7 @@ void SkinnedMeshRenderer::Draw()
 {
 	if (mIsVisible && mModel)
 	{
-		MyAssert(ModelCommon::mCmdList);
+		MY_ASSERT(ModelCommon::mCmdList);
 		for (auto& mesh : mModel->GetMeshes())
 		{
 			if (mesh->GetSkeleton())

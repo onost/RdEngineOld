@@ -1,4 +1,4 @@
-#include "Input/Input.h"
+#include "Input/InputSystem.h"
 #include "Helper/Helper.h"
 #include "Helper/MyAssert.h"
 #include "Window.h"
@@ -6,47 +6,47 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "xinput.lib")
 
-void Input::Initialize(Window* window)
+void InputSystem::Initialize(Window* window)
 {
-	MyAssert(window);
+	MY_ASSERT(window);
 
 	mHWnd = window->GetHWnd();
 	HRESULT hr = DirectInput8Create(
 		window->GetHInst(), DIRECTINPUT_VERSION, IID_IDirectInput8,
 		reinterpret_cast<void**>(mDInput.ReleaseAndGetAddressOf()), nullptr);
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 
 	// ==================================================
 	// Keyboard
 	// ==================================================
 	hr = mDInput->CreateDevice(GUID_SysKeyboard, &mKeyboardDev, nullptr);
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	hr = mKeyboardDev->SetDataFormat(&c_dfDIKeyboard);
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	hr = mKeyboardDev->SetCooperativeLevel(mHWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 
 	// ==================================================
 	// Mouse
 	// ==================================================
 	hr = mDInput->CreateDevice(GUID_SysMouse, &mMouseDev, nullptr);
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	hr = mMouseDev->SetDataFormat(&c_dfDIMouse2);
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	hr = mMouseDev->SetCooperativeLevel(mHWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 
 	mKeyboardDev->Acquire();
 	mMouseDev->Acquire();
 }
 
-void Input::Terminate()
+void InputSystem::Terminate()
 {
 	mMouseDev->Unacquire();
 	mKeyboardDev->Unacquire();
 }
 
-void Input::Update()
+void InputSystem::Update()
 {
 	// ==================================================
 	// Keyboard

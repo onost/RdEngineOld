@@ -20,7 +20,7 @@ void StructuredBuffer::Create(uint32_t size, uint32_t elementCount, void* initDa
 	[[maybe_unused]] HRESULT hr = gGraphicsEngine->GetDevice()->CreateCommittedResource(
 		&GraphicsCommon::gHeapUpload, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr, IID_PPV_ARGS(&mResource));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	// マップ
 	mResource->Map(0, nullptr, &mData);
 	if (initData)
@@ -36,10 +36,10 @@ void StructuredBuffer::Create(uint32_t size, uint32_t elementCount, void* initDa
 	srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 	srvDesc.Buffer.NumElements = mElementCount;
 	srvDesc.Buffer.StructureByteStride = mSize;
-	auto handle = gGraphicsEngine->GetSrvHeap().Allocate();
+	auto handle = gGraphicsEngine->GetSrvHeap().Alloc();
 	// シェーダリソースビューを作成
-	device->CreateShaderResourceView(mResource.Get(), &srvDesc, handle.mCpuHandle);
-	mDescHandle = handle.mGpuHandle;
+	device->CreateShaderResourceView(mResource.Get(), &srvDesc, handle->mCpuHandle);
+	mDescHandle = handle->mGpuHandle;
 }
 
 void StructuredBuffer::Bind(

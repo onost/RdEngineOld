@@ -1,18 +1,18 @@
-#include "Audio.h"
+#include "Audio/AudioSystem.h"
 #include "Helper/MyAssert.h"
 #include <fstream>
 
 #pragma comment(lib, "xaudio2.lib")
 
-void Audio::Initialize()
+void AudioSystem::Initialize()
 {
 	HRESULT hr = XAudio2Create(&mXAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	hr = mXAudio2->CreateMasteringVoice(&mMasterVoice);
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 }
 
-void Audio::Terminate()
+void AudioSystem::Terminate()
 {
 	mXAudio2.Reset();
 
@@ -22,7 +22,7 @@ void Audio::Terminate()
 	}
 }
 
-Audio::SoundData* Audio::Load(const std::string& filePath)
+AudioSystem::SoundData* AudioSystem::Load(const std::string& filePath)
 {
 	SoundData* soundData = mSounds.Get(filePath);
 	if (soundData)
@@ -34,7 +34,7 @@ Audio::SoundData* Audio::Load(const std::string& filePath)
 	file.open(filePath, std::ios_base::binary);
 	if (file.fail())
 	{
-		MyAssert(false);
+		MY_ASSERT(false);
 		//return nullptr;
 	}
 
@@ -43,11 +43,11 @@ Audio::SoundData* Audio::Load(const std::string& filePath)
 	file.read((char*)&riff, sizeof(RIFF));
 	if (strncmp(riff.mChunk.mID, "RIFF", 4) != 0)
 	{
-		MyAssert(false);
+		MY_ASSERT(false);
 	}
 	if (strncmp(riff.mFormat, "WAVE", 4) != 0)
 	{
-		MyAssert(false);
+		MY_ASSERT(false);
 	}
 
 	Chunk chunk = {};
@@ -59,7 +59,7 @@ Audio::SoundData* Audio::Load(const std::string& filePath)
 		// fmt
 		if (strncmp(chunk.mID, "fmt ", 4) == 0)
 		{
-			MyAssert(chunk.mSize <= sizeof(fmt));
+			MY_ASSERT(chunk.mSize <= sizeof(fmt));
 			file.read((char*)&fmt, chunk.mSize);
 			//
 			//file.seekg(chunk.mSize - sizeof(WAVEFORMATEX), std::ios_base::cur);
@@ -121,12 +121,12 @@ Audio::SoundData* Audio::Load(const std::string& filePath)
 	return result;
 }
 
-void Audio::Play(SoundData* soundData)
+void AudioSystem::Play(SoundData* soundData)
 {
 	// SourceVoiceを作成
 	IXAudio2SourceVoice* sourceVoice = nullptr;
 	HRESULT hr = mXAudio2->CreateSourceVoice(&sourceVoice, &soundData->mFormat);
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 
 	// 
 	XAUDIO2_BUFFER buff = {};

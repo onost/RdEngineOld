@@ -20,7 +20,7 @@ Quaternion::Quaternion(float w, float x, float y, float z)
 
 Quaternion::Quaternion(const Vector3& axis, float theta)
 {
-	MyAssert(fabs(Length(axis) - 1.0f) <= 0.001f);//MyMath::kEpsilon);
+	MY_ASSERT(fabs(Length(axis) - 1.0f) <= 0.001f);//MyMath::kEpsilon);
 	float thetaOver2 = theta * 0.5f;
 	float sin = sinf(thetaOver2);
 	w = cosf(thetaOver2);

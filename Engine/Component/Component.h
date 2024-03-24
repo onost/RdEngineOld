@@ -1,5 +1,5 @@
 #pragma once
-#include "Input/Input.h"
+#include "Input/InputSystem.h"
 #include <cstdint>
 #include <nlohmann/json.hpp>
 
@@ -49,7 +49,7 @@ public:
 	Component(Actor* owner, uint32_t order = 100);
 	virtual ~Component();
 
-	virtual void ProcessInput(const Input::State&) {}
+	virtual void ProcessInput(const InputSystem::State&) {}
 	virtual void Update(float) {}
 	virtual void OnUpdateWorld() {}
 	// Collision

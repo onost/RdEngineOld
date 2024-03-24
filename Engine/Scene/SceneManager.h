@@ -11,8 +11,8 @@ public:
 	void Initialize();
 	void Terminate();
 
-	void PreUpdate();// 更新前
-	void ProcessInput(const Input::State& input);
+	void TransNextScene();// 更新前
+	void Input(const InputSystem::State& input);
 	void Update(float deltaTime);
 	void UpdateWorld();
 	void TestCollision();

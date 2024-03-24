@@ -7,7 +7,7 @@
 // ゲームパッド
 class Gamepad
 {
-	friend class Input;
+	friend class InputSystem;
 public:
 	bool GetButton(int button) const;
 	bool GetButtonUp(int button) const;

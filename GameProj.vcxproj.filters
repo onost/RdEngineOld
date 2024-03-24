@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Engine\Component\Animator.cpp" />
-    <ClCompile Include="Engine\Audio\Audio.cpp" />
+    <ClCompile Include="Engine\Audio\AudioSystem.cpp" />
     <ClCompile Include="Engine\Graphics\Model\SkinCluster.cpp" />
     <ClCompile Include="External\ImGui\ImGuizmo.cpp" />
     <ClCompile Include="Game\Game\Attractor.cpp" />
@@ -55,10 +55,10 @@
     <ClCompile Include="Engine\Helper\Helper.cpp" />
     <ClCompile Include="Engine\Helper\JsonHelper.cpp" />
     <ClCompile Include="Engine\Input\Gamepad.cpp" />
-    <ClCompile Include="Engine\Input\Input.cpp" />
+    <ClCompile Include="Engine\Input\InputSystem.cpp" />
     <ClCompile Include="Engine\Input\Keyboard.cpp" />
     <ClCompile Include="Engine\Input\Mouse.cpp" />
-    <ClCompile Include="Engine\Loader\LevelLoader.cpp" />
+    <ClCompile Include="Engine\Loader\JsonLoader.cpp" />
     <ClCompile Include="Engine\Loader\ObjLoader.cpp" />
     <ClCompile Include="Engine\RdEngine.cpp" />
     <ClCompile Include="Engine\Scene\Scene.cpp" />
@@ -96,7 +96,7 @@
     <ClCompile Include="Game\Game\MeteoriteEmitter.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Audio\Audio.h" />
+    <ClInclude Include="Engine\Audio\AudioSystem.h" />
     <ClInclude Include="Engine\Component\Animator.h" />
     <ClInclude Include="Engine\Graphics\CircleShadow.h" />
     <ClInclude Include="Engine\Graphics\Model\SkinCluster.h" />
@@ -159,10 +159,10 @@
     <ClInclude Include="Engine\Helper\JsonHelper.h" />
     <ClInclude Include="Engine\Helper\MyAssert.h" />
     <ClInclude Include="Engine\Input\Gamepad.h" />
-    <ClInclude Include="Engine\Input\Input.h" />
+    <ClInclude Include="Engine\Input\InputSystem.h" />
     <ClInclude Include="Engine\Input\Keyboard.h" />
     <ClInclude Include="Engine\Input\Mouse.h" />
-    <ClInclude Include="Engine\Loader\LevelLoader.h" />
+    <ClInclude Include="Engine\Loader\JsonLoader.h" />
     <ClInclude Include="Engine\Loader\ObjLoader.h" />
     <ClInclude Include="Engine\RdEngine.h" />
     <ClInclude Include="Engine\Scene\Scene.h" />
@@ -201,6 +201,7 @@
     <ClInclude Include="Game\Game\MeteoriteChip.h" />
     <ClInclude Include="Game\Game\MeteoriteEmitter.h" />
     <ClInclude Include="Engine\Collision\CollisionAttr.h" />
+    <ClInclude Include="Engine\Helper\Pool.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="External\ImGui\LICENSE.txt" />

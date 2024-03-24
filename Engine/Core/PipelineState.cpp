@@ -17,7 +17,7 @@ void PipelineState::Create()
 	// パイプラインステートを作成
 	[[maybe_unused]] HRESULT hr = gGraphicsEngine->GetDevice()->CreateGraphicsPipelineState(
 		&mDesc, IID_PPV_ARGS(&mPipelineState));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 }
 
 void PipelineState::Bind(ID3D12GraphicsCommandList* cmdList)

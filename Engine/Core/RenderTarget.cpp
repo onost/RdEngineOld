@@ -29,7 +29,7 @@ void RenderTarget::Create(uint32_t width, uint32_t height)
 	[[maybe_unused]] HRESULT hr = device->CreateCommittedResource(
 		&GraphicsCommon::gHeapDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		&clearCol, IID_PPV_ARGS(&texture));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	mTexture = std::make_unique<Texture>();
 	mTexture->Create(texture);
 
@@ -41,7 +41,7 @@ void RenderTarget::Create(uint32_t width, uint32_t height)
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	descHeapDesc.NumDescriptors = 1;
 	hr = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(mRtvHeap.ReleaseAndGetAddressOf()));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
@@ -53,7 +53,7 @@ void RenderTarget::Create(uint32_t width, uint32_t height)
 
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 	hr = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(mDsvHeap.ReleaseAndGetAddressOf()));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	desc.Width = width;
 	desc.Height = height;
@@ -67,7 +67,7 @@ void RenderTarget::Create(uint32_t width, uint32_t height)
 	hr = device->CreateCommittedResource(
 		&GraphicsCommon::gHeapDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_DEPTH_WRITE,
 		&clearValue, IID_PPV_ARGS(mDepthBuff.ReleaseAndGetAddressOf()));
-	MyAssert(SUCCEEDED(hr));
+	MY_ASSERT(SUCCEEDED(hr));
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;

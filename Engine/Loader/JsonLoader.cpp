@@ -1,16 +1,16 @@
-#include "LevelLoader.h"
+#include "JsonLoader.h"
 #include "Helper/JsonHelper.h"
 #include "RdEngine.h"
 #include "Scene/SceneManager.h"
 #include <fstream>
 
-const std::string LevelLoader::kLevelPath = "Assets/Level/";
+const std::string JsonLoader::kLevelPath = "Assets/Level/";
 
 // ==================================================
 // システムファイル
 // ==================================================
 
-bool LevelLoader::LoadSystem(RdEngine* engine, const std::string& filePath)
+bool JsonLoader::Load(RdEngine* engine, const std::string& filePath)
 {
 	std::ifstream file(filePath.c_str());
 	if (!file)
@@ -23,7 +23,7 @@ bool LevelLoader::LoadSystem(RdEngine* engine, const std::string& filePath)
 	// -------------------- ここから --------------------
 	if (data.contains("Scenes"))
 	{
-		SceneManager* sceneManager = engine->GetSceneManager();
+		auto sceneManager = engine->GetSceneManager();
 		sceneManager->Load(data["Scenes"]);
 	}
 	// -------------------- ここまで --------------------
@@ -31,7 +31,7 @@ bool LevelLoader::LoadSystem(RdEngine* engine, const std::string& filePath)
 	return true;
 }
 
-bool LevelLoader::SaveSystem(RdEngine* engine, const std::string& filePath)
+bool JsonLoader::Save(RdEngine* engine, const std::string& filePath)
 {
 	std::ofstream file(filePath.c_str());
 	if (!file)
@@ -41,7 +41,7 @@ bool LevelLoader::SaveSystem(RdEngine* engine, const std::string& filePath)
 	nlohmann::json data;
 
 	// -------------------- ここから --------------------
-	SceneManager* sceneManager = engine->GetSceneManager();
+	auto sceneManager = engine->GetSceneManager();
 	sceneManager->Save(data["Scenes"]);
 	// -------------------- ここまで --------------------
 
@@ -53,7 +53,7 @@ bool LevelLoader::SaveSystem(RdEngine* engine, const std::string& filePath)
 // シーンファイル
 // ==================================================
 
-bool LevelLoader::LoadScene(Scene* scene, const std::string& filePath)
+bool JsonLoader::LoadScene(Scene* scene, const std::string& filePath)
 {
 	std::ifstream file(filePath.c_str());
 	if (!file)
@@ -67,7 +67,7 @@ bool LevelLoader::LoadScene(Scene* scene, const std::string& filePath)
 	// Renderer
 	if (data.contains("Renderer"))
 	{
-		LoadRenderer(data["Renderer"], scene->GetRenderer());
+		LoadRenderer(data["Renderer"], scene->GetRenderer().get());
 	}
 	// Actor
 	if (data.contains("Actor"))
@@ -79,7 +79,7 @@ bool LevelLoader::LoadScene(Scene* scene, const std::string& filePath)
 	return true;
 }
 
-bool LevelLoader::SaveScene(Scene* scene, const std::string& fileName)
+bool JsonLoader::SaveScene(Scene* scene, const std::string& fileName)
 {
 	std::ofstream file(fileName.c_str());
 	if (!file)
@@ -90,7 +90,7 @@ bool LevelLoader::SaveScene(Scene* scene, const std::string& fileName)
 
 	// -------------------- ここから --------------------
 	// Renderer
-	SaveRenderer(data["Renderer"], scene->GetRenderer());
+	SaveRenderer(data["Renderer"], scene->GetRenderer().get());
 	// Actor
 	SaveActors(data["Actor"], scene);
 	// -------------------- ここまで --------------------
@@ -104,7 +104,7 @@ bool LevelLoader::SaveScene(Scene* scene, const std::string& fileName)
 // Prefab
 // ==================================================
 
-Actor* LevelLoader::LoadPrefab(Scene* scene, const std::string& filePath)
+Actor* JsonLoader::LoadPrefab(Scene* scene, const std::string& filePath)
 {
 	std::ifstream file(filePath.c_str());
 	if (!file)
@@ -138,7 +138,7 @@ Actor* LevelLoader::LoadPrefab(Scene* scene, const std::string& filePath)
 	return actor;
 }
 
-bool LevelLoader::SavePrefab(Actor* actor, const std::string& filePath)
+bool JsonLoader::SavePrefab(Actor* actor, const std::string& filePath)
 {
 	std::ofstream file(filePath.c_str());
 	if (!file)
@@ -173,13 +173,13 @@ bool LevelLoader::SavePrefab(Actor* actor, const std::string& filePath)
 // ==================================================
 
 // レンダラー
-void LevelLoader::LoadRenderer(const nlohmann::json& json, Renderer* renderer)
+void JsonLoader::LoadRenderer(const nlohmann::json& json, Renderer* renderer)
 {
 	renderer->GetLightManager()->LoadLevel(json);
 }
 
 // アクター
-void LevelLoader::LoadActors(const nlohmann::json& json, Scene* scene)
+void JsonLoader::LoadActors(const nlohmann::json& json, Scene* scene)
 {
 	for (size_t i = 0; i < json.size(); ++i)
 	{
@@ -209,7 +209,7 @@ void LevelLoader::LoadActors(const nlohmann::json& json, Scene* scene)
 }
 
 // 子アクター
-void LevelLoader::LoadChildren(const nlohmann::json& json, Actor* parent)
+void JsonLoader::LoadChildren(const nlohmann::json& json, Actor* parent)
 {
 	for (size_t i = 0; i < json.size(); ++i)
 	{
@@ -248,7 +248,7 @@ void LevelLoader::LoadChildren(const nlohmann::json& json, Actor* parent)
 }
 
 // コンポーネント
-void LevelLoader::LoadComponents(const nlohmann::json& json, Actor* owner)
+void JsonLoader::LoadComponents(const nlohmann::json& json, Actor* owner)
 {
 	for (size_t i = 0; i < json.size(); ++i)
 	{
@@ -276,13 +276,13 @@ void LevelLoader::LoadComponents(const nlohmann::json& json, Actor* owner)
 // ==================================================
 
 // レンダラー
-void LevelLoader::SaveRenderer(nlohmann::json& json, Renderer* renderer)
+void JsonLoader::SaveRenderer(nlohmann::json& json, Renderer* renderer)
 {
 	renderer->GetLightManager()->SaveLevel(json);
 }
 
 // アクター
-void LevelLoader::SaveActors(nlohmann::json& json, Scene* scene)
+void JsonLoader::SaveActors(nlohmann::json& json, Scene* scene)
 {
 	auto& actors = scene->GetActors();
 	for (auto& actor : actors)
@@ -304,7 +304,7 @@ void LevelLoader::SaveActors(nlohmann::json& json, Scene* scene)
 }
 
 // 子アクター
-void LevelLoader::SaveChildren(nlohmann::json& json, Actor* parent)
+void JsonLoader::SaveChildren(nlohmann::json& json, Actor* parent)
 {
 	auto& actors = parent->GetChildren();
 	for (auto& actor : actors)
@@ -326,7 +326,7 @@ void LevelLoader::SaveChildren(nlohmann::json& json, Actor* parent)
 }
 
 // コンポーネント
-void LevelLoader::SaveComponents(nlohmann::json& json, Actor* owner)
+void JsonLoader::SaveComponents(nlohmann::json& json, Actor* owner)
 {
 	auto& comps = owner->GetComponents();
 	for (auto& comp : comps)

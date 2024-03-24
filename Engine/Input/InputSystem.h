@@ -8,7 +8,7 @@
 
 class Window;
 
-class Input
+class InputSystem
 {
 public:
 	// 入力状況

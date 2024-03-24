@@ -27,7 +27,7 @@ void MeshRenderer::Draw()
 	if (mIsVisible && mModel)
 	{
 		//mModel->Draw(mOwner->mTransform, mShaderType);
-		MyAssert(ModelCommon::mCmdList);
+		MY_ASSERT(ModelCommon::mCmdList);
 		ModelCommon::SetPso(mShaderType);
 		for (auto& mesh : mModel->GetMeshes())
 		{

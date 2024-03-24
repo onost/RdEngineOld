@@ -16,13 +16,13 @@ public:
 	// ルートパラメータへアクセス
 	RootParameter& RootParams(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < mNumRootParams);
+		MY_ASSERT(i >= 0 && i < mNumRootParams);
 		return mRootParams[i];
 	}
 	// サンプラーへアクセス
 	D3D12_STATIC_SAMPLER_DESC& Samplers(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < mNumSamplers);
+		MY_ASSERT(i >= 0 && i < mNumSamplers);
 		return mSamplers[i];
 	}
 

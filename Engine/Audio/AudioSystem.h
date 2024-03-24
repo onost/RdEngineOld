@@ -8,7 +8,7 @@
 // https://qiita.com/okmonn/items/ab037ef11bf0e2ebbaca
 // https://necotech.org/archives/657
 
-class Audio
+class AudioSystem
 {
 public:
 	// チャンク

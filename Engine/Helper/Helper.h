@@ -1,15 +1,20 @@
 #pragma once
 #include <string>
 
+// ヘルパー関数群
 namespace Helper
 {
-	void WriteToConsole(const std::string& str);
-	void WriteToOutput(const std::string& str);
+	// 出力ウィンドウへ出力
+	void WriteToOutputWindow(const std::string& str);
 
+	// 文字列を変換
 	std::wstring ConvertToWstr(const std::string& str);
-	std::string ConvertToStr(const std::wstring& str);
+	std::string ConvertToStr(const std::wstring& wstr);
 
-	std::string GetFileName(const std::string& filePath);
-	std::string GetExtension(const std::string& filePath);
-	std::string RemoveExtension(const std::string& fileName);
+	// ファイルパスからファイル名を抽出
+	std::string ExtractFileName(const std::string& filePath);
+	// ファイル名から拡張子を抽出
+	std::string ExtractExtension(const std::string& fileName);
+	// ファイル名から拡張子を除外
+	std::string ExcludeExtension(const std::string& fileName);
 }

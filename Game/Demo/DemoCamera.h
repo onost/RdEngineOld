@@ -5,7 +5,7 @@ class DemoCamera : public Actor
 {
 public:
 	DemoCamera(Scene* scene);
-	void ActorInput(const Input::State& input) override;
+	void ActorInput(const InputSystem::State& input) override;
 	void ActorUpdate(float deltaTime) override;
 	void ActorUpdateForDev() override;
 	Type GetType() const { return Type::DemoCamera; }

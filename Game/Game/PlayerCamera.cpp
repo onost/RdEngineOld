@@ -18,7 +18,7 @@ PlayerCamera::PlayerCamera(Scene* scene)
 	new CameraComponent(this);
 }
 
-void PlayerCamera::ActorInput(const Input::State& input)
+void PlayerCamera::ActorInput(const InputSystem::State& input)
 {
 	// スティック
 	mRotVel = -input.mGamepad.GetRStick().y;

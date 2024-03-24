@@ -1,13 +1,13 @@
 #include "Scene.h"
 #include "Editor.h"
-#include "Loader/LevelLoader.h"
+#include "Loader/JsonLoader.h"
 #include "RdEngine.h"
 #include <format>
 
 Scene::Scene(const std::string& sceneName)
 	: mName(sceneName)
-	, mRenderer(nullptr)
-	, mCollisionManager(nullptr)
+	, mRenderer()
+	, mCollisionManager()
 	, mIsUpdating(false)
 	, mActors()
 	, mWaitActors()
@@ -25,9 +25,9 @@ Scene::~Scene()
 void Scene::Initialize()
 {
 	mRenderer = gEngine->GetRenderer();
-	MyAssert(mRenderer);
+	//MyAssert(mRenderer);
 	mCollisionManager = gEngine->GetCollisionManager();
-	MyAssert(mCollisionManager);
+	//MyAssert(mCollisionManager);
 
 	// ロード
 	Load();
@@ -39,7 +39,7 @@ void Scene::Terminate()
 	Unload();
 }
 
-void Scene::ProcessInput(const Input::State& input)
+void Scene::ProcessInput(const InputSystem::State& input)
 {
 	// アクターの入力処理
 	mIsUpdating = true;
@@ -235,7 +235,7 @@ void Scene::UpdateForDev()
 	ImGui::InputText("Prefab Name", &mPrefabName);
 	if (ImGui::Button("Load"))
 	{
-		LevelLoader::LoadPrefab(this, "Assets/Prefab/" + mPrefabName + ".rdpr");
+		JsonLoader::LoadPrefab(this, "Assets/Prefab/" + mPrefabName + ".rdpr");
 	}
 	ImGui::Separator();
 	// アクターツリー
@@ -280,7 +280,7 @@ void Scene::UpdateForDev()
 		}
 		if (ImGui::Button("Save Prefab"))
 		{
-			LevelLoader::SavePrefab(mActorForDev, "Assets/Prefab/" + mActorForDev->GetName() + ".rdpr");
+			JsonLoader::SavePrefab(mActorForDev, "Assets/Prefab/" + mActorForDev->GetName() + ".rdpr");
 		}
 	}
 	ImGui::End();
@@ -304,15 +304,15 @@ void Scene::Load()
 
 	// シーンファイルを読み込む
 	std::string filePath = std::format("Assets/Level/{}.rdlv", mName);
-	if (LevelLoader::LoadScene(this, filePath))
+	if (JsonLoader::LoadScene(this, filePath))
 	{
-		Helper::WriteToConsole(
-			std::format("Succeeded in loading: \"{}\"\n", filePath));
+		//Helper::WriteToConsole(
+		//	std::format("Succeeded in loading: \"{}\"\n", filePath));
 	}
 	else
 	{
-		Helper::WriteToConsole(
-			std::format("Failed to loading: \"{}\"\n", filePath));
+		//Helper::WriteToConsole(
+		//	std::format("Failed to loading: \"{}\"\n", filePath));
 	}
 
 	// アクターをソート
@@ -341,14 +341,14 @@ void Scene::Save()
 {
 	// シーンファイルを保存
 	std::string filePath = std::format("Assets/Level/{}.rdlv", mName);
-	if (LevelLoader::SaveScene(this, filePath))
+	if (JsonLoader::SaveScene(this, filePath))
 	{
-		Helper::WriteToConsole(
-			std::format("Succeeded in saving: \"{}\"\n", filePath));
+		//Helper::WriteToConsole(
+		//	std::format("Succeeded in saving: \"{}\"\n", filePath));
 	}
 	else
 	{
-		Helper::WriteToConsole(
-			std::format("Failed to saving: \"{}\"\n", filePath));
+		//Helper::WriteToConsole(
+		//	std::format("Failed to saving: \"{}\"\n", filePath));
 	}
 }

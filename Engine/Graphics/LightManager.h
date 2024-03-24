@@ -56,167 +56,167 @@ public:
 	// Directional Light
 	const Color& GetDirectionalLightColor(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kDirectionalLightCount);
+		MY_ASSERT(i >= 0 && i < kDirectionalLightCount);
 		return mDirectionalLights[i].mColor;
 	}
 	const Vector3& GetDirectionalLightDirection(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kDirectionalLightCount);
+		MY_ASSERT(i >= 0 && i < kDirectionalLightCount);
 		return mDirectionalLights[i].mDirection;
 	}
 	float GetDirectionalLightIntensity(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kDirectionalLightCount);
+		MY_ASSERT(i >= 0 && i < kDirectionalLightCount);
 		return mDirectionalLights[i].mIntensity;
 	}
 
 	// Point Light
 	const Color& GetPointLightColor(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kPointLightCount);
+		MY_ASSERT(i >= 0 && i < kPointLightCount);
 		return mPointLights[i].mColor;
 	}
 	const Vector3& GetPointLightPosition(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kPointLightCount);
+		MY_ASSERT(i >= 0 && i < kPointLightCount);
 		return mPointLights[i].mPosition;
 	}
 	float GetPointLightIntensity(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kPointLightCount);
+		MY_ASSERT(i >= 0 && i < kPointLightCount);
 		return mPointLights[i].mIntensity;
 	}
 	float GetPointLightRadius(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kPointLightCount);
+		MY_ASSERT(i >= 0 && i < kPointLightCount);
 		return mPointLights[i].mRadius;
 	}
 	float GetPointLightDecay(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kPointLightCount);
+		MY_ASSERT(i >= 0 && i < kPointLightCount);
 		return mPointLights[i].mDecay;
 	}
 
 	// Spot Light
 	const Color& GetSpotLightColor(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
+		MY_ASSERT(i >= 0 && i < kSpotLightCount);
 		return mSpotLights[i].mColor;
 	}
 	const Vector3& GetSpotLightDirection(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
+		MY_ASSERT(i >= 0 && i < kSpotLightCount);
 		return mSpotLights[i].mDirection;
 	}
 	float GetSpotLightIntensity(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
+		MY_ASSERT(i >= 0 && i < kSpotLightCount);
 		return mSpotLights[i].mIntensity;
 	}
 	const Vector3& GetSpotLightPosition(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
+		MY_ASSERT(i >= 0 && i < kSpotLightCount);
 		return mSpotLights[i].mPosition;
 	}
 	float GetSpotLightRadius(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
+		MY_ASSERT(i >= 0 && i < kSpotLightCount);
 		return mSpotLights[i].mRadius;
 	}
 	float GetSpotLightDecay(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
+		MY_ASSERT(i >= 0 && i < kSpotLightCount);
 		return mSpotLights[i].mDecay;
 	}
 	float GetSpotLightInner(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
+		MY_ASSERT(i >= 0 && i < kSpotLightCount);
 		return mSpotLights[i].mInner;
 	}
 	float GetSpotLightOuter(uint32_t i)
 	{
-		MyAssert(i >= 0 && i < kSpotLightCount);
+		MY_ASSERT(i >= 0 && i < kSpotLightCount);
 		return mSpotLights[i].mOuter;
 	}
 
 	// Directional Light
 	void SetDirectionalLightColor(uint32_t i, const Color& color)
 	{
-		MyAssert(i >= 0 && i < kDirectionalLightCount);
+		MY_ASSERT(i >= 0 && i < kDirectionalLightCount);
 		mDirectionalLights[i].mColor = color;
 	}
 	void SetDirectionalLightDirection(uint32_t i, const Vector3& direction)
 	{
-		MyAssert(i >= 0 && i < kDirectionalLightCount);
+		MY_ASSERT(i >= 0 && i < kDirectionalLightCount);
 		mDirectionalLights[i].mDirection = direction;
 	}
 	void SetDirectionalLightIntensity(uint32_t i, float intensity)
 	{
-		MyAssert(i >= 0 && i < kDirectionalLightCount);
+		MY_ASSERT(i >= 0 && i < kDirectionalLightCount);
 		mDirectionalLights[i].mIntensity = intensity;
 	}
 
 	// Point Light
 	void SetPointLightColor(uint32_t i, const Color& color)
 	{
-		MyAssert(i >= 0 && i < kPointLightCount);
+		MY_ASSERT(i >= 0 && i < kPointLightCount);
 		mPointLights[i].mColor = color;
 	}
 	void SetPointLightPosition(uint32_t i, const Vector3& position)
 	{
-		MyAssert(i >= 0 && i < kPointLightCount);
+		MY_ASSERT(i >= 0 && i < kPointLightCount);
 		mPointLights[i].mPosition = position;
 	}
 	void SetPointLightIntensity(uint32_t i, float intensity)
 	{
-		MyAssert(i >= 0 && i < kPointLightCount);
+		MY_ASSERT(i >= 0 && i < kPointLightCount);
 		mPointLights[i].mIntensity = intensity;
 	}
 	void SetPointLightRadius(uint32_t i, float radius)
 	{
-		MyAssert(i >= 0 && i < kPointLightCount);
+		MY_ASSERT(i >= 0 && i < kPointLightCount);
 		mPointLights[i].mRadius = radius;
 	}
 	void SetPointLightDecay(uint32_t i, float decay)
 	{
-		MyAssert(i >= 0 && i < kPointLightCount);
+		MY_ASSERT(i >= 0 && i < kPointLightCount);
 		mPointLights[i].mDecay = decay;
 	}
 
 	// Circle Shadow
 	void SetCircleShadowDirection(uint32_t i, const Vector3& direction)
 	{
-		MyAssert(i >= 0 && i < kCircleShadowCount);
+		MY_ASSERT(i >= 0 && i < kCircleShadowCount);
 		mCircleShadows[i].mDirection = direction;
 	}
 	void SetCircleShadowIntensity(uint32_t i, float intensity)
 	{
-		MyAssert(i >= 0 && i < kCircleShadowCount);
+		MY_ASSERT(i >= 0 && i < kCircleShadowCount);
 		mCircleShadows[i].mIntensity = intensity;
 	}
 	void SetCircleShadowPosition(uint32_t i, const Vector3& position)
 	{
-		MyAssert(i >= 0 && i < kCircleShadowCount);
+		MY_ASSERT(i >= 0 && i < kCircleShadowCount);
 		mCircleShadows[i].mPosition = position;
 	}
 	void SetCircleShadowRadius(uint32_t i, float radius)
 	{
-		MyAssert(i >= 0 && i < kCircleShadowCount);
+		MY_ASSERT(i >= 0 && i < kCircleShadowCount);
 		mCircleShadows[i].mRadius = radius;
 	}
 	void SetCircleShadowDecay(uint32_t i, float decay)
 	{
-		MyAssert(i >= 0 && i < kCircleShadowCount);
+		MY_ASSERT(i >= 0 && i < kCircleShadowCount);
 		mCircleShadows[i].mDecay = decay;
 	}
 	void SetCircleShadowInner(uint32_t i, float inner)
 	{
-		MyAssert(i >= 0 && i < kCircleShadowCount);
+		MY_ASSERT(i >= 0 && i < kCircleShadowCount);
 		mCircleShadows[i].mInner = inner;
 	}
 	void SetCircleShadowOuter(uint32_t i, float outer)
 	{
-		MyAssert(i >= 0 && i < kCircleShadowCount);
+		MY_ASSERT(i >= 0 && i < kCircleShadowCount);
 		mCircleShadows[i].mOuter = outer;
 	}
 #pragma endregion Accessor

@@ -52,7 +52,7 @@ Player::Player(Scene* scene)
 	}
 }
 
-void Player::ActorInput(const Input::State& input)
+void Player::ActorInput(const InputSystem::State& input)
 {
 	// ==================================================
 	// 移動
@@ -280,7 +280,7 @@ void Player::ActorOnCollisionEnter(Actor* other, CollisionInfo*)
 				mInvincibleTimer = 2.0f;
 			}
 
-			auto audio = gEngine->GetAudio();
+			auto audio = gEngine->GetAudioSystem();
 			auto data = audio->Load("Assets/Audio/Damage.wav");
 			audio->Play(data);
 		}

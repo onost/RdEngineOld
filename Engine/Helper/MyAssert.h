@@ -1,12 +1,14 @@
 #pragma once
-#include <cassert>
 #include "Helper.h"
-// 自作Assert
+#include <cassert>
+
+// 自作アサーション
+// ファイルパスではなくファイル名を表示
 #ifdef NDEBUG
-#define MyAssert(e) ((void)0)
+#define MY_ASSERT(expression) ((void)0)
 #else
-#define MyAssert(e) (void)(\
-            (!!(e)) ||\
-            (_wassert(_CRT_WIDE(#e), Helper::ConvertToWstr(Helper::GetFileName(__FILE__)).c_str(), (unsigned)(__LINE__)), 0)\
+#define MY_ASSERT(expression) (void)(\
+            (!!(expression)) ||\
+            (_wassert(_CRT_WIDE(#expression), Helper::ConvertToWstr(Helper::ExtractFileName(__FILE__)).c_str(), (unsigned)(__LINE__)), 0)\
         )
 #endif

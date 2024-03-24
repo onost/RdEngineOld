@@ -6,7 +6,7 @@
 // マウス
 class Mouse
 {
-	friend class Input;
+	friend class InputSystem;
 public:
 	bool GetButton(uint8_t button) const;
 	bool GetButtonUp(uint8_t button) const;

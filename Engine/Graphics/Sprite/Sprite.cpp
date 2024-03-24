@@ -29,8 +29,8 @@ void Sprite::Create(Texture* texture)
 
 void Sprite::Draw(Transform* transform)
 {
-	MyAssert(transform);
-	MyAssert(SpriteCommon::mCmdList);
+	MY_ASSERT(transform);
+	MY_ASSERT(SpriteCommon::mCmdList);
 	if (mTexture)
 	{
 		// 頂点
@@ -87,7 +87,7 @@ void Sprite::Draw(Transform* transform)
 // Post Effect
 void Sprite::Draw(const Vector2& size)
 {
-	MyAssert(SpriteCommon::mCmdList);
+	MY_ASSERT(SpriteCommon::mCmdList);
 	if (mTexture)
 	{
 		// 頂点

@@ -3,7 +3,7 @@
 #include "Component/SpriteRenderer.h"
 #include "Graphics/Renderer.h"
 #include "Scene/Scene.h"
-#include "Loader/LevelLoader.h"
+#include "Loader/JsonLoader.h"
 #include "RdEngine.h"
 
 StarPieceManager::StarPieceManager(Scene* scene)
@@ -38,7 +38,7 @@ void StarPieceManager::ActorUpdate(float deltaTime)
 			if (actor)
 			{
 				actor->SetState(State::kDead);
-				auto audio = gEngine->GetAudio();
+				auto audio = gEngine->GetAudioSystem();
 				auto data = audio->Load("Assets/Audio/Open.wav");
 				audio->Play(data);
 			}
@@ -77,6 +77,6 @@ void StarPieceManager::GetStarPiece()
 	if (mStarPieceCount >= kStarPieceMax)
 	{
 		mBreakCam->SetMainCamera();
-		LevelLoader::LoadPrefab(mScene, "Assets/Prefab/GlassChip.rdpr");
+		JsonLoader::LoadPrefab(mScene, "Assets/Prefab/GlassChip.rdpr");
 	}
 }

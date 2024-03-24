@@ -6,7 +6,7 @@
 Vector3 UpdateKeyframeAtTime(
 	const std::vector<Keyframe<Vector3>>& key, float time)
 {
-	MyAssert(!key.empty());
+	MY_ASSERT(!key.empty());
 	if (key.size() == 1 || time <= key[0].mTime)
 	{
 		return key[0].mValue;
@@ -28,7 +28,7 @@ Vector3 UpdateKeyframeAtTime(
 Quaternion UpdateKeyframeAtTime(
 	const std::vector<Keyframe<Quaternion>>& key, float time)
 {
-	MyAssert(!key.empty());
+	MY_ASSERT(!key.empty());
 	if (key.size() == 1 || time <= key[0].mTime)
 	{
 		return key[0].mValue;
