@@ -6,7 +6,7 @@
 #include "Window.h"
 
 ID3D12GraphicsCommandList* SpriteCommon::mCmdList = nullptr;
-RootSignature SpriteCommon::mRootSignature;
+std::unique_ptr<RootSignature> SpriteCommon::mRootSignature;
 PipelineState SpriteCommon::mPipelineStates[6];
 Matrix4 SpriteCommon::mProjMat = Matrix4::kIdentity;
 
@@ -14,19 +14,20 @@ void SpriteCommon::Initialize(Renderer* renderer)
 {
 	MY_ASSERT(renderer);
 
+	mRootSignature = std::make_unique<RootSignature>(2, 1);
 	// ルートシグネチャ
-	mRootSignature.Initialize(2, 1);
-	mRootSignature.RootParameters(0).InitConstant(0);
-	mRootSignature.RootParameters(1).InitDescriptorTable(1);
-	mRootSignature.RootParameters(1).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	mRootSignature.Samplers(0) = GraphicsCommon::gSamplerLinearClamp;
-	mRootSignature.Create();
+	//mRootSignature.Initialize(2, 1);
+	mRootSignature->RootParameters(0).InitConstant(0);
+	mRootSignature->RootParameters(1).InitDescriptorTable(1);
+	mRootSignature->RootParameters(1).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	mRootSignature->Samplers(0) = GraphicsCommon::gSamplerLinearClamp;
+	mRootSignature->Create();
 
 	// シェーダ
 	Shader* vs = renderer->GetVs("Assets/Shader/Sprite/SpriteVs.hlsl");
 	Shader* ps = renderer->GetPs("Assets/Shader/Sprite/SpritePs.hlsl");
 	// パイプラインステート
-	mPipelineStates[uint32_t(Blend::None)].SetRootSignature(mRootSignature.Get());
+	mPipelineStates[uint32_t(Blend::None)].SetRootSignature(mRootSignature->Get());
 	mPipelineStates[uint32_t(Blend::None)].SetVertexShader(vs->GetBlob());
 	mPipelineStates[uint32_t(Blend::None)].SetPixelShader(ps->GetBlob());
 	mPipelineStates[uint32_t(Blend::None)].SetBlendDesc(GraphicsCommon::gBlendNone);
@@ -68,7 +69,7 @@ void SpriteCommon::PreRendering(ID3D12GraphicsCommandList* cmdList)
 {
 	MY_ASSERT(cmdList);
 	mCmdList = cmdList;
-	mRootSignature.Bind(mCmdList);
+	mRootSignature->Bind(mCmdList);
 	mPipelineStates[uint32_t(Blend::Normal)].Bind(mCmdList);
 	mCmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 }

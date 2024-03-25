@@ -7,7 +7,7 @@
 ID3D12GraphicsCommandList* ParticleCommon::mCmdList = nullptr;
 Renderer* ParticleCommon::mRenderer = nullptr;
 Camera* ParticleCommon::mCamera = nullptr;
-RootSignature ParticleCommon::mRootSignature;
+std::unique_ptr<RootSignature> ParticleCommon::mRootSignature;
 PipelineState ParticleCommon::mPsos[6];
 PipelineState ParticleCommon::mModelPsos[3];
 std::unique_ptr<ConstantBuffer> ParticleCommon::mCBuff;
@@ -18,23 +18,24 @@ void ParticleCommon::Initialize(Renderer* renderer)
 	mRenderer = renderer;
 
 	// ルートシグネチャ
-	mRootSignature.Initialize(5, 1);
-	mRootSignature.RootParameters(0).InitDescriptorTable(1);
-	mRootSignature.RootParameters(0).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	mRootSignature.RootParameters(1).InitConstant(1);
-	mRootSignature.RootParameters(2).InitConstant(2);
-	mRootSignature.RootParameters(3).InitDescriptorTable(1);
-	mRootSignature.RootParameters(3).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
-	mRootSignature.RootParameters(4).InitConstant(3);
-	mRootSignature.Samplers(0) = GraphicsCommon::gSamplerLinearWrap;
-	mRootSignature.Create();
+	//mRootSignature.Initialize(5, 1);
+	mRootSignature = std::make_unique<RootSignature>(5, 1);
+	mRootSignature->RootParameters(0).InitDescriptorTable(1);
+	mRootSignature->RootParameters(0).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	mRootSignature->RootParameters(1).InitConstant(1);
+	mRootSignature->RootParameters(2).InitConstant(2);
+	mRootSignature->RootParameters(3).InitDescriptorTable(1);
+	mRootSignature->RootParameters(3).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
+	mRootSignature->RootParameters(4).InitConstant(3);
+	mRootSignature->Samplers(0) = GraphicsCommon::gSamplerLinearWrap;
+	mRootSignature->Create();
 
 	// シェーダ
 	Shader* vs = renderer->GetVs("Assets/Shader/Particle/ParticleVs.hlsl");
 	Shader* defaultPs = renderer->GetPs("Assets/Shader/Particle/ParticlePs.hlsl");
 	Shader* unlightPs = renderer->GetPs("Assets/Shader/Particle/UnlightParticlePs.hlsl");
 	// パイプラインステート
-	mPsos[uint32_t(Blend::None)].SetRootSignature(mRootSignature.Get());
+	mPsos[uint32_t(Blend::None)].SetRootSignature(mRootSignature->Get());
 	mPsos[uint32_t(Blend::None)].SetVertexShader(vs->GetBlob());
 	mPsos[uint32_t(Blend::None)].SetPixelShader(unlightPs->GetBlob());
 	mPsos[uint32_t(Blend::None)].SetBlendDesc(GraphicsCommon::gBlendNone);
@@ -93,7 +94,7 @@ void ParticleCommon::PreRendering(ID3D12GraphicsCommandList* cmdList)
 {
 	MY_ASSERT(cmdList);
 	mCmdList = cmdList;
-	mRootSignature.Bind(mCmdList);
+	mRootSignature->Bind(mCmdList);
 	mPsos[uint32_t(Blend::Normal)].Bind(mCmdList);
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

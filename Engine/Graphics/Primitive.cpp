@@ -11,16 +11,17 @@ void Primitive::Initialize(Renderer* renderer)
 	mRenderer = renderer;
 
 	// ルートシグネチャ
-	mRootSignature.Initialize(1, 1);
-	mRootSignature.RootParameters(0).InitConstant(0);
-	mRootSignature.Samplers(0) = GraphicsCommon::gSamplerLinearWrap;
-	mRootSignature.Create();
+	//mRootSignature.Initialize(1, 1);
+	mRootSignature = std::make_unique<RootSignature>(1, 1);
+	mRootSignature->RootParameters(0).InitConstant(0);
+	mRootSignature->Samplers(0) = GraphicsCommon::gSamplerLinearWrap;
+	mRootSignature->Create();
 
 	// シェーダ
 	Shader* vs = renderer->GetVs("Assets/Shader/Primitive/PrimVs.hlsl");
 	Shader* ps = renderer->GetPs("Assets/Shader/Primitive/PrimPs.hlsl");
 	// パイプラインステート
-	mLinePso2.SetRootSignature(mRootSignature.Get());
+	mLinePso2.SetRootSignature(mRootSignature->Get());
 	mLinePso2.SetVertexShader(vs->GetBlob());
 	mLinePso2.SetPixelShader(ps->GetBlob());
 	mLinePso2.SetBlendDesc(GraphicsCommon::gBlendNormal);
@@ -440,7 +441,7 @@ void Primitive::DrawGrid(uint32_t gridNum)
 	MY_ASSERT(mIndex + vSize < kMaxVertex);
 	auto data = static_cast<Vertex*>(mVBuff->GetData());
 	std::copy(v.begin(), v.end(), &data[mIndex]);
-	mRootSignature.Bind(mCmdList);
+	mRootSignature->Bind(mCmdList);
 	mGridPso.Bind(mCmdList);
 	mCmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 	mVBuff->Bind(mCmdList);
@@ -457,7 +458,7 @@ void Primitive::LineList2(const std::vector<Vertex>& v)
 	MY_ASSERT(mIndex + size < kMaxVertex);
 	auto data = static_cast<Vertex*>(mVBuff->GetData());
 	std::copy(v.begin(), v.end(), &data[mIndex]);
-	mRootSignature.Bind(mCmdList);
+	mRootSignature->Bind(mCmdList);
 	mLinePso2.Bind(mCmdList);
 	mCmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 	mVBuff->Bind(mCmdList);
@@ -474,7 +475,7 @@ void Primitive::LineList3(const std::vector<Vertex>& v)
 	MY_ASSERT(mIndex + size < kMaxVertex);
 	auto data = static_cast<Vertex*>(mVBuff->GetData());
 	std::copy(v.begin(), v.end(), &data[mIndex]);
-	mRootSignature.Bind(mCmdList);
+	mRootSignature->Bind(mCmdList);
 	mLinePso3.Bind(mCmdList);
 	mCmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 	mVBuff->Bind(mCmdList);
@@ -491,7 +492,7 @@ void Primitive::TriList2(const std::vector<Vertex>& v)
 	MY_ASSERT(mIndex + size < kMaxVertex);
 	auto data = static_cast<Vertex*>(mVBuff->GetData());
 	std::copy(v.begin(), v.end(), &data[mIndex]);
-	mRootSignature.Bind(mCmdList);
+	mRootSignature->Bind(mCmdList);
 	mPrimPso3.Bind(mCmdList);
 	mCmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	mVBuff->Bind(mCmdList);

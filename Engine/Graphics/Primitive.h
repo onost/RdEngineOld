@@ -55,7 +55,7 @@ private:
 	static const uint32_t kMaxVertex = 16384;
 	ID3D12GraphicsCommandList* mCmdList;
 	Renderer* mRenderer;
-	RootSignature mRootSignature;
+	std::unique_ptr<RootSignature> mRootSignature;
 	PipelineState mLinePso2;
 	PipelineState mLinePso3;
 	PipelineState mPrimPso2;

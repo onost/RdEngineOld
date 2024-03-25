@@ -10,13 +10,14 @@ void GaussianBlur::Initialize(Texture* texture, Renderer* renderer)
 	mTexture = texture;
 
 	// ルートシグネチャ
-	mBlurRs.Initialize(3, 1);
-	mBlurRs.RootParameters(0).InitConstant(0);
-	mBlurRs.RootParameters(1).InitDescriptorTable(1);
-	mBlurRs.RootParameters(1).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	mBlurRs.RootParameters(2).InitConstant(1);
-	mBlurRs.Samplers(0) = GraphicsCommon::gSamplerLinearClamp;
-	mBlurRs.Create();
+	//mBlurRs.Initialize(3, 1);
+	mBlurRs = std::make_unique<RootSignature>(3, 1);
+	mBlurRs->RootParameters(0).InitConstant(0);
+	mBlurRs->RootParameters(1).InitDescriptorTable(1);
+	mBlurRs->RootParameters(1).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	mBlurRs->RootParameters(2).InitConstant(1);
+	mBlurRs->Samplers(0) = GraphicsCommon::gSamplerLinearClamp;
+	mBlurRs->Create();
 
 	// シェーダ
 	Shader* hBlurVs = renderer->GetVs("Assets/Shader/GaussianBlur/HorizontalBlurVs.hlsl");
@@ -24,7 +25,7 @@ void GaussianBlur::Initialize(Texture* texture, Renderer* renderer)
 	Shader* ps = renderer->GetPs("Assets/Shader/GaussianBlur/BlurPs.hlsl");
 	// パイプラインステート
 	// 横ブラー
-	mHBlurPso.SetRootSignature(mBlurRs.Get());
+	mHBlurPso.SetRootSignature(mBlurRs->Get());
 	mHBlurPso.SetVertexShader(hBlurVs->GetBlob());
 	mHBlurPso.SetPixelShader(ps->GetBlob());
 	mHBlurPso.SetBlendDesc(GraphicsCommon::gBlendNormal);
@@ -71,7 +72,7 @@ void GaussianBlur::Execute(ID3D12GraphicsCommandList* cmdList, float power)
 	}
 	mCBuff->Copy(mWeights);
 
-	mBlurRs.Bind(cmdList);
+	mBlurRs->Bind(cmdList);
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	// 横ブラー
 	mHBlurRt.PreRendering(cmdList);

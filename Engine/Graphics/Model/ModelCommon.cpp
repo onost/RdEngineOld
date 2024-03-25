@@ -8,7 +8,7 @@ const std::string ModelCommon::kModelPath = "Assets/Model/";
 
 ID3D12GraphicsCommandList* ModelCommon::mCmdList = nullptr;
 Renderer* ModelCommon::mRenderer = nullptr;
-RootSignature ModelCommon::mRootSignature;
+std::unique_ptr<RootSignature> ModelCommon::mRootSignature;
 PipelineState ModelCommon::mPsos[3];
 PipelineState ModelCommon::mSkinnedPsos[3];
 std::unique_ptr<ConstantBuffer> ModelCommon::mCBuff;
@@ -19,17 +19,18 @@ void ModelCommon::Initialize(Renderer* renderer)
 	mRenderer = renderer;
 
 	// ルートシグネチャ
-	mRootSignature.Initialize(6, 1);
-	mRootSignature.RootParameters(0).InitConstant(0);
-	mRootSignature.RootParameters(1).InitConstant(1);
-	mRootSignature.RootParameters(2).InitConstant(2);
-	mRootSignature.RootParameters(3).InitDescriptorTable(1);
-	mRootSignature.RootParameters(3).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	mRootSignature.RootParameters(4).InitConstant(3);
-	mRootSignature.RootParameters(5).InitDescriptorTable(1);
-	mRootSignature.RootParameters(5).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
-	mRootSignature.Samplers(0) = GraphicsCommon::gSamplerLinearWrap;
-	mRootSignature.Create();
+	//mRootSignature.Initialize(6, 1);
+	mRootSignature = std::make_unique<RootSignature>(6, 1);
+	mRootSignature->RootParameters(0).InitConstant(0);
+	mRootSignature->RootParameters(1).InitConstant(1);
+	mRootSignature->RootParameters(2).InitConstant(2);
+	mRootSignature->RootParameters(3).InitDescriptorTable(1);
+	mRootSignature->RootParameters(3).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	mRootSignature->RootParameters(4).InitConstant(3);
+	mRootSignature->RootParameters(5).InitDescriptorTable(1);
+	mRootSignature->RootParameters(5).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
+	mRootSignature->Samplers(0) = GraphicsCommon::gSamplerLinearWrap;
+	mRootSignature->Create();
 
 	// シェーダ
 	Shader* defaultVs = renderer->GetVs("Assets/Shader/Model/DefaultVs.hlsl");
@@ -37,7 +38,7 @@ void ModelCommon::Initialize(Renderer* renderer)
 	Shader* defaultPs = renderer->GetPs("Assets/Shader/Model/DefaultPs.hlsl");
 	Shader* unlightPs = renderer->GetPs("Assets/Shader/Model/UnlightPs.hlsl");
 	// パイプラインステート
-	mPsos[uint32_t(Type::Default)].SetRootSignature(mRootSignature.Get());
+	mPsos[uint32_t(Type::Default)].SetRootSignature(mRootSignature->Get());
 	mPsos[uint32_t(Type::Default)].SetVertexShader(defaultVs->GetBlob());
 	mPsos[uint32_t(Type::Default)].SetPixelShader(defaultPs->GetBlob());
 	mPsos[uint32_t(Type::Default)].SetBlendDesc(GraphicsCommon::gBlendNormal);
@@ -68,7 +69,7 @@ void ModelCommon::Initialize(Renderer* renderer)
 	}
 
 	// スキンアニメーション用
-	mSkinnedPsos[uint32_t(Type::Default)].SetRootSignature(mRootSignature.Get());
+	mSkinnedPsos[uint32_t(Type::Default)].SetRootSignature(mRootSignature->Get());
 	mSkinnedPsos[uint32_t(Type::Default)].SetVertexShader(skinnedVs->GetBlob());
 	mSkinnedPsos[uint32_t(Type::Default)].SetPixelShader(defaultPs->GetBlob());
 	mSkinnedPsos[uint32_t(Type::Default)].SetBlendDesc(GraphicsCommon::gBlendNormal);
@@ -117,7 +118,7 @@ void ModelCommon::PreRendering(ID3D12GraphicsCommandList* cmdList)
 {
 	MY_ASSERT(cmdList);
 	mCmdList = cmdList;
-	mRootSignature.Bind(mCmdList);
+	mRootSignature->Bind(mCmdList);
 	mPsos[uint32_t(Type::Default)].Bind(mCmdList);// とりま
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
