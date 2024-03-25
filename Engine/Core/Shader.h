@@ -8,19 +8,19 @@
 class Shader
 {
 public:
-	static void Initialize();
+	Shader();
 
-	bool LoadVs(const std::string& filePath);
-	bool LoadGs(const std::string& filePath);
-	bool LoadPs(const std::string& filePath);
-	// シェーダをコンパイル
-	bool Compile(const std::string& filePath, const std::string& profile);
+	bool CompileVs(const std::string& filePath);
+	bool CompileGs(const std::string& filePath);
+	bool CompilePs(const std::string& filePath);
 
-	IDxcBlob* Get() const { return mBlob.Get(); }
+	IDxcBlob* GetBlob() const { return mBlob.Get(); }
 
 private:
-	static Microsoft::WRL::ComPtr<IDxcUtils> mDxcUtils;
-	static Microsoft::WRL::ComPtr<IDxcCompiler3> mDxcCompiler;
-	static Microsoft::WRL::ComPtr<IDxcIncludeHandler> mIncludeHandler;
+	bool CheckResult();
+
+private:
+	std::string mFilePath;
+	// シェーダオブジェクト
 	Microsoft::WRL::ComPtr<IDxcBlob> mBlob;
 };

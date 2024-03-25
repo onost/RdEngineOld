@@ -19,13 +19,13 @@ void ParticleCommon::Initialize(Renderer* renderer)
 
 	// ルートシグネチャ
 	mRootSignature.Initialize(5, 1);
-	mRootSignature.RootParams(0).InitDescTable(1);
-	mRootSignature.RootParams(0).SetDescRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	mRootSignature.RootParams(1).InitConstant(1);
-	mRootSignature.RootParams(2).InitConstant(2);
-	mRootSignature.RootParams(3).InitDescTable(1);
-	mRootSignature.RootParams(3).SetDescRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
-	mRootSignature.RootParams(4).InitConstant(3);
+	mRootSignature.RootParameters(0).InitDescriptorTable(1);
+	mRootSignature.RootParameters(0).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	mRootSignature.RootParameters(1).InitConstant(1);
+	mRootSignature.RootParameters(2).InitConstant(2);
+	mRootSignature.RootParameters(3).InitDescriptorTable(1);
+	mRootSignature.RootParameters(3).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
+	mRootSignature.RootParameters(4).InitConstant(3);
 	mRootSignature.Samplers(0) = GraphicsCommon::gSamplerLinearWrap;
 	mRootSignature.Create();
 
@@ -35,8 +35,8 @@ void ParticleCommon::Initialize(Renderer* renderer)
 	Shader* unlightPs = renderer->GetPs("Assets/Shader/Particle/UnlightParticlePs.hlsl");
 	// パイプラインステート
 	mPsos[uint32_t(Blend::None)].SetRootSignature(mRootSignature.Get());
-	mPsos[uint32_t(Blend::None)].SetVertexShader(vs->Get());
-	mPsos[uint32_t(Blend::None)].SetPixelShader(unlightPs->Get());
+	mPsos[uint32_t(Blend::None)].SetVertexShader(vs->GetBlob());
+	mPsos[uint32_t(Blend::None)].SetPixelShader(unlightPs->GetBlob());
 	mPsos[uint32_t(Blend::None)].SetBlendDesc(GraphicsCommon::gBlendNone);
 	mPsos[uint32_t(Blend::None)].SetRasterizerDesc(GraphicsCommon::gRasterizerCullModeNone);
 	mPsos[uint32_t(Blend::None)].SetDepthStencilDesc(GraphicsCommon::gDepthWriteMaskZero);
@@ -58,7 +58,7 @@ void ParticleCommon::Initialize(Renderer* renderer)
 	mPsos[uint32_t(Blend::Normal)] = mPsos[uint32_t(Blend::None)];
 	mPsos[uint32_t(Blend::Normal)].SetBlendDesc(GraphicsCommon::gBlendNormal);
 	mPsos[uint32_t(Blend::Add)] = mPsos[uint32_t(Blend::None)];
-	mPsos[uint32_t(Blend::Add)].SetBlendDesc(GraphicsCommon::gBlendAdd);
+	mPsos[uint32_t(Blend::Add)].SetBlendDesc(GraphicsCommon::gBlendAddition);
 	mPsos[uint32_t(Blend::Subtract)] = mPsos[uint32_t(Blend::None)];
 	mPsos[uint32_t(Blend::Subtract)].SetBlendDesc(GraphicsCommon::gBlendSubtract);
 	mPsos[uint32_t(Blend::Multiply)] = mPsos[uint32_t(Blend::None)];
@@ -72,11 +72,11 @@ void ParticleCommon::Initialize(Renderer* renderer)
 
 	// メッシュパーティクル用
 	mModelPsos[uint32_t(ModelCommon::Type::Default)] = mPsos[uint32_t(Blend::None)];
-	mModelPsos[uint32_t(ModelCommon::Type::Default)].SetPixelShader(defaultPs->Get());
+	mModelPsos[uint32_t(ModelCommon::Type::Default)].SetPixelShader(defaultPs->GetBlob());
 	mModelPsos[uint32_t(ModelCommon::Type::Default)].SetBlendDesc(GraphicsCommon::gBlendNormal);
 	mModelPsos[uint32_t(ModelCommon::Type::Default)].SetDepthStencilDesc(GraphicsCommon::gDepthEnable);
 	mModelPsos[uint32_t(ModelCommon::Type::Unlight)] = mModelPsos[uint32_t(ModelCommon::Type::Default)];
-	mModelPsos[uint32_t(ModelCommon::Type::Unlight)].SetPixelShader(unlightPs->Get());
+	mModelPsos[uint32_t(ModelCommon::Type::Unlight)].SetPixelShader(unlightPs->GetBlob());
 	mModelPsos[uint32_t(ModelCommon::Type::Wireframe)] = mModelPsos[uint32_t(ModelCommon::Type::Default)];
 	mModelPsos[uint32_t(ModelCommon::Type::Wireframe)].SetRasterizerDesc(GraphicsCommon::gRasterizerFillModeWireframe);
 	for (auto& p : mModelPsos)

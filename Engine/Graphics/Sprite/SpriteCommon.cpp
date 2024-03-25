@@ -16,9 +16,9 @@ void SpriteCommon::Initialize(Renderer* renderer)
 
 	// ルートシグネチャ
 	mRootSignature.Initialize(2, 1);
-	mRootSignature.RootParams(0).InitConstant(0);
-	mRootSignature.RootParams(1).InitDescTable(1);
-	mRootSignature.RootParams(1).SetDescRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	mRootSignature.RootParameters(0).InitConstant(0);
+	mRootSignature.RootParameters(1).InitDescriptorTable(1);
+	mRootSignature.RootParameters(1).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 	mRootSignature.Samplers(0) = GraphicsCommon::gSamplerLinearClamp;
 	mRootSignature.Create();
 
@@ -27,8 +27,8 @@ void SpriteCommon::Initialize(Renderer* renderer)
 	Shader* ps = renderer->GetPs("Assets/Shader/Sprite/SpritePs.hlsl");
 	// パイプラインステート
 	mPipelineStates[uint32_t(Blend::None)].SetRootSignature(mRootSignature.Get());
-	mPipelineStates[uint32_t(Blend::None)].SetVertexShader(vs->Get());
-	mPipelineStates[uint32_t(Blend::None)].SetPixelShader(ps->Get());
+	mPipelineStates[uint32_t(Blend::None)].SetVertexShader(vs->GetBlob());
+	mPipelineStates[uint32_t(Blend::None)].SetPixelShader(ps->GetBlob());
 	mPipelineStates[uint32_t(Blend::None)].SetBlendDesc(GraphicsCommon::gBlendNone);
 	mPipelineStates[uint32_t(Blend::None)].SetRasterizerDesc(GraphicsCommon::gRasterizerCullModeNone);
 	mPipelineStates[uint32_t(Blend::None)].SetDepthStencilDesc(GraphicsCommon::gDepthDisable);
@@ -46,7 +46,7 @@ void SpriteCommon::Initialize(Renderer* renderer)
 	mPipelineStates[uint32_t(Blend::Normal)] = mPipelineStates[uint32_t(Blend::None)];
 	mPipelineStates[uint32_t(Blend::Normal)].SetBlendDesc(GraphicsCommon::gBlendNormal);
 	mPipelineStates[uint32_t(Blend::Add)] = mPipelineStates[uint32_t(Blend::None)];
-	mPipelineStates[uint32_t(Blend::Add)].SetBlendDesc(GraphicsCommon::gBlendAdd);
+	mPipelineStates[uint32_t(Blend::Add)].SetBlendDesc(GraphicsCommon::gBlendAddition);
 	mPipelineStates[uint32_t(Blend::Subtract)] = mPipelineStates[uint32_t(Blend::None)];
 	mPipelineStates[uint32_t(Blend::Subtract)].SetBlendDesc(GraphicsCommon::gBlendSubtract);
 	mPipelineStates[uint32_t(Blend::Multiply)] = mPipelineStates[uint32_t(Blend::None)];

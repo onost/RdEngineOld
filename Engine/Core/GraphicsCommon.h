@@ -9,7 +9,7 @@ namespace GraphicsCommon
 	// ブレンド
 	extern D3D12_BLEND_DESC gBlendNone;
 	extern D3D12_BLEND_DESC gBlendNormal;
-	extern D3D12_BLEND_DESC gBlendAdd;
+	extern D3D12_BLEND_DESC gBlendAddition;
 	extern D3D12_BLEND_DESC gBlendSubtract;
 	extern D3D12_BLEND_DESC gBlendMultiply;
 	extern D3D12_BLEND_DESC gBlendScreen;

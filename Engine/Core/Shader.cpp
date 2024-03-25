@@ -1,82 +1,49 @@
 #include "Shader.h"
-#include "Core/GraphicsEngine.h"
-#include "Helper/MyAssert.h"
+#include "GraphicsEngine.h"
+#include "Helper/Helper.h"
 #include <format>
 
-#pragma comment(lib, "dxcompiler.lib")
+Shader::Shader()
+	: mFilePath()
+	, mBlob(nullptr)
+{}
 
-Microsoft::WRL::ComPtr<IDxcUtils> Shader::mDxcUtils = nullptr;
-Microsoft::WRL::ComPtr<IDxcCompiler3> Shader::mDxcCompiler = nullptr;
-Microsoft::WRL::ComPtr<IDxcIncludeHandler> Shader::mIncludeHandler = nullptr;
-
-void Shader::Initialize()
+// Vertex Shader
+bool Shader::CompileVs(const std::string& filePath)
 {
-	HRESULT hr = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&mDxcUtils));
-	MY_ASSERT(SUCCEEDED(hr));
-	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&mDxcCompiler));
-	MY_ASSERT(SUCCEEDED(hr));
-	hr = mDxcUtils->CreateDefaultIncludeHandler(&mIncludeHandler);
-	MY_ASSERT(SUCCEEDED(hr));
+	mFilePath = filePath;
+	mBlob = gGraphicsEngine->CompileShader(filePath, "vs_6_0");
+	return CheckResult();
 }
 
-bool Shader::LoadVs(const std::string& filePath)
+// Geometry Shader
+bool Shader::CompileGs(const std::string& filePath)
 {
-	return Compile(filePath, "vs_6_0");
+	mFilePath = filePath;
+	mBlob = gGraphicsEngine->CompileShader(filePath, "gs_6_0");
+	return CheckResult();
 }
 
-bool Shader::LoadGs(const std::string& filePath)
+// Pixel Shader
+bool Shader::CompilePs(const std::string& filePath)
 {
-	return Compile(filePath, "gs_6_0");
+	mFilePath = filePath;
+	mBlob = gGraphicsEngine->CompileShader(filePath, "ps_6_0");
+	return CheckResult();
 }
 
-bool Shader::LoadPs(const std::string& filePath)
+bool Shader::CheckResult()
 {
-	return Compile(filePath, "ps_6_0");
-}
-
-// シェーダをコンパイル
-bool Shader::Compile(const std::string& filePath, const std::string& profile)
-{
-	std::wstring path = Helper::ConvertToWstr(filePath);
-	Microsoft::WRL::ComPtr<IDxcBlobEncoding> encoding = nullptr;
-	HRESULT hr = mDxcUtils->LoadFile(path.c_str(), nullptr, &encoding);
-	if (FAILED(hr))
+	if (mBlob)
 	{
+		Helper::WriteToOutputWindow(
+			std::format("Success: Compile \"{}\"\n", mFilePath));
+		return true;
+	}
+	else
+	{
+		Helper::WriteToOutputWindow(
+			std::format("Failure: Compile \"{}\"\n", mFilePath));
 		return false;
 	}
-
-	// コンパイル
-	DxcBuffer source = {};
-	source.Ptr = encoding->GetBufferPointer();
-	source.Size = encoding->GetBufferSize();
-	source.Encoding = DXC_CP_UTF8;
-	// コンパイルオプション
-	auto p = Helper::ConvertToWstr(profile);
-	LPCWSTR arguments[] =
-	{
-		path.c_str(),
-		L"-E", L"main",
-		L"-T", p.c_str(),
-		L"-Zi", L"-Qembed_debug",
-		L"-Od",
-		L"-Zpr"
-	};
-	Microsoft::WRL::ComPtr<IDxcResult> result = nullptr;
-	hr = mDxcCompiler->Compile(
-		&source, arguments, _countof(arguments),
-		mIncludeHandler.Get(), IID_PPV_ARGS(&result));
-	MY_ASSERT(SUCCEEDED(hr));
-
-	Microsoft::WRL::ComPtr<IDxcBlobUtf8> error = nullptr;
-	result->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&error), nullptr);
-	if (error && error->GetStringLength() != 0)
-	{
-		//Helper::WriteToConsole(std::format("{}", error->GetStringPointer()));
-		return false;
-	}
-
-	hr = result->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&mBlob), nullptr);
-	MY_ASSERT(SUCCEEDED(hr));
-
-	return true;
 }

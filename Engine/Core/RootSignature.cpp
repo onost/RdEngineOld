@@ -1,13 +1,16 @@
 #include "RootSignature.h"
 #include "GraphicsEngine.h"
 
-void RootSignature::Initialize(uint32_t numRootParams, uint32_t numSamplers)
+RootSignature::RootSignature(uint32_t numRootParameters, uint32_t numSamplers)
+	: mRootSignature(nullptr)
+	, mNumRootParameters(numRootParameters)
+	, mNumSamplers(numSamplers)
+	, mRootParameters(nullptr)
+	, mSamplers(nullptr)
 {
-	mNumRootParams = numRootParams;
-	mNumSamplers = numSamplers;
-	if (mNumRootParams > 0)
+	if (mNumRootParameters > 0)
 	{
-		mRootParams.reset(new RootParameter[mNumRootParams]);
+		mRootParameters.reset(new RootParameter[mNumRootParameters]);
 	}
 	if (mNumSamplers > 0)
 	{
@@ -15,13 +18,15 @@ void RootSignature::Initialize(uint32_t numRootParams, uint32_t numSamplers)
 	}
 }
 
+
+
 void RootSignature::Create()
 {
 	Microsoft::WRL::ComPtr<ID3DBlob> rsBlob;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob;
 	D3D12_ROOT_SIGNATURE_DESC desc = {};
-	desc.NumParameters = mNumRootParams;
-	desc.pParameters = &mRootParams.get()->mRootParam;
+	desc.NumParameters = mNumRootParameters;
+	desc.pParameters = &mRootParameters.get()->mRootParameter;
 	desc.NumStaticSamplers = mNumSamplers;
 	desc.pStaticSamplers = mSamplers.get();
 	desc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;

@@ -20,14 +20,14 @@ void ModelCommon::Initialize(Renderer* renderer)
 
 	// ルートシグネチャ
 	mRootSignature.Initialize(6, 1);
-	mRootSignature.RootParams(0).InitConstant(0);
-	mRootSignature.RootParams(1).InitConstant(1);
-	mRootSignature.RootParams(2).InitConstant(2);
-	mRootSignature.RootParams(3).InitDescTable(1);
-	mRootSignature.RootParams(3).SetDescRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	mRootSignature.RootParams(4).InitConstant(3);
-	mRootSignature.RootParams(5).InitDescTable(1);
-	mRootSignature.RootParams(5).SetDescRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
+	mRootSignature.RootParameters(0).InitConstant(0);
+	mRootSignature.RootParameters(1).InitConstant(1);
+	mRootSignature.RootParameters(2).InitConstant(2);
+	mRootSignature.RootParameters(3).InitDescriptorTable(1);
+	mRootSignature.RootParameters(3).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	mRootSignature.RootParameters(4).InitConstant(3);
+	mRootSignature.RootParameters(5).InitDescriptorTable(1);
+	mRootSignature.RootParameters(5).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
 	mRootSignature.Samplers(0) = GraphicsCommon::gSamplerLinearWrap;
 	mRootSignature.Create();
 
@@ -38,8 +38,8 @@ void ModelCommon::Initialize(Renderer* renderer)
 	Shader* unlightPs = renderer->GetPs("Assets/Shader/Model/UnlightPs.hlsl");
 	// パイプラインステート
 	mPsos[uint32_t(Type::Default)].SetRootSignature(mRootSignature.Get());
-	mPsos[uint32_t(Type::Default)].SetVertexShader(defaultVs->Get());
-	mPsos[uint32_t(Type::Default)].SetPixelShader(defaultPs->Get());
+	mPsos[uint32_t(Type::Default)].SetVertexShader(defaultVs->GetBlob());
+	mPsos[uint32_t(Type::Default)].SetPixelShader(defaultPs->GetBlob());
 	mPsos[uint32_t(Type::Default)].SetBlendDesc(GraphicsCommon::gBlendNormal);
 	mPsos[uint32_t(Type::Default)].SetRasterizerDesc(GraphicsCommon::gRasterizerDefault);
 	mPsos[uint32_t(Type::Default)].SetDepthStencilDesc(GraphicsCommon::gDepthEnable);
@@ -59,7 +59,7 @@ void ModelCommon::Initialize(Renderer* renderer)
 	mPsos[uint32_t(Type::Default)].SetInputLayout(inputLayouts, _countof(inputLayouts));
 
 	mPsos[uint32_t(Type::Unlight)] = mPsos[uint32_t(Type::Default)];
-	mPsos[uint32_t(Type::Unlight)].SetPixelShader(unlightPs->Get());
+	mPsos[uint32_t(Type::Unlight)].SetPixelShader(unlightPs->GetBlob());
 	mPsos[uint32_t(Type::Wireframe)] = mPsos[uint32_t(Type::Default)];
 	mPsos[uint32_t(Type::Wireframe)].SetRasterizerDesc(GraphicsCommon::gRasterizerFillModeWireframe);
 	for (auto& p : mPsos)
@@ -69,8 +69,8 @@ void ModelCommon::Initialize(Renderer* renderer)
 
 	// スキンアニメーション用
 	mSkinnedPsos[uint32_t(Type::Default)].SetRootSignature(mRootSignature.Get());
-	mSkinnedPsos[uint32_t(Type::Default)].SetVertexShader(skinnedVs->Get());
-	mSkinnedPsos[uint32_t(Type::Default)].SetPixelShader(defaultPs->Get());
+	mSkinnedPsos[uint32_t(Type::Default)].SetVertexShader(skinnedVs->GetBlob());
+	mSkinnedPsos[uint32_t(Type::Default)].SetPixelShader(defaultPs->GetBlob());
 	mSkinnedPsos[uint32_t(Type::Default)].SetBlendDesc(GraphicsCommon::gBlendNormal);
 	mSkinnedPsos[uint32_t(Type::Default)].SetRasterizerDesc(GraphicsCommon::gRasterizerDefault);
 	mSkinnedPsos[uint32_t(Type::Default)].SetDepthStencilDesc(GraphicsCommon::gDepthEnable);
@@ -100,7 +100,7 @@ void ModelCommon::Initialize(Renderer* renderer)
 	mSkinnedPsos[uint32_t(Type::Default)].SetInputLayout(skinnedInputLayouts, _countof(skinnedInputLayouts));
 
 	mSkinnedPsos[uint32_t(Type::Unlight)] = mSkinnedPsos[uint32_t(Type::Default)];
-	mSkinnedPsos[uint32_t(Type::Unlight)].SetPixelShader(unlightPs->Get());
+	mSkinnedPsos[uint32_t(Type::Unlight)].SetPixelShader(unlightPs->GetBlob());
 	mSkinnedPsos[uint32_t(Type::Wireframe)] = mSkinnedPsos[uint32_t(Type::Default)];
 	mSkinnedPsos[uint32_t(Type::Wireframe)].SetRasterizerDesc(GraphicsCommon::gRasterizerFillModeWireframe);
 	for (auto& p : mSkinnedPsos)

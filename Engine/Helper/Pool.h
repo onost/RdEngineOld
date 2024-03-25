@@ -12,7 +12,12 @@ private:
 	{
 		T mValue;
 		// アクティブか
-		bool mIsActive = false;
+		bool mIsActive;
+
+		Item()
+			: mValue()
+			, mIsActive(false)
+		{}
 	};
 
 public:

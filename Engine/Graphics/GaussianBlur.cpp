@@ -11,10 +11,10 @@ void GaussianBlur::Initialize(Texture* texture, Renderer* renderer)
 
 	// ルートシグネチャ
 	mBlurRs.Initialize(3, 1);
-	mBlurRs.RootParams(0).InitConstant(0);
-	mBlurRs.RootParams(1).InitDescTable(1);
-	mBlurRs.RootParams(1).SetDescRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	mBlurRs.RootParams(2).InitConstant(1);
+	mBlurRs.RootParameters(0).InitConstant(0);
+	mBlurRs.RootParameters(1).InitDescriptorTable(1);
+	mBlurRs.RootParameters(1).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	mBlurRs.RootParameters(2).InitConstant(1);
 	mBlurRs.Samplers(0) = GraphicsCommon::gSamplerLinearClamp;
 	mBlurRs.Create();
 
@@ -25,8 +25,8 @@ void GaussianBlur::Initialize(Texture* texture, Renderer* renderer)
 	// パイプラインステート
 	// 横ブラー
 	mHBlurPso.SetRootSignature(mBlurRs.Get());
-	mHBlurPso.SetVertexShader(hBlurVs->Get());
-	mHBlurPso.SetPixelShader(ps->Get());
+	mHBlurPso.SetVertexShader(hBlurVs->GetBlob());
+	mHBlurPso.SetPixelShader(ps->GetBlob());
 	mHBlurPso.SetBlendDesc(GraphicsCommon::gBlendNormal);
 	mHBlurPso.SetRasterizerDesc(GraphicsCommon::gRasterizerCullModeNone);
 	mHBlurPso.SetDepthStencilDesc(GraphicsCommon::gDepthDisable);
@@ -43,7 +43,7 @@ void GaussianBlur::Initialize(Texture* texture, Renderer* renderer)
 	mHBlurPso.Create();
 	// 縦ブラー
 	mVBlurPso = mHBlurPso;
-	mVBlurPso.SetVertexShader(vBlurVs->Get());
+	mVBlurPso.SetVertexShader(vBlurVs->GetBlob());
 	mVBlurPso.Create();
 
 	// 縮小バッファ

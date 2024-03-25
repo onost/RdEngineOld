@@ -12,7 +12,7 @@ void Primitive::Initialize(Renderer* renderer)
 
 	// ルートシグネチャ
 	mRootSignature.Initialize(1, 1);
-	mRootSignature.RootParams(0).InitConstant(0);
+	mRootSignature.RootParameters(0).InitConstant(0);
 	mRootSignature.Samplers(0) = GraphicsCommon::gSamplerLinearWrap;
 	mRootSignature.Create();
 
@@ -21,8 +21,8 @@ void Primitive::Initialize(Renderer* renderer)
 	Shader* ps = renderer->GetPs("Assets/Shader/Primitive/PrimPs.hlsl");
 	// パイプラインステート
 	mLinePso2.SetRootSignature(mRootSignature.Get());
-	mLinePso2.SetVertexShader(vs->Get());
-	mLinePso2.SetPixelShader(ps->Get());
+	mLinePso2.SetVertexShader(vs->GetBlob());
+	mLinePso2.SetPixelShader(ps->GetBlob());
 	mLinePso2.SetBlendDesc(GraphicsCommon::gBlendNormal);
 	mLinePso2.SetRasterizerDesc(GraphicsCommon::gRasterizerCullModeNone);
 	mLinePso2.SetDepthStencilDesc(GraphicsCommon::gDepthDisable);

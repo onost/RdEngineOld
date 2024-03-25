@@ -22,7 +22,7 @@ public:
 	// デスクリプタハンドルを解放
 	void Free(DescriptorHandle*& descHandle);
 
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> GetHeap() const { return mDescriptorHeap; }
+	ID3D12DescriptorHeap* GetHeap() const { return mDescriptorHeap.Get(); }
 
 private:
 	D3D12_DESCRIPTOR_HEAP_DESC mDesc;

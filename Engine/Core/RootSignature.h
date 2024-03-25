@@ -5,35 +5,32 @@
 #include <memory>
 #include <wrl.h>
 
-// ルートシグネチャ
 class RootSignature
 {
 public:
-	void Initialize(uint32_t numRootParams, uint32_t numSamplers);
+	RootSignature(uint32_t numRootParameters, uint32_t numSamplers);
+
 	void Create();
+
 	void Bind(ID3D12GraphicsCommandList* cmdList);
 
-	// ルートパラメータへアクセス
-	RootParameter& RootParams(uint32_t i)
+	RootParameter& RootParameters(uint32_t index)
 	{
-		MY_ASSERT(i >= 0 && i < mNumRootParams);
-		return mRootParams[i];
+		MY_ASSERT(index >= 0 && index < mNumRootParameters);
+		return mRootParameters[index];
 	}
-	// サンプラーへアクセス
-	D3D12_STATIC_SAMPLER_DESC& Samplers(uint32_t i)
+	D3D12_STATIC_SAMPLER_DESC& Samplers(uint32_t index)
 	{
-		MY_ASSERT(i >= 0 && i < mNumSamplers);
-		return mSamplers[i];
+		MY_ASSERT(index >= 0 && index < mNumSamplers);
+		return mSamplers[index];
 	}
 
 	ID3D12RootSignature* Get() const { return mRootSignature.Get(); }
 
 private:
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature;
-	// ルートパラメータ
-	uint32_t mNumRootParams;
-	std::unique_ptr<RootParameter[]> mRootParams;
-	// サンプラー
+	uint32_t mNumRootParameters;
 	uint32_t mNumSamplers;
+	std::unique_ptr<RootParameter[]> mRootParameters;
 	std::unique_ptr<D3D12_STATIC_SAMPLER_DESC[]> mSamplers;
 };

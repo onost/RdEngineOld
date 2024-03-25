@@ -7,8 +7,6 @@
 const uint32_t Window::kWidth = 1280;
 // ウィンドウの高さ
 const uint32_t Window::kHeight = 720;
-// タイトルバーの文字
-std::string Window::kTitle = "None";
 
 // ImGuiのウィンドウプロシージャ
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
@@ -33,13 +31,13 @@ LRESULT CALLBACK Window::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 void Window::Initialize()
 {
 	// タイトル
-	kTitle = std::format(
+	mTitle = std::format(
 		"{} Ver.{}.{}.{}\n",
 		RdEngine::kName,
 		RdEngine::kVersion[0],
 		RdEngine::kVersion[1],
 		RdEngine::kVersion[2]);
-	//kTitle = "Galaxy";
+	//mTitle = "Galaxy";
 
 	// インスタンスハンドルを取得
 	mHInst = GetModuleHandle(nullptr);
@@ -55,7 +53,7 @@ void Window::Initialize()
 	RECT rc = { 0,0,kWidth,kHeight };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, false);
 
-	auto title = Helper::ConvertToWstr(kTitle);
+	auto title = Helper::ConvertToWstr(mTitle);
 	// ウィンドウを作成
 	mHWnd = CreateWindow(
 		wc.lpszClassName,
@@ -92,4 +90,11 @@ bool Window::ProcessMessage()
 		return true;
 	}
 	return false;
+}
+
+void Window::SetTitle(const std::string& title)
+{
+	mTitle = title;
+	auto t = Helper::ConvertToWstr(mTitle);
+	SetWindowText(mHWnd, t.c_str());
 }

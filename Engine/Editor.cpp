@@ -66,7 +66,7 @@ namespace Editor
 		auto handle = srvHeap.Alloc();
 		if (!ImGui_ImplDX12_Init(
 			gGraphicsEngine->GetDevice(), 2, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-			srvHeap.GetHeap().Get(), handle->mCpuHandle, handle->mGpuHandle))
+			srvHeap.GetHeap(), handle->mCpuHandle, handle->mGpuHandle))
 		{
 			MY_ASSERT(false);
 		}

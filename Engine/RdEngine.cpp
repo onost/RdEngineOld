@@ -55,6 +55,8 @@ void RdEngine::Initialize()
 	mSceneManager->Initialize();
 	Random::Initialize();
 	Editor::Initialize(mWindow.get());
+
+	//mWindow->SetTitle("Set Title");
 }
 
 void RdEngine::Terminate()
@@ -159,16 +161,16 @@ void RdEngine::Update()
 // 描画
 void RdEngine::Render()
 {
-	auto cmdList = gGraphicsEngine->GetCmdList();
 	gGraphicsEngine->SetSrvHeap();
+	auto cmdList = gGraphicsEngine->GetCmdList();
 	mRenderer->Render(cmdList);
 
 	// エディタここまで
 	Editor::PostProcess();
 
-	gGraphicsEngine->PreRendering();
+	gGraphicsEngine->PreRender();
 	mRenderer->RenderFinal(cmdList);
-	gGraphicsEngine->PostRendering();
+	gGraphicsEngine->PostRender();
 }
 
 // ==================================================

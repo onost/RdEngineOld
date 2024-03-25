@@ -384,7 +384,7 @@ Shader* Renderer::GetVs(const std::string& filePath)
 	if (!shader)
 	{
 		shader = new Shader();
-		shader->LoadVs(filePath);
+		shader->CompileVs(filePath);
 		mShaders.Add(filePath, shader);
 	}
 	return shader;
@@ -397,7 +397,7 @@ Shader* Renderer::GetGs(const std::string& filePath)
 	if (!shader)
 	{
 		shader = new Shader();
-		shader->LoadGs(filePath);
+		shader->CompileGs(filePath);
 		mShaders.Add(filePath, shader);
 	}
 	return shader;
@@ -410,7 +410,7 @@ Shader* Renderer::GetPs(const std::string& filePath)
 	if (!shader)
 	{
 		shader = new Shader();
-		shader->LoadPs(filePath);
+		shader->CompilePs(filePath);
 		mShaders.Add(filePath, shader);
 	}
 	return shader;

@@ -29,16 +29,16 @@ void DescriptorHeap::Create(D3D12_DESCRIPTOR_HEAP_TYPE type, uint32_t numDescs, 
 // デスクリプタハンドルを割り当て
 DescriptorHandle* DescriptorHeap::Alloc()
 {
-	auto initFunc = [&](uint32_t i, DescriptorHandle& descHandle)
+	auto initFunc = [&](uint32_t index, DescriptorHandle& descHandle)
 		{
 			// CPUハンドルを計算
 			descHandle.mCpuHandle = mDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-			descHandle.mCpuHandle.ptr += mIncrementSize * i;
+			descHandle.mCpuHandle.ptr += mIncrementSize * index;
 			// GPUハンドルを計算
 			if (mDesc.Flags == D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE)
 			{
 				descHandle.mGpuHandle = mDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
-				descHandle.mGpuHandle.ptr += mIncrementSize * i;
+				descHandle.mGpuHandle.ptr += mIncrementSize * index;
 			}
 		};
 	return mDescriptorPool.Alloc(initFunc);

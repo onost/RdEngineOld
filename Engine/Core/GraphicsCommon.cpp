@@ -8,7 +8,7 @@ namespace GraphicsCommon
 	// ブレンド
 	D3D12_BLEND_DESC gBlendNone = {};
 	D3D12_BLEND_DESC gBlendNormal = {};
-	D3D12_BLEND_DESC gBlendAdd = {};
+	D3D12_BLEND_DESC gBlendAddition = {};
 	D3D12_BLEND_DESC gBlendSubtract = {};
 	D3D12_BLEND_DESC gBlendMultiply = {};
 	D3D12_BLEND_DESC gBlendScreen = {};
@@ -27,16 +27,11 @@ namespace GraphicsCommon
 
 void GraphicsCommon::Initialize()
 {
-	// ==================================================
 	// ヒーププロパティ
-	// ==================================================
-	gHeapDefault.Type = D3D12_HEAP_TYPE_DEFAULT;// Default
-	gHeapUpload.Type = D3D12_HEAP_TYPE_UPLOAD;// Upload
+	gHeapDefault.Type = D3D12_HEAP_TYPE_DEFAULT;
+	gHeapUpload.Type = D3D12_HEAP_TYPE_UPLOAD;
 
-	// ==================================================
 	// ブレンド
-	// ==================================================
-	// None
 	gBlendNone.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 	// Normal
 	gBlendNormal.AlphaToCoverageEnable = false;
@@ -49,11 +44,11 @@ void GraphicsCommon::Initialize()
 	gBlendNormal.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;
 	gBlendNormal.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 	gBlendNormal.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-	// Add
-	gBlendAdd = gBlendNormal;
-	gBlendAdd.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-	gBlendAdd.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
-	gBlendAdd.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	// Addition
+	gBlendAddition = gBlendNormal;
+	gBlendAddition.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	gBlendAddition.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+	gBlendAddition.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 	// Subtract
 	gBlendSubtract = gBlendNormal;
 	gBlendSubtract.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
@@ -70,10 +65,7 @@ void GraphicsCommon::Initialize()
 	gBlendScreen.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
 	gBlendScreen.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 
-	// ==================================================
 	// ラスタライザ
-	// ==================================================
-	// Default
 	gRasterizerDefault.FillMode = D3D12_FILL_MODE_SOLID;
 	gRasterizerDefault.CullMode = D3D12_CULL_MODE_BACK;
 	gRasterizerDefault.FrontCounterClockwise = false;
@@ -84,31 +76,25 @@ void GraphicsCommon::Initialize()
 	gRasterizerDefault.AntialiasedLineEnable = false;
 	gRasterizerDefault.ForcedSampleCount = 0;
 	gRasterizerDefault.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
-	// Cull Mode None
+	// D3D12_CULL_MODE_NONE
 	gRasterizerCullModeNone = gRasterizerDefault;
 	gRasterizerCullModeNone.CullMode = D3D12_CULL_MODE_NONE;
-	// Fill Mode Wireframe
+	// D3D12_FILL_MODE_WIREFRAME
 	gRasterizerFillModeWireframe = gRasterizerDefault;
 	gRasterizerFillModeWireframe.FillMode = D3D12_FILL_MODE_WIREFRAME;
 
-	// ==================================================
 	// 深度ステンシル
-	// ==================================================
-	// Enable
 	gDepthEnable.DepthEnable = true;
 	gDepthEnable.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	gDepthEnable.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 	gDepthEnable.StencilEnable = false;
-	// Disable
 	gDepthDisable.DepthEnable = false;
-	// Write Mask Zero
+	// D3D12_DEPTH_WRITE_MASK_ZERO
 	gDepthWriteMaskZero = gDepthEnable;
 	gDepthWriteMaskZero.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 
-	// ==================================================
 	// サンプラー
-	// ==================================================
-	// Linear Wrap
+	// D3D12_TEXTURE_ADDRESS_MODE_WRAP
 	gSamplerLinearWrap.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
 	gSamplerLinearWrap.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	gSamplerLinearWrap.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -122,7 +108,7 @@ void GraphicsCommon::Initialize()
 	gSamplerLinearWrap.ShaderRegister = 0;
 	gSamplerLinearWrap.RegisterSpace = 0;
 	gSamplerLinearWrap.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	// Linear Clamp
+	// D3D12_TEXTURE_ADDRESS_MODE_CLAMP
 	gSamplerLinearClamp.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
 	gSamplerLinearClamp.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 	gSamplerLinearClamp.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;

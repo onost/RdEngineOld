@@ -18,6 +18,9 @@ public:
 	// メッセージを処理
 	bool ProcessMessage();
 
+	// タイトルを変更
+	void SetTitle(const std::string& title);
+
 	// アクセッサ
 	HINSTANCE GetHInst() const { return mHInst; }
 	HWND GetHWnd() const { return mHWnd; }
@@ -29,7 +32,7 @@ public:
 	static const uint32_t kHeight;
 private:
 	// タイトルバーの文字
-	static std::string kTitle;
+	std::string mTitle;
 	// インスタンスハンドル
 	HINSTANCE mHInst;
 	// ウィンドウハンドル
