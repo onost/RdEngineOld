@@ -318,7 +318,8 @@ void GraphicsEngine::CreateSwapChain(Window* window)
 	desc.BufferCount = 2;
 	desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	[[maybe_unused]] HRESULT hr = mFactory->CreateSwapChainForHwnd(
-		mCmdQueue.Get(), window->GetHWnd(), &desc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(mSwapChain.GetAddressOf()));
+		mCmdQueue.Get(), window->GetHWnd(), &desc, nullptr, nullptr,
+		reinterpret_cast<IDXGISwapChain1**>(mSwapChain.GetAddressOf()));
 	MY_ASSERT(SUCCEEDED(hr));
 }
 

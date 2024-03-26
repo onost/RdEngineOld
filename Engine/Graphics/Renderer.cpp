@@ -136,7 +136,7 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 			{
 
 				ImGui::Image(
-					ImTextureID(texture->GetDescHandle().ptr),
+					ImTextureID(texture->GetDescHandle()->mGpuHandle.ptr),
 					ImVec2(size.x, Window::kHeight * size.x / Window::kWidth));
 				// モデルのドラッグアンドドロップでメッシュレンダラー付のアクターを作成
 				if (ImGui::BeginDragDropTarget())
@@ -582,8 +582,8 @@ void Renderer::UpdateForDev()
 			}
 			// Group
 			ImGui::BeginGroup();
-			ImGui::Image((void*)(intptr_t)t->GetDescHandle().ptr, ImVec2(40.0f, 40.0f));
-			auto texName = Helper::ExtractFileName(t->GetPath());
+			ImGui::Image((void*)(intptr_t)t->GetDescHandle()->mGpuHandle.ptr, ImVec2(40.0f, 40.0f));
+			auto texName = Helper::ExtractFileName(t->GetFilePath());
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))// ドラッグ
 			{
 				ImGui::SetDragDropPayload("TEXTURE_PAYLOAD", &t, sizeof(t));
@@ -623,7 +623,7 @@ void Renderer::UpdateForDev()
 			}
 			// Group
 			ImGui::BeginGroup();
-			ImGui::Image((void*)(intptr_t)fileTex->GetDescHandle().ptr, size);
+			ImGui::Image((void*)(intptr_t)fileTex->GetDescHandle()->mGpuHandle.ptr, size);
 			auto modelName = m->GetName();
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))// ドラッグ
 			{
@@ -671,7 +671,7 @@ void Renderer::UpdateForDev()
 			}
 			// Group
 			ImGui::BeginGroup();
-			ImGui::Image((void*)(intptr_t)fileTex->GetDescHandle().ptr, size);
+			ImGui::Image((void*)(intptr_t)fileTex->GetDescHandle()->mGpuHandle.ptr, size);
 			auto animName = anim->GetName();
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))// ドラッグ
 			{
