@@ -99,8 +99,8 @@ void GraphicsEngine::PreRender()
 	auto& rtvHandle = mRtvHandles[mBackBuffIdx]->mCpuHandle;
 	auto& dsvHandle = mDsvHandle->mCpuHandle;
 	mCmdList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
-	float clearColor[4] = { 0.0f,0.0f,1.0f,0.0f };
 	// クリア
+	float clearColor[4] = { 0.0f,0.0f,1.0f,0.0f };
 	mCmdList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 	mCmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
@@ -273,7 +273,7 @@ void GraphicsEngine::CreateDevice()
 		// 警告やエラーが出たら中断
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
-		//infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
 
 		// どうしようもないエラーは無視
 		// https://stackoverflow.com/questions/69805245/directx-12-application-is-crashing-in-windows-11

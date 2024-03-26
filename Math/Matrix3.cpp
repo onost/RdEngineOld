@@ -8,7 +8,7 @@ static float sIdentity3[3][3] =
 	1.0f,0.0f,0.0f,
 	0.0f,1.0f,0.0f,
 	0.0f,0.0f,1.0f
-};;
+};
 const Matrix3 Matrix3::kIdentity(sIdentity3);
 
 Matrix3::Matrix3()

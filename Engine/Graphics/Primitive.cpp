@@ -21,12 +21,12 @@ void Primitive::Initialize(Renderer* renderer)
 	Shader* vs = renderer->GetVs("Assets/Shader/Primitive/PrimVs.hlsl");
 	Shader* ps = renderer->GetPs("Assets/Shader/Primitive/PrimPs.hlsl");
 	// パイプラインステート
-	mLinePso2.SetRootSignature(mRootSignature->Get());
-	mLinePso2.SetVertexShader(vs->GetBlob());
-	mLinePso2.SetPixelShader(ps->GetBlob());
-	mLinePso2.SetBlendDesc(GraphicsCommon::gBlendNormal);
-	mLinePso2.SetRasterizerDesc(GraphicsCommon::gRasterizerCullModeNone);
-	mLinePso2.SetDepthStencilDesc(GraphicsCommon::gDepthDisable);
+	mLinePso2.SetRootSignature(mRootSignature.get());
+	mLinePso2.SetVertexShader(vs);
+	mLinePso2.SetPixelShader(ps);
+	mLinePso2.SetBlendState(GraphicsCommon::gBlendNormal);
+	mLinePso2.SetRasterizerState(GraphicsCommon::gRasterizerCullModeNone);
+	mLinePso2.SetDepthStencilState(GraphicsCommon::gDepthDisable);
 	D3D12_INPUT_ELEMENT_DESC inputLayouts[2] = {};
 	inputLayouts[0].SemanticName = "POSITION";
 	inputLayouts[0].SemanticIndex = 0;
@@ -36,21 +36,21 @@ void Primitive::Initialize(Renderer* renderer)
 	inputLayouts[1].SemanticIndex = 0;
 	inputLayouts[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	inputLayouts[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	mLinePso2.SetInputLayout(inputLayouts, _countof(inputLayouts));
-	mLinePso2.SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
+	mLinePso2.SetInputLayout(_countof(inputLayouts), inputLayouts);
+	mLinePso2.SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
 	mLinePso2.Create();
 	mLinePso3 = mLinePso2;
 	//mLinePso3.SetDepthStencilDesc(GraphicsCommon::gDepthEnable);
 	mLinePso3.Create();
 	mPrimPso2 = mLinePso2;
-	mPrimPso2.SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+	mPrimPso2.SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 	mPrimPso2.Create();
 	mPrimPso3 = mLinePso3;
-	mPrimPso3.SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+	mPrimPso3.SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 	mPrimPso3.Create();
 
 	mGridPso = mLinePso3;
-	mGridPso.SetDepthStencilDesc(GraphicsCommon::gDepthEnable);
+	mGridPso.SetDepthStencilState(GraphicsCommon::gDepthEnable);
 	mGridPso.Create();
 
 	// 頂点バッファ

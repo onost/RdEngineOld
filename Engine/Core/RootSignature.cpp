@@ -39,5 +39,6 @@ void RootSignature::Create()
 
 void RootSignature::Bind(ID3D12GraphicsCommandList* cmdList)
 {
+	MY_ASSERT(cmdList);
 	cmdList->SetGraphicsRootSignature(mRootSignature.Get());
 }

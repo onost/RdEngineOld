@@ -46,12 +46,12 @@ public:
 	// ==================================================
 	Texture* GetTexture(const std::string& filePath);
 	Model* GetModel(const std::string& filePath);
-	void AddAnimation(const std::string& filePath, Animation* animation);
+	void AddAnimation(const std::string& filePath, std::shared_ptr<Animation> animation);
 	Animation* GetAnimation(const std::string& filePath);
 	Shader* GetVs(const std::string& filePath);
 	Shader* GetGs(const std::string& filePath);
 	Shader* GetPs(const std::string& filePath);
-	void AddSkeleton(const std::string& filePath, Skeleton* skeleton);
+	void AddSkeleton(const std::string& filePath, std::shared_ptr<Skeleton> skeleton);
 	Skeleton* GetSkeleton(const std::string& filePath);
 
 	// ==================================================

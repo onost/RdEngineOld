@@ -163,7 +163,7 @@ void ModelLoader::LoadAnimation(const std::string& modelName)
 	for (uint32_t animIndex = 0; animIndex != scene->mNumAnimations; ++animIndex)
 	{
 		aiAnimation* anim = scene->mAnimations[animIndex];//
-		Animation* myAnim = new Animation();
+		std::shared_ptr<Animation> myAnim = std::make_shared<Animation>();
 		myAnim->mName = modelName + "/" + anim->mName.C_Str();// 名前
 		myAnim->mDuration = float(anim->mDuration / anim->mTicksPerSecond);// 秒へ
 		for (uint32_t channelIndex = 0; channelIndex < anim->mNumChannels; ++channelIndex)

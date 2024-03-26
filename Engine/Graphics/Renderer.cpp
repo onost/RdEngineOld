@@ -46,7 +46,7 @@ void Renderer::Initialize()
 
 	// ガウシアンブラー
 	mGaussianBlur = std::make_unique<GaussianBlur>();
-	mGaussianBlur->Initialize(mMainRt->GetTexture(), this);
+	mGaussianBlur->Initialize(mMainRt->GetRenderTarget().get(), this);
 
 	// モデル用関数テーブル
 	//mModelFuncs["obj"] = &Renderer::GetModelFromObj;// .obj
@@ -65,7 +65,7 @@ void Renderer::Initialize()
 // シーン描画前
 void Renderer::PreRendering(ID3D12GraphicsCommandList* cmdList)
 {
-	mMainRt->PreRendering(cmdList);
+	mMainRt->PreRender(cmdList);
 }
 
 // シーン描画後
@@ -74,7 +74,7 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 	//Editor::PostProcess();///
 	//Editor::Draw(cmdList);///
 
-	mMainRt->PostRendering(cmdList);
+	mMainRt->PostRender();
 
 	//Editor::PreProcess();
 
@@ -92,7 +92,7 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 	}
 	else
 	{
-		texture = mMainRt->GetTexture();
+		texture = mMainRt->GetRenderTarget().get();
 	}
 	SpriteCommon::PostRendering();
 
@@ -354,86 +354,86 @@ void Renderer::SortSprites(SpriteRenderer* sprite)
 // テクスチャ
 Texture* Renderer::GetTexture(const std::string& filePath)
 {
-	Texture* texture = mTextures.Get(filePath);
+	std::shared_ptr<Texture> texture = mTextures.Get(filePath);
 	if (!texture)
 	{
-		texture = new Texture();
+		texture = std::make_shared<Texture>();
 		texture->Create(filePath);
 		mTextures.Add(filePath, texture);
 	}
-	return texture;
+	return texture.get();
 }
 
 // モデル
 Model* Renderer::GetModel(const std::string& filePath)
 {
-	Model* model = mModels.Get(filePath);
+	std::shared_ptr<Model> model = mModels.Get(filePath);
 	if (!model)
 	{
 		//model = ObjLoader::Load(filePath);
-		model = ModelLoader::LoadModel(filePath);
+		model.reset(ModelLoader::LoadModel(filePath));
 		mModels.Add(filePath, model);
 	}
-	return model;
+	return model.get();
 }
 
 // 頂点シェーダ
 Shader* Renderer::GetVs(const std::string& filePath)
 {
-	Shader* shader = mShaders.Get(filePath);
+	std::shared_ptr<Shader> shader = mShaders.Get(filePath);
 	if (!shader)
 	{
-		shader = new Shader();
+		shader = std::make_shared<Shader>();
 		shader->CompileVs(filePath);
 		mShaders.Add(filePath, shader);
 	}
-	return shader;
+	return shader.get();
 }
 
 // ジオメトリシェーダ
 Shader* Renderer::GetGs(const std::string& filePath)
 {
-	Shader* shader = mShaders.Get(filePath);
+	std::shared_ptr<Shader> shader = mShaders.Get(filePath);
 	if (!shader)
 	{
-		shader = new Shader();
+		shader = std::make_shared<Shader>();
 		shader->CompileGs(filePath);
 		mShaders.Add(filePath, shader);
 	}
-	return shader;
+	return shader.get();
 }
 
 // ピクセルシェーダ
 Shader* Renderer::GetPs(const std::string& filePath)
 {
-	Shader* shader = mShaders.Get(filePath);
+	std::shared_ptr<Shader> shader = mShaders.Get(filePath);
 	if (!shader)
 	{
-		shader = new Shader();
+		shader = std::make_shared<Shader>();
 		shader->CompilePs(filePath);
 		mShaders.Add(filePath, shader);
 	}
-	return shader;
+	return shader.get();
 }
 
 // アニメーション
-void Renderer::AddAnimation(const std::string& filePath, Animation* animation)
+void Renderer::AddAnimation(const std::string& filePath, std::shared_ptr<Animation> animation)
 {
 	mAnimations.Add(filePath, animation);
 }
 Animation* Renderer::GetAnimation(const std::string& filePath)
 {
-	return mAnimations.Get(filePath);
+	return mAnimations.Get(filePath).get();
 }
 
 // スケルトン
-void Renderer::AddSkeleton(const std::string& filePath, Skeleton* skeleton)
+void Renderer::AddSkeleton(const std::string& filePath, std::shared_ptr<Skeleton> skeleton)
 {
 	mSkeletons.Add(filePath, skeleton);
 }
 Skeleton* Renderer::GetSkeleton(const std::string& filePath)
 {
-	return mSkeletons.Get(filePath);
+	return mSkeletons.Get(filePath).get();
 }
 
 // ==================================================

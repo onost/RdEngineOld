@@ -11,13 +11,13 @@ public:
 	static const std::string kTexturePath;
 
 	bool Create(const std::string& filePath);
-	void Create(ID3D12Resource* resource);
+	void CreateFromBuff(Microsoft::WRL::ComPtr<ID3D12Resource> resource);
 	void Bind(ID3D12GraphicsCommandList* cmdList, uint32_t rootParamIdx);
 
 	const std::string& GetPath() const { return mPath; }
 	uint32_t GetWidth() const { return static_cast<uint32_t>(mDesc.Width); }
 	uint32_t GetHeight() const { return mDesc.Height; }
-	ID3D12Resource* GetResource() const { return mResource.Get(); }
+	ID3D12Resource* GetBuff() const { return mResource.Get(); }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetDescHandle() const { return mDescHandle; }
 
 private:

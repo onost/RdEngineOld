@@ -20,7 +20,7 @@ public:
 	// ブラーをかけたテクスチャ
 	Texture* GetTexture()
 	{
-		return mVBlurRt.GetTexture();
+		return mVBlurRt.GetRenderTarget().get();
 	}
 
 private:

@@ -1,12 +1,8 @@
 #pragma once
-#include "Core/Shader.h"
 #include "RootSignature.h"
-#include <d3d12.h>
-#include <wrl.h>
-#include <dxcapi.h>
+#include "Shader.h"
 #include <memory>
 
-// パイプラインステート
 class PipelineState
 {
 public:
@@ -15,68 +11,78 @@ public:
 	void Bind(ID3D12GraphicsCommandList* cmdList);
 
 	// ルートシグネチャ
-	void SetRootSignature(ID3D12RootSignature* rootSignature)
+	void SetRootSignature(RootSignature* rootSignature)
 	{
-		mDesc.pRootSignature = rootSignature;
+		mDesc.pRootSignature = rootSignature->Get();
 	}
+
 	// 頂点シェーダ
-	void SetVertexShader(IDxcBlob* blob)
+	void SetVertexShader(Shader* vertexShader)
 	{
+		auto blob = vertexShader->GetBlob();
 		mDesc.VS.pShaderBytecode = blob->GetBufferPointer();
 		mDesc.VS.BytecodeLength = blob->GetBufferSize();
 	}
+
 	// ジオメトリシェーダ
-	void SetGeometryShader(IDxcBlob* blob)
+	void SetGeometryShader(Shader* geometryShader)
 	{
+		auto blob = geometryShader->GetBlob();
 		mDesc.GS.pShaderBytecode = blob->GetBufferPointer();
 		mDesc.GS.BytecodeLength = blob->GetBufferSize();
 	}
+
 	// ピクセルシェーダ
-	void SetPixelShader(IDxcBlob* blob)
+	void SetPixelShader(Shader* pixelShader)
 	{
+		auto blob = pixelShader->GetBlob();
 		mDesc.PS.pShaderBytecode = blob->GetBufferPointer();
 		mDesc.PS.BytecodeLength = blob->GetBufferSize();
 	}
+
 	// ブレンド
-	void SetBlendDesc(D3D12_BLEND_DESC blendDesc)
+	void SetBlendState(D3D12_BLEND_DESC blend)
 	{
-		mDesc.BlendState = blendDesc;
+		mDesc.BlendState = blend;
 	}
+
 	// ラスタライザ
-	void SetRasterizerDesc(D3D12_RASTERIZER_DESC rasterizerDesc)
+	void SetRasterizerState(D3D12_RASTERIZER_DESC rasterizer)
 	{
-		mDesc.RasterizerState = rasterizerDesc;
+		mDesc.RasterizerState = rasterizer;
 	}
+
 	// 深度ステンシル
-	void SetDepthStencilDesc(D3D12_DEPTH_STENCIL_DESC depthStencilDesc)
+	void SetDepthStencilState(D3D12_DEPTH_STENCIL_DESC depthStencil)
 	{
-		mDesc.DepthStencilState = depthStencilDesc;
+		mDesc.DepthStencilState = depthStencil;
 	}
+
 	// 頂点レイアウト
-	void SetInputLayout(
-		D3D12_INPUT_ELEMENT_DESC inputLayouts[], uint32_t numElements)
+	void SetInputLayout(uint32_t numElements, D3D12_INPUT_ELEMENT_DESC inputElements[])
 	{
-		mDesc.InputLayout.NumElements = numElements;
 		if (numElements > 0)
 		{
 			auto size = sizeof(D3D12_INPUT_ELEMENT_DESC) * numElements;
 			D3D12_INPUT_ELEMENT_DESC* tmp = (D3D12_INPUT_ELEMENT_DESC*)(malloc(size));
-			memcpy(tmp, inputLayouts, size);
-			mInputLayouts.reset(tmp);
-			mDesc.InputLayout.pInputElementDescs = mInputLayouts.get();
+			memcpy(tmp, inputElements, size);
+			mDesc.InputLayout.pInputElementDescs = tmp;
+			mInputElements.reset(tmp);
 		}
+		mDesc.InputLayout.NumElements = numElements;
 	}
+
 	// プリミティブトポロジー
-	void SetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY_TYPE primTopologyType)
+	void SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE primitiveTopology)
 	{
-		mDesc.PrimitiveTopologyType = primTopologyType;
+		mDesc.PrimitiveTopologyType = primitiveTopology;
 	}
 
 	ID3D12PipelineState* Get() const { return mPipelineState.Get(); }
 
 private:
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> mPipelineState;
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC mDesc;
+	Microsoft::WRL::ComPtr<ID3D12PipelineState> mPipelineState;
 	// 頂点レイアウト
-	std::shared_ptr<D3D12_INPUT_ELEMENT_DESC> mInputLayouts;
+	std::shared_ptr<D3D12_INPUT_ELEMENT_DESC> mInputElements;
 };

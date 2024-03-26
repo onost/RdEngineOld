@@ -25,12 +25,12 @@ void GaussianBlur::Initialize(Texture* texture, Renderer* renderer)
 	Shader* ps = renderer->GetPs("Assets/Shader/GaussianBlur/BlurPs.hlsl");
 	// パイプラインステート
 	// 横ブラー
-	mHBlurPso.SetRootSignature(mBlurRs->Get());
-	mHBlurPso.SetVertexShader(hBlurVs->GetBlob());
-	mHBlurPso.SetPixelShader(ps->GetBlob());
-	mHBlurPso.SetBlendDesc(GraphicsCommon::gBlendNormal);
-	mHBlurPso.SetRasterizerDesc(GraphicsCommon::gRasterizerCullModeNone);
-	mHBlurPso.SetDepthStencilDesc(GraphicsCommon::gDepthDisable);
+	mHBlurPso.SetRootSignature(mBlurRs.get());
+	mHBlurPso.SetVertexShader(hBlurVs);
+	mHBlurPso.SetPixelShader(ps);
+	mHBlurPso.SetBlendState(GraphicsCommon::gBlendNormal);
+	mHBlurPso.SetRasterizerState(GraphicsCommon::gRasterizerCullModeNone);
+	mHBlurPso.SetDepthStencilState(GraphicsCommon::gDepthDisable);
 	D3D12_INPUT_ELEMENT_DESC inputLayouts[2] = {};
 	inputLayouts[0].SemanticName = "POSITION";
 	inputLayouts[0].SemanticIndex = 0;
@@ -40,18 +40,18 @@ void GaussianBlur::Initialize(Texture* texture, Renderer* renderer)
 	inputLayouts[1].SemanticIndex = 0;
 	inputLayouts[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	inputLayouts[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	mHBlurPso.SetInputLayout(inputLayouts, _countof(inputLayouts));
+	mHBlurPso.SetInputLayout(_countof(inputLayouts), inputLayouts);
 	mHBlurPso.Create();
 	// 縦ブラー
 	mVBlurPso = mHBlurPso;
-	mVBlurPso.SetVertexShader(vBlurVs->GetBlob());
+	mVBlurPso.SetVertexShader(vBlurVs);
 	mVBlurPso.Create();
 
 	// 縮小バッファ
 	mHBlurRt.Create(Window::kWidth / 2, Window::kHeight);
 	mHBlurSprite.Create(mTexture);
 	mVBlurRt.Create(Window::kWidth / 2, Window::kHeight / 2);
-	mVBlurSprite.Create(mHBlurRt.GetTexture());
+	mVBlurSprite.Create(mHBlurRt.GetRenderTarget().get());
 
 	mCBuff = std::make_unique<ConstantBuffer>();
 	mCBuff->Create(sizeof(mWeights));
@@ -75,7 +75,7 @@ void GaussianBlur::Execute(ID3D12GraphicsCommandList* cmdList, float power)
 	mBlurRs->Bind(cmdList);
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	// 横ブラー
-	mHBlurRt.PreRendering(cmdList);
+	mHBlurRt.PreRender(cmdList);
 	D3D12_VIEWPORT viewport;
 	viewport.TopLeftX = 0.0f;
 	viewport.TopLeftY = 0.0f;
@@ -87,13 +87,13 @@ void GaussianBlur::Execute(ID3D12GraphicsCommandList* cmdList, float power)
 	mHBlurPso.Bind(cmdList);
 	mCBuff->Bind(cmdList, 2);
 	mHBlurSprite.Draw(Vector2(float(Window::kWidth), float(Window::kHeight)));
-	mHBlurRt.PostRendering(cmdList);
+	mHBlurRt.PostRender();
 	// 縦ブラー
-	mVBlurRt.PreRendering(cmdList);
+	mVBlurRt.PreRender(cmdList);
 	viewport.Height = FLOAT(Window::kHeight) / 2.0f;
 	cmdList->RSSetViewports(1, &viewport);
 	mVBlurPso.Bind(cmdList);
 	mCBuff->Bind(cmdList, 2);
 	mVBlurSprite.Draw(Vector2(float(Window::kWidth), float(Window::kHeight)));
-	mVBlurRt.PostRendering(cmdList);
+	mVBlurRt.PostRender();
 }

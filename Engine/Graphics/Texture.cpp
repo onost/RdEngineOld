@@ -87,9 +87,9 @@ bool Texture::Create(const std::string& filePath)
 }
 
 // リソースから作成
-void Texture::Create(ID3D12Resource* resource)
+void Texture::CreateFromBuff(Microsoft::WRL::ComPtr<ID3D12Resource> resource)
 {
-	mResource.Attach(resource);
+	mResource = resource;
 	mDesc = mResource->GetDesc();
 
 	// シェーダリソースビューを作成

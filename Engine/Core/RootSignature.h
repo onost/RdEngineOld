@@ -1,7 +1,6 @@
 #pragma once
 #include "Helper/MyAssert.h"
 #include "RootParameter.h"
-#include <d3d12.h>
 #include <memory>
 #include <wrl.h>
 
