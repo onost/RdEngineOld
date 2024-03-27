@@ -29,81 +29,79 @@ public:
 	static const Vector4 kOne;
 };
 
-inline bool operator==(const Vector4& v1, const Vector4& v2)
+inline bool operator==(const Vector4& a, const Vector4& b)
 {
-	return v1.x == v2.x && v1.y == v2.y && v1.z == v2.z && v1.w == v2.w;
+	return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
 }
 
-inline bool operator!=(const Vector4& v1, const Vector4& v2)
+inline bool operator!=(const Vector4& a, const Vector4& b)
 {
-	return v1.x != v2.x || v1.y != v2.y || v1.z != v2.z || v1.w != v2.w;
+	return a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w;
 }
 
-inline Vector4 operator-(const Vector4& v)
+inline Vector4 operator-(const Vector4& a)
 {
-	return Vector4(-v.x, -v.y, -v.z, -v.w);
+	return Vector4(-a.x, -a.y, -a.z, -a.w);
 }
 
-inline Vector4 operator+(const Vector4& v1, const Vector4& v2)
+inline Vector4 operator+(const Vector4& a, const Vector4& b)
 {
-	return Vector4(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z, v1.w + v2.w);
+	return Vector4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w);
 }
 
-inline Vector4 operator-(const Vector4& v1, const Vector4& v2)
+inline Vector4 operator-(const Vector4& a, const Vector4& b)
 {
-	return Vector4(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z, v1.w - v2.w);
+	return Vector4(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w);
 }
 
-inline Vector4 operator*(const Vector4& v1, const Vector4& v2)
+inline Vector4 operator*(const Vector4& a, const Vector4& b)
 {
-	return Vector4(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z, v1.w * v2.w);
+	return Vector4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w);
 }
 
-inline Vector4 operator*(const Vector4& v, float a)
+inline Vector4 operator*(const Vector4& a, float b)
 {
-	return Vector4(v.x * a, v.y * a, v.z * a, v.w * a);
+	return Vector4(a.x * b, a.y * b, a.z * b, a.w * b);
 }
 
-inline Vector4 operator*(float a, const Vector4& v)
+inline Vector4 operator*(float a, const Vector4& b)
 {
-	return Vector4(a * v.x, a * v.y, a * v.z, a * v.w);
+	return Vector4(a * b.x, a * b.y, a * b.z, a * b.w);
 }
 
-inline Vector4 operator/(const Vector4& v, float a)
+inline Vector4 operator/(const Vector4& a, float b)
 {
-	float oneOverA = 1.0f / a;
-	MY_ASSERT(fabsf(oneOverA) > 0.001f);
-	return Vector4(v.x * oneOverA, v.y * oneOverA, v.z * oneOverA, v.w * oneOverA);
+	float oneOverA = 1.0f / b;
+	return Vector4(a.x * oneOverA, a.y * oneOverA, a.z * oneOverA, a.w * oneOverA);
 }
 
-inline Vector4& operator+=(Vector4& v1, const Vector4& v2)
+inline Vector4& operator+=(Vector4& a, const Vector4& b)
 {
-	v1 = v1 + v2;
-	return v1;
+	a = a + b;
+	return a;
 }
 
-inline Vector4& operator-=(Vector4& v1, const Vector4& v2)
+inline Vector4& operator-=(Vector4& a, const Vector4& b)
 {
-	v1 = v1 - v2;
-	return v1;
+	a = a - b;
+	return a;
 }
 
-inline Vector4& operator*=(Vector4& v1, const Vector4& v2)
+inline Vector4& operator*=(Vector4& a, const Vector4& b)
 {
-	v1 = v1 * v2;
-	return v1;
+	a = a * b;
+	return a;
 }
 
-inline Vector4& operator*=(Vector4& v, float a)
+inline Vector4& operator*=(Vector4& a, float b)
 {
-	v = v * a;
-	return v;
+	a = a * b;
+	return a;
 }
 
-inline Vector4& operator/=(Vector4& v, float a)
+inline Vector4& operator/=(Vector4& a, float b)
 {
-	float oneOverA = 1.0f / a;
-	MY_ASSERT(fabsf(oneOverA) > 0.001f);
-	v *= oneOverA;
-	return v;
+	float oneOverA = 1.0f / b;
+	a *= oneOverA;
+	return a;
 }

@@ -1,12 +1,22 @@
 #pragma once
 #include "Matrix4.h"
-#include "QuaternionTransform.h"
+#include "Quaternion.h"
+#include "Vector3.h"
 #include <map>
 #include <optional>
 #include <string>
 #include <vector>
 
 class Animation;
+
+// クォータニオンを使ったトランスフォーム
+struct QuaternionTransform
+{
+	Vector3 mScale;
+	Quaternion mRotate;
+	Vector3 mTranslate;
+};
+
 
 // ジョイント
 struct Joint

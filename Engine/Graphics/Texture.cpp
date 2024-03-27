@@ -20,14 +20,17 @@ Texture::Texture()
 
 Texture::~Texture()
 {
+	// デスクリプタハンドルを解放
 	gGraphicsEngine->GetSrvHeap().Free(mDescHandle);
 }
 
 bool Texture::Create(const std::string& filePath)
 {
 	mFilePath = filePath;
+	// ワイド文字へ変換
 	std::wstring wFilePath = Helper::ConvertToWstr(filePath);
 
+	// ファイルを読み込む
 	DirectX::ScratchImage scratchImage = {};
 	HRESULT hr = DirectX::LoadFromWICFile(
 		wFilePath.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, scratchImage);
@@ -36,6 +39,7 @@ bool Texture::Create(const std::string& filePath)
 		return false;
 	}
 
+	// ミップマップを生成
 	DirectX::ScratchImage mipChain = {};
 	hr = GenerateMipMaps(
 		scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(),
@@ -57,6 +61,7 @@ bool Texture::Create(const std::string& filePath)
 	desc.Format = metadata.format;
 	desc.SampleDesc.Count = 1;
 	auto device = gGraphicsEngine->GetDevice();
+	// テクスチャバッファを作成
 	hr = device->CreateCommittedResource(
 		&GraphicsCommon::gHeapDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr,
 		IID_PPV_ARGS(&mBuff));
@@ -75,6 +80,7 @@ bool Texture::Create(const std::string& filePath)
 	intermediateDesc.MipLevels = 1;
 	intermediateDesc.SampleDesc.Count = 1;
 	intermediateDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	// 中間リソースを作成
 	Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = nullptr;
 	hr = device->CreateCommittedResource(
 		&GraphicsCommon::gHeapUpload, D3D12_HEAP_FLAG_NONE, &intermediateDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
@@ -84,6 +90,7 @@ bool Texture::Create(const std::string& filePath)
 		return false;
 	}
 
+	// テクスチャバッファへ転送
 	auto cmdList = gGraphicsEngine->GetCmdList();
 	UpdateSubresources(
 		cmdList, mBuff.Get(), intermediateResource.Get(), 0, 0, UINT(subresource.size()), subresource.data());
@@ -96,6 +103,7 @@ bool Texture::Create(const std::string& filePath)
 	gGraphicsEngine->ExecuteCommand();
 	gGraphicsEngine->WaitGpu();
 
+	// シェーダリソースビューを作成
 	CreateSrv(DirectX::MakeSRGB(metadata.format), uint32_t(metadata.mipLevels));
 
 	return true;
@@ -108,6 +116,7 @@ void Texture::CreateFromBuff(Microsoft::WRL::ComPtr<ID3D12Resource> buff)
 	mWidth = uint32_t(desc.Width);
 	mHeight = desc.Height;
 
+	// シェーダリソースビューを作成
 	CreateSrv(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, 1);
 }
 
@@ -119,7 +128,9 @@ void Texture::Bind(ID3D12GraphicsCommandList* cmdList, uint32_t rootParam)
 
 void Texture::CreateSrv(DXGI_FORMAT format, uint32_t mipLevels)
 {
+	// デスクリプタハンドルを割り当て
 	mDescHandle = gGraphicsEngine->GetSrvHeap().Alloc();
+	// シェーダリソースビューを作成
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Format = format;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
