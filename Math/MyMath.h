@@ -25,9 +25,9 @@ namespace MyMath
 	}
 
 	template <typename T>
-	inline T Clamp(const T& v, const T& min, const T& max)
+	inline T Clamp(const T& value, const T& min, const T& max)
 	{
-		return Min(max, Max(min, v));
+		return Min(max, Max(min, value));
 	}
 
 	template <typename T>
