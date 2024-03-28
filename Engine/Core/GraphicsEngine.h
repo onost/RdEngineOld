@@ -37,6 +37,8 @@ public:
 	// アクセッサ
 	ID3D12Device* GetDevice() const { return mDevice.Get(); }
 	ID3D12GraphicsCommandList* GetCmdList() const { return mCmdList.Get(); }
+	DescriptorHeap& GetRtvHeap() { return mRtvHeap; }
+	DescriptorHeap& GetDsvHeap() { return mDsvHeap; }
 	DescriptorHeap& GetSrvHeap() { return mSrvHeap; }
 
 private:

@@ -7,7 +7,7 @@
 ID3D12GraphicsCommandList* ParticleCommon::mCmdList = nullptr;
 Renderer* ParticleCommon::mRenderer = nullptr;
 Camera* ParticleCommon::mCamera = nullptr;
-RootSignature ParticleCommon::mRootSignature;
+std::unique_ptr<RootSignature> ParticleCommon::mRootSignature;
 PipelineState ParticleCommon::mPsos[6];
 PipelineState ParticleCommon::mModelPsos[3];
 std::unique_ptr<ConstantBuffer> ParticleCommon::mCBuff;
@@ -18,28 +18,29 @@ void ParticleCommon::Initialize(Renderer* renderer)
 	mRenderer = renderer;
 
 	// ルートシグネチャ
-	mRootSignature.Initialize(5, 1);
-	mRootSignature.RootParameters(0).InitDescriptorTable(1);
-	mRootSignature.RootParameters(0).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	mRootSignature.RootParameters(1).InitConstant(1);
-	mRootSignature.RootParameters(2).InitConstant(2);
-	mRootSignature.RootParameters(3).InitDescriptorTable(1);
-	mRootSignature.RootParameters(3).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
-	mRootSignature.RootParameters(4).InitConstant(3);
-	mRootSignature.Samplers(0) = GraphicsCommon::gSamplerLinearWrap;
-	mRootSignature.Create();
+	//mRootSignature.Initialize(5, 1);
+	mRootSignature = std::make_unique<RootSignature>(5, 1);
+	mRootSignature->RootParameters(0).InitDescriptorTable(1);
+	mRootSignature->RootParameters(0).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	mRootSignature->RootParameters(1).InitConstant(1);
+	mRootSignature->RootParameters(2).InitConstant(2);
+	mRootSignature->RootParameters(3).InitDescriptorTable(1);
+	mRootSignature->RootParameters(3).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
+	mRootSignature->RootParameters(4).InitConstant(3);
+	mRootSignature->Samplers(0) = GraphicsCommon::gSamplerLinearWrap;
+	mRootSignature->Create();
 
 	// シェーダ
 	Shader* vs = renderer->GetVs("Assets/Shader/Particle/ParticleVs.hlsl");
 	Shader* defaultPs = renderer->GetPs("Assets/Shader/Particle/ParticlePs.hlsl");
 	Shader* unlightPs = renderer->GetPs("Assets/Shader/Particle/UnlightParticlePs.hlsl");
 	// パイプラインステート
-	mPsos[uint32_t(Blend::None)].SetRootSignature(mRootSignature.Get());
-	mPsos[uint32_t(Blend::None)].SetVertexShader(vs->GetBlob());
-	mPsos[uint32_t(Blend::None)].SetPixelShader(unlightPs->GetBlob());
-	mPsos[uint32_t(Blend::None)].SetBlendDesc(GraphicsCommon::gBlendNone);
-	mPsos[uint32_t(Blend::None)].SetRasterizerDesc(GraphicsCommon::gRasterizerCullModeNone);
-	mPsos[uint32_t(Blend::None)].SetDepthStencilDesc(GraphicsCommon::gDepthWriteMaskZero);
+	mPsos[uint32_t(Blend::None)].SetRootSignature(mRootSignature.get());
+	mPsos[uint32_t(Blend::None)].SetVertexShader(vs);
+	mPsos[uint32_t(Blend::None)].SetPixelShader(unlightPs);
+	mPsos[uint32_t(Blend::None)].SetBlendState(GraphicsCommon::gBlendNone);
+	mPsos[uint32_t(Blend::None)].SetRasterizerState(GraphicsCommon::gRasterizerCullModeNone);
+	mPsos[uint32_t(Blend::None)].SetDepthStencilState(GraphicsCommon::gDepthWriteMaskZero);
 	D3D12_INPUT_ELEMENT_DESC inputLayouts[3] = {};
 	inputLayouts[0].SemanticName = "POSITION";
 	inputLayouts[0].SemanticIndex = 0;
@@ -53,18 +54,18 @@ void ParticleCommon::Initialize(Renderer* renderer)
 	inputLayouts[2].SemanticIndex = 0;
 	inputLayouts[2].Format = DXGI_FORMAT_R32G32_FLOAT;
 	inputLayouts[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	mPsos[uint32_t(Blend::None)].SetInputLayout(inputLayouts, _countof(inputLayouts));
+	mPsos[uint32_t(Blend::None)].SetInputLayout(_countof(inputLayouts), inputLayouts);
 
 	mPsos[uint32_t(Blend::Normal)] = mPsos[uint32_t(Blend::None)];
-	mPsos[uint32_t(Blend::Normal)].SetBlendDesc(GraphicsCommon::gBlendNormal);
+	mPsos[uint32_t(Blend::Normal)].SetBlendState(GraphicsCommon::gBlendNormal);
 	mPsos[uint32_t(Blend::Add)] = mPsos[uint32_t(Blend::None)];
-	mPsos[uint32_t(Blend::Add)].SetBlendDesc(GraphicsCommon::gBlendAddition);
+	mPsos[uint32_t(Blend::Add)].SetBlendState(GraphicsCommon::gBlendAddition);
 	mPsos[uint32_t(Blend::Subtract)] = mPsos[uint32_t(Blend::None)];
-	mPsos[uint32_t(Blend::Subtract)].SetBlendDesc(GraphicsCommon::gBlendSubtract);
+	mPsos[uint32_t(Blend::Subtract)].SetBlendState(GraphicsCommon::gBlendSubtract);
 	mPsos[uint32_t(Blend::Multiply)] = mPsos[uint32_t(Blend::None)];
-	mPsos[uint32_t(Blend::Multiply)].SetBlendDesc(GraphicsCommon::gBlendMultiply);
+	mPsos[uint32_t(Blend::Multiply)].SetBlendState(GraphicsCommon::gBlendMultiply);
 	mPsos[uint32_t(Blend::Screen)] = mPsos[uint32_t(Blend::None)];
-	mPsos[uint32_t(Blend::Screen)].SetBlendDesc(GraphicsCommon::gBlendScreen);
+	mPsos[uint32_t(Blend::Screen)].SetBlendState(GraphicsCommon::gBlendScreen);
 	for (auto& p : mPsos)
 	{
 		p.Create();
@@ -72,13 +73,13 @@ void ParticleCommon::Initialize(Renderer* renderer)
 
 	// メッシュパーティクル用
 	mModelPsos[uint32_t(ModelCommon::Type::Default)] = mPsos[uint32_t(Blend::None)];
-	mModelPsos[uint32_t(ModelCommon::Type::Default)].SetPixelShader(defaultPs->GetBlob());
-	mModelPsos[uint32_t(ModelCommon::Type::Default)].SetBlendDesc(GraphicsCommon::gBlendNormal);
-	mModelPsos[uint32_t(ModelCommon::Type::Default)].SetDepthStencilDesc(GraphicsCommon::gDepthEnable);
+	mModelPsos[uint32_t(ModelCommon::Type::Default)].SetPixelShader(defaultPs);
+	mModelPsos[uint32_t(ModelCommon::Type::Default)].SetBlendState(GraphicsCommon::gBlendNormal);
+	mModelPsos[uint32_t(ModelCommon::Type::Default)].SetDepthStencilState(GraphicsCommon::gDepthEnable);
 	mModelPsos[uint32_t(ModelCommon::Type::Unlight)] = mModelPsos[uint32_t(ModelCommon::Type::Default)];
-	mModelPsos[uint32_t(ModelCommon::Type::Unlight)].SetPixelShader(unlightPs->GetBlob());
+	mModelPsos[uint32_t(ModelCommon::Type::Unlight)].SetPixelShader(unlightPs);
 	mModelPsos[uint32_t(ModelCommon::Type::Wireframe)] = mModelPsos[uint32_t(ModelCommon::Type::Default)];
-	mModelPsos[uint32_t(ModelCommon::Type::Wireframe)].SetRasterizerDesc(GraphicsCommon::gRasterizerFillModeWireframe);
+	mModelPsos[uint32_t(ModelCommon::Type::Wireframe)].SetRasterizerState(GraphicsCommon::gRasterizerFillModeWireframe);
 	for (auto& p : mModelPsos)
 	{
 		p.Create();
@@ -93,7 +94,7 @@ void ParticleCommon::PreRendering(ID3D12GraphicsCommandList* cmdList)
 {
 	MY_ASSERT(cmdList);
 	mCmdList = cmdList;
-	mRootSignature.Bind(mCmdList);
+	mRootSignature->Bind(mCmdList);
 	mPsos[uint32_t(Blend::Normal)].Bind(mCmdList);
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

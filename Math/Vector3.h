@@ -24,6 +24,7 @@ public:
 		, z(z)
 	{}
 
+	// ベクトルを正規化
 	void Normalize()
 	{
 		float a = x * x + y * y + z * z;
@@ -40,112 +41,117 @@ public:
 	static const Vector3 kOne;
 };
 
-inline bool operator==(const Vector3& v1, const Vector3& v2)
+inline bool operator==(const Vector3& a, const Vector3& b)
 {
-	return v1.x == v2.x && v1.y == v2.y && v1.z == v2.z;
+	return a.x == b.x && a.y == b.y && a.z == b.z;
 }
 
-inline bool operator!=(const Vector3& v1, const Vector3& v2)
+inline bool operator!=(const Vector3& a, const Vector3& b)
 {
-	return v1.x != v2.x || v1.y != v2.y || v1.z != v2.z;
+	return a.x != b.x || a.y != b.y || a.z != b.z;
 }
 
-inline Vector3 operator-(const Vector3& v)
+inline Vector3 operator-(const Vector3& a)
 {
-	return Vector3(-v.x, -v.y, -v.z);
+	return Vector3(-a.x, -a.y, -a.z);
 }
 
-inline Vector3 operator+(const Vector3& v1, const Vector3& v2)
+inline Vector3 operator+(const Vector3& a, const Vector3& b)
 {
-	return Vector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+	return Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
 }
 
-inline Vector3 operator-(const Vector3& v1, const Vector3& v2)
+inline Vector3 operator-(const Vector3& a, const Vector3& b)
 {
-	return Vector3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+	return Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
 }
 
-inline Vector3 operator*(const Vector3& v1, const Vector3& v2)
+inline Vector3 operator*(const Vector3& a, const Vector3& b)
 {
-	return Vector3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
+	return Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
 }
 
-inline Vector3 operator*(const Vector3& v, float a)
+inline Vector3 operator*(const Vector3& a, float b)
 {
-	return Vector3(v.x * a, v.y * a, v.z * a);
+	return Vector3(a.x * b, a.y * b, a.z * b);
 }
 
-inline Vector3 operator*(float a, const Vector3& v)
+inline Vector3 operator*(float a, const Vector3& b)
 {
-	return Vector3(a * v.x, a * v.y, a * v.z);
+	return Vector3(a * b.x, a * b.y, a * b.z);
 }
 
-inline Vector3 operator/(const Vector3& v, float a)
+inline Vector3 operator/(const Vector3& a, float b)
 {
-	float oneOverA = 1.0f / a;
-	return Vector3(v.x * oneOverA, v.y * oneOverA, v.z * oneOverA);
+	float oneOverA = 1.0f / b;
+	return Vector3(a.x * oneOverA, a.y * oneOverA, a.z * oneOverA);
 }
 
-inline Vector3& operator+=(Vector3& v1, const Vector3& v2)
+inline Vector3& operator+=(Vector3& a, const Vector3& b)
 {
-	v1 = v1 + v2;
-	return v1;
+	a = a + b;
+	return a;
 }
 
-inline Vector3& operator-=(Vector3& v1, const Vector3& v2)
+inline Vector3& operator-=(Vector3& a, const Vector3& b)
 {
-	v1 = v1 - v2;
-	return v1;
+	a = a - b;
+	return a;
 }
 
-inline Vector3& operator*=(Vector3& v1, const Vector3& v2)
+inline Vector3& operator*=(Vector3& a, const Vector3& b)
 {
-	v1 = v1 * v2;
-	return v1;
+	a = a * b;
+	return a;
 }
 
-inline Vector3& operator*=(Vector3& v, float a)
+inline Vector3& operator*=(Vector3& a, float b)
 {
-	v = v * a;
-	return v;
+	a = a * b;
+	return a;
 }
 
-inline Vector3& operator/=(Vector3& v, float a)
+inline Vector3& operator/=(Vector3& a, float b)
 {
-	float oneOverA = 1.0f / a;
-	v *= oneOverA;
-	return v;
+	float oneOverA = 1.0f / b;
+	a *= oneOverA;
+	return a;
 }
 
-inline Vector3 Cross(const Vector3& v1, const Vector3& v2)
+// ベクトルの外積
+inline Vector3 Cross(const Vector3& a, const Vector3& b)
 {
 	return Vector3(
-		v1.y * v2.z - v1.z * v2.y,
-		v1.z * v2.x - v1.x * v2.z,
-		v1.x * v2.y - v1.y * v2.x);
+		a.y * b.z - a.z * b.y,
+		a.z * b.x - a.x * b.z,
+		a.x * b.y - a.y * b.x);
 }
 
-inline float Dot(const Vector3& v1, const Vector3& v2)
+// ベクトルの内積
+inline float Dot(const Vector3& a, const Vector3& b)
 {
-	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+	return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
-inline float Length(const Vector3& v)
+// ベクトルの大きさ
+inline float Length(const Vector3& a)
 {
-	return sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+	return sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
 }
 
-inline float LengthSq(const Vector3& v)
+// ベクトルの大きさの2乗
+inline float LengthSq(const Vector3& a)
 {
-	return v.x * v.x + v.y * v.y + v.z * v.z;
+	return a.x * a.x + a.y * a.y + a.z * a.z;
 }
 
-inline Vector3 Normalize(const Vector3& v)
+// ベクトルを正規化
+inline Vector3 Normalize(const Vector3& a)
 {
-	Vector3 result = v;
+	Vector3 result = a;
 	result.Normalize();
 	return result;
 }
 
-Vector2 ToVector2(const Vector3 v);
-Vector3 ToVector3(const Vector2 v);
+// 2次元ベクトルへ
+Vector3 ToVector3(const Vector2 a);

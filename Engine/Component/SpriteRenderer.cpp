@@ -53,7 +53,7 @@ void SpriteRenderer::Load(const nlohmann::json& json)
 		if (texture)
 		{
 			mSprite->SetTexture(texture);
-			mTexturePath = texture->GetPath();
+			mTexturePath = texture->GetFilePath();
 		}
 	}
 	// Pivot
@@ -87,7 +87,7 @@ void SpriteRenderer::Save(nlohmann::json& json)
 	auto texture = mSprite->GetTexture();
 	if (texture)
 	{
-		JsonHelper::SetString(json, "Texture", texture->GetPath());
+		JsonHelper::SetString(json, "Texture", texture->GetFilePath());
 	}
 	JsonHelper::SetVector2(json, "Pivot", mSprite->GetPivot());
 	JsonHelper::SetBool(json, "Is Flip X", mSprite->GetIsFlipX());
@@ -122,7 +122,7 @@ void SpriteRenderer::UpdateForDev()
 			{
 				auto texture = (Texture**)(payload->Data);
 				mSprite->SetTexture(*texture);
-				mTexturePath = (*texture)->GetPath();
+				mTexturePath = (*texture)->GetFilePath();
 			}
 			ImGui::EndDragDropTarget();
 		}

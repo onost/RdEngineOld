@@ -17,5 +17,5 @@ public:
 
 private:
 	// メルセンヌ・ツイスタ
-	static std::mt19937 mt;
+	static std::mt19937 sEngine;
 };

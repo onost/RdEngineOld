@@ -1,6 +1,6 @@
 #pragma once
 
-// カラー
+// 色
 class Color
 {
 public:
@@ -23,79 +23,82 @@ public:
 		, a(a)
 	{}
 
-	static const Color kBlack;
-	static const Color kWhite;
-	static const Color kRed;
-	static const Color kGreen;
-	static const Color kBlue;
-	static const Color kCyan;
-	static const Color kMagenta;
-	static const Color kYellow;
+	static const Color kBlack;// 黒
+	static const Color kWhite;// 白
+	static const Color kRed;// 赤
+	static const Color kGreen;// 緑
+	static const Color kBlue;// 青
+	static const Color kCyan;// シアン
+	static const Color kMagenta;// マゼンタ
+	static const Color kYellow;// 黄
 };
 
-inline Color operator-(const Color& c)
+inline Color operator-(const Color& a)
 {
-	return Color(-c.r, -c.g, -c.b, -c.a);
+	return Color(-a.r, -a.g, -a.b, -a.a);
 }
 
-inline Color operator+(const Color& c1, const Color& c2)
+inline Color operator+(const Color& a, const Color& b)
 {
-	return Color(c1.r + c2.r, c1.g + c2.g, c1.b + c2.b, c1.a + c2.a);
+	return Color(a.r + b.r, a.g + b.g, a.b + b.b, a.a + b.a);
 }
 
-inline Color operator-(const Color& c1, const Color& c2)
+inline Color operator-(const Color& a, const Color& b)
 {
-	return Color(c1.r - c2.r, c1.g - c2.g, c1.b - c2.b, c1.a - c2.a);
+	return Color(a.r - b.r, a.g - b.g, a.b - b.b, a.a - b.a);
 }
 
-inline Color operator*(const Color& c1, const Color& c2)
+inline Color operator*(const Color& a, const Color& b)
 {
-	return Color(c1.r * c2.r, c1.g * c2.g, c1.b * c2.b, c1.a * c2.a);
+	return Color(a.r * b.r, a.g * b.g, a.b * b.b, a.a * b.a);
 }
 
-inline Color operator*(const Color& c, float a)
+inline Color operator*(const Color& a, float b)
 {
-	return Color(c.r * a, c.g * a, c.b * a, c.a * a);
+	return Color(a.r * b, a.g * b, a.b * b, a.a * b);
 }
 
-inline Color operator*(float a, const Color& c)
+inline Color operator*(float a, const Color& b)
 {
-	return Color(a * c.r, a * c.g, a * c.b, a * c.a);
+	return Color(a * b.r, a * b.g, a * b.b, a * b.a);
 }
 
-inline Color operator/(const Color& c, float a)
+inline Color operator/(const Color& a, float b)
 {
-	float oneOverA = 1.0f / a;
-	return Color(c.r * oneOverA, c.g * oneOverA, c.b * oneOverA, c.a * oneOverA);
+	float oneOverA = 1.0f / b;
+	return Color(a.r * oneOverA, a.g * oneOverA, a.b * oneOverA, a.a * oneOverA);
 }
 
-inline Color& operator+=(Color& c1, const Color& c2)
+inline Color& operator+=(Color& a, const Color& b)
 {
-	c1 = c1 + c2;
-	return c1;
+	a = a + b;
+	return a;
 }
 
-inline Color& operator-=(Color& c1, const Color& c2)
+inline Color& operator-=(Color& a, const Color& b)
 {
-	c1 = c1 - c2;
-	return c1;
+	a = a - b;
+	return a;
 }
 
-inline Color& operator*=(Color& c1, const Color& c2)
+inline Color& operator*=(Color& a, const Color& b)
 {
-	c1 = c1 * c2;
-	return c1;
+	a = a * b;
+	return a;
 }
 
-inline Color& operator*=(Color& c, float a)
+inline Color& operator*=(Color& a, float b)
 {
-	c = c * a;
-	return c;
+	a = a * b;
+	return a;
 }
 
-inline Color& operator/=(Color& c, float a)
+inline Color& operator/=(Color& a, float b)
 {
-	float oneOverA = 1.0f / a;
-	c *= oneOverA;
-	return c;
+	float oneOverA = 1.0f / b;
+	a *= oneOverA;
+	return a;
 }
+
+// HSV色空間から作成
+Color CreateFromHSV(float h, float s, float v, float a = 1.0f);

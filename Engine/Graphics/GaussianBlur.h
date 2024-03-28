@@ -20,14 +20,14 @@ public:
 	// ブラーをかけたテクスチャ
 	Texture* GetTexture()
 	{
-		return mVBlurRt.GetTexture();
+		return mVBlurRt.GetRenderTarget().get();
 	}
 
 private:
 	// 元テクスチャ
 	Texture* mTexture;
 	// パイプライン
-	RootSignature mBlurRs;
+	std::unique_ptr<RootSignature> mBlurRs;
 	PipelineState mHBlurPso;// 横ブラー
 	PipelineState mVBlurPso;// 縦ブラー
 

@@ -2,6 +2,8 @@
 #include "MyMath.h"
 #include <cmath>
 
+class Vector3;
+
 // 2次元ベクトル
 class Vector2
 {
@@ -19,6 +21,7 @@ public:
 		, y(y)
 	{}
 
+	// ベクトルを正規化
 	void Normalize()
 	{
 		float a = x * x + y * y;
@@ -34,106 +37,114 @@ public:
 	static const Vector2 kOne;
 };
 
-inline bool operator==(const Vector2& v1, const Vector2& v2)
+inline bool operator==(const Vector2& a, const Vector2& b)
 {
-	return v1.x == v2.x && v1.y == v2.y;
+	return a.x == b.x && a.y == b.y;
 }
 
-inline bool operator!=(const Vector2& v1, const Vector2& v2)
+inline bool operator!=(const Vector2& a, const Vector2& b)
 {
-	return v1.x != v2.x || v1.y != v2.y;
+	return a.x != b.x || a.y != b.y;
 }
 
-inline Vector2 operator-(const Vector2& v)
+inline Vector2 operator-(const Vector2& a)
 {
-	return Vector2(-v.x, -v.y);
+	return Vector2(-a.x, -a.y);
 }
 
-inline Vector2 operator+(const Vector2& v1, const Vector2& v2)
+inline Vector2 operator+(const Vector2& a, const Vector2& b)
 {
-	return Vector2(v1.x + v2.x, v1.y + v2.y);
+	return Vector2(a.x + b.x, a.y + b.y);
 }
 
-inline Vector2 operator-(const Vector2& v1, const Vector2& v2)
+inline Vector2 operator-(const Vector2& a, const Vector2& b)
 {
-	return Vector2(v1.x - v2.x, v1.y - v2.y);
+	return Vector2(a.x - b.x, a.y - b.y);
 }
 
-inline Vector2 operator*(const Vector2& v1, const Vector2& v2)
+inline Vector2 operator*(const Vector2& a, const Vector2& b)
 {
-	return Vector2(v1.x * v2.x, v1.y * v2.y);
+	return Vector2(a.x * b.x, a.y * b.y);
 }
 
-inline Vector2 operator*(const Vector2& v, float a)
+inline Vector2 operator*(const Vector2& a, float b)
 {
-	return Vector2(v.x * a, v.y * a);
+	return Vector2(a.x * b, a.y * b);
 }
 
-inline Vector2 operator*(float a, const Vector2& v)
+inline Vector2 operator*(float a, const Vector2& b)
 {
-	return Vector2(a * v.x, a * v.y);
+	return Vector2(a * b.x, a * b.y);
 }
 
-inline Vector2 operator/(const Vector2& v, float a)
+inline Vector2 operator/(const Vector2& a, float b)
 {
-	float oneOverA = 1.0f / a;
-	return Vector2(v.x * oneOverA, v.y * oneOverA);
+	float oneOverA = 1.0f / b;
+	return Vector2(a.x * oneOverA, a.y * oneOverA);
 }
 
-inline Vector2& operator+=(Vector2& v1, const Vector2& v2)
+inline Vector2& operator+=(Vector2& a, const Vector2& b)
 {
-	v1 = v1 + v2;
-	return v1;
+	a = a + b;
+	return a;
 }
 
-inline Vector2& operator-=(Vector2& v1, const Vector2& v2)
+inline Vector2& operator-=(Vector2& a, const Vector2& b)
 {
-	v1 = v1 - v2;
-	return v1;
+	a = a - b;
+	return a;
 }
 
-inline Vector2& operator*=(Vector2& v1, const Vector2& v2)
+inline Vector2& operator*=(Vector2& a, const Vector2& b)
 {
-	v1 = v1 * v2;
-	return v1;
+	a = a * b;
+	return a;
 }
 
-inline Vector2& operator*=(Vector2& v, float a)
+inline Vector2& operator*=(Vector2& a, float b)
 {
-	v = v * a;
-	return v;
+	a = a * b;
+	return a;
 }
 
-inline Vector2& operator/=(Vector2& v, float a)
+inline Vector2& operator/=(Vector2& a, float b)
 {
-	float oneOverA = 1.0f / a;
-	v *= oneOverA;
-	return v;
+	float oneOverA = 1.0f / b;
+	a *= oneOverA;
+	return a;
 }
 
-inline float Cross(const Vector2& v1, const Vector2& v2)
+// ベクトルの外積
+inline float Cross(const Vector2& a, const Vector2& b)
 {
-	return v1.x * v2.y - v1.y * v2.x;
+	return a.x * b.y - a.y * b.x;
 }
 
-inline float Dot(const Vector2& v1, const Vector2& v2)
+// ベクトルの内積
+inline float Dot(const Vector2& a, const Vector2& b)
 {
-	return v1.x * v2.x + v1.y * v2.y;
+	return a.x * b.x + a.y * b.y;
 }
 
-inline float Length(const Vector2& v)
+// ベクトルの大きさ
+inline float Length(const Vector2& a)
 {
-	return sqrt(v.x * v.x + v.y * v.y);
+	return sqrt(a.x * a.x + a.y * a.y);
 }
 
-inline float LengthSq(const Vector2& v)
+// ベクトルの大きさの2乗
+inline float LengthSq(const Vector2& a)
 {
-	return v.x * v.x + v.y * v.y;
+	return a.x * a.x + a.y * a.y;
 }
 
-inline Vector2 Normalize(const Vector2& v)
+// ベクトルを正規化
+inline Vector2 Normalize(const Vector2& a)
 {
-	Vector2 result = v;
+	Vector2 result = a;
 	result.Normalize();
 	return result;
 }
+
+// 3次元ベクトルへ
+Vector2 ToVector2(const Vector3 a);

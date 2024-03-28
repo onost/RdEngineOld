@@ -1,7 +1,6 @@
 #pragma once
 #include "Graphics/Model/Skeleton.h"
 #include "Matrix4.h"
-#include "QuaternionTransform.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>

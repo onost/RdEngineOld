@@ -1,23 +1,23 @@
 #include "Random.h"
 
-std::mt19937 Random::mt;
+std::mt19937 Random::sEngine;
 
 void Random::Initialize()
 {
 	std::random_device rd;
-	mt.seed(rd());
+	sEngine.seed(rd());
 }
 
 int Random::Rand(int min, int max)
 {
 	std::uniform_int_distribution<int> dist(min, max);
-	return dist(mt);
+	return dist(sEngine);
 }
 
 float Random::Rand(float min, float max)
 {
 	std::uniform_real_distribution<float> dist(min, max);
-	return dist(mt);
+	return dist(sEngine);
 }
 
 Vector2 Random::Rand(const Vector2& min, const Vector2& max)

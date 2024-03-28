@@ -284,7 +284,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Math\Matrix4.h" />
     <ClInclude Include="Math\MyMath.h" />
     <ClInclude Include="Math\Quaternion.h" />
-    <ClInclude Include="Math\QuaternionTransform.h" />
     <ClInclude Include="Math\Random.h" />
     <ClInclude Include="Math\Vector2.h" />
     <ClInclude Include="Math\Vector3.h" />

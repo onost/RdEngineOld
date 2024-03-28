@@ -16,18 +16,18 @@ void AudioSystem::Terminate()
 {
 	mXAudio2.Reset();
 
-	for (auto& sound : mSounds.GetResources())
+	/*for (auto& sound : mSounds.GetResources())
 	{
 		delete[] sound.second->mBuff;
-	}
+	}*/
 }
 
 AudioSystem::SoundData* AudioSystem::Load(const std::string& filePath)
 {
-	SoundData* soundData = mSounds.Get(filePath);
+	auto soundData = mSounds.Get(filePath);
 	if (soundData)
 	{
-		return soundData;
+		return soundData.get();
 	}
 
 	std::ifstream file;
@@ -52,7 +52,7 @@ AudioSystem::SoundData* AudioSystem::Load(const std::string& filePath)
 
 	Chunk chunk = {};
 	WAVEFORMATEX fmt = {};
-	SoundData* result = new SoundData();
+	auto result = std::make_shared<SoundData>();
 	while (!file.eof())
 	{
 		file.read((char*)&chunk, sizeof(Chunk));
@@ -118,7 +118,7 @@ AudioSystem::SoundData* AudioSystem::Load(const std::string& filePath)
 	result.mBuff = reinterpret_cast<BYTE*>(buff);
 	result.mBuffSize = data.mSize;*/
 	mSounds.Add(filePath, result);
-	return result;
+	return result.get();
 }
 
 void AudioSystem::Play(SoundData* soundData)

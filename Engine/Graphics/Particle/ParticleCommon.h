@@ -56,7 +56,7 @@ private:
 	static ID3D12GraphicsCommandList* mCmdList;
 	static Renderer* mRenderer;
 	static Camera* mCamera;
-	static RootSignature mRootSignature;
+	static std::unique_ptr<RootSignature> mRootSignature;
 	static PipelineState mPsos[6];
 	static PipelineState mModelPsos[3];
 	static std::unique_ptr<ConstantBuffer> mCBuff;

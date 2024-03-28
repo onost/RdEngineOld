@@ -8,102 +8,133 @@
 
 const std::string Texture::kTexturePath = "Assets/Texture/";
 
+Texture::Texture()
+	: mFilePath()
+	, mBuff(nullptr)
+	, mDescHandle(nullptr)
+	, mWidth(0)
+	, mHeight(0)
+{
+
+}
+
+Texture::~Texture()
+{
+	// デスクリプタハンドルを解放
+	gGraphicsEngine->GetSrvHeap().Free(mDescHandle);
+}
+
 bool Texture::Create(const std::string& filePath)
 {
-	mPath = filePath;
-	//Helper::WriteToConsole(std::format("Create: \"{}\"\n", mPath.c_str()));
+	mFilePath = filePath;
+	// ワイド文字へ変換
+	std::wstring wFilePath = Helper::ConvertToWstr(filePath);
 
-	// テクスチャを読み込む
+	// ファイルを読み込む
 	DirectX::ScratchImage scratchImage = {};
 	HRESULT hr = DirectX::LoadFromWICFile(
-		Helper::ConvertToWstr(mPath).c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, scratchImage);
-	if (hr == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND) || hr == HRESULT_FROM_WIN32(ERROR_INVALID_NAME))
+		wFilePath.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, scratchImage);
+	if (FAILED(hr))
 	{
 		return false;
 	}
-	MY_ASSERT(SUCCEEDED(hr));
-	// ミップマップを作成
-	DirectX::ScratchImage mipImage = {};
-	hr = GenerateMipMaps(scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(),
-		DirectX::TEX_FILTER_SRGB, 0, mipImage);
-	MY_ASSERT(SUCCEEDED(hr));
 
-	DirectX::TexMetadata metadata = mipImage.GetMetadata();
-	mDesc.Dimension = D3D12_RESOURCE_DIMENSION(metadata.dimension);
-	mDesc.Width = metadata.width;
-	mDesc.Height = UINT(metadata.height);
-	mDesc.DepthOrArraySize = UINT16(metadata.arraySize);
-	mDesc.MipLevels = UINT16(metadata.mipLevels);
-	mDesc.Format = metadata.format;
-	mDesc.SampleDesc.Count = 1;
-	// リソースを作成
+	// ミップマップを生成
+	DirectX::ScratchImage mipChain = {};
+	hr = GenerateMipMaps(
+		scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(),
+		DirectX::TEX_FILTER_SRGB, 0, mipChain);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	DirectX::TexMetadata metadata = mipChain.GetMetadata();
+	mWidth = uint32_t(metadata.width);
+	mHeight = uint32_t(metadata.height);
+	D3D12_RESOURCE_DESC desc = {};
+	desc.Dimension = D3D12_RESOURCE_DIMENSION(metadata.dimension);
+	desc.Width = mWidth;
+	desc.Height = mHeight;
+	desc.DepthOrArraySize = UINT16(metadata.arraySize);
+	desc.MipLevels = UINT16(metadata.mipLevels);
+	desc.Format = metadata.format;
+	desc.SampleDesc.Count = 1;
 	auto device = gGraphicsEngine->GetDevice();
+	// テクスチャバッファを作成
 	hr = device->CreateCommittedResource(
-		&GraphicsCommon::gHeapDefault, D3D12_HEAP_FLAG_NONE, &mDesc, D3D12_RESOURCE_STATE_COPY_DEST,
-		nullptr, IID_PPV_ARGS(mResource.ReleaseAndGetAddressOf()));
-	MY_ASSERT(SUCCEEDED(hr));
+		&GraphicsCommon::gHeapDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr,
+		IID_PPV_ARGS(&mBuff));
+	if (FAILED(hr))
+	{
+		return false;
+	}
 
 	std::vector<D3D12_SUBRESOURCE_DATA> subresource;
-	DirectX::PrepareUpload(device, mipImage.GetImages(), mipImage.GetImageCount(), mipImage.GetMetadata(), subresource);
-	auto intermediateSize = GetRequiredIntermediateSize(mResource.Get(), 0, UINT(subresource.size()));
+	DirectX::PrepareUpload(device, mipChain.GetImages(), mipChain.GetImageCount(), mipChain.GetMetadata(), subresource);
 	D3D12_RESOURCE_DESC intermediateDesc = {};
 	intermediateDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	intermediateDesc.Width = intermediateSize;
+	intermediateDesc.Width = GetRequiredIntermediateSize(mBuff.Get(), 0, UINT(subresource.size()));
 	intermediateDesc.Height = 1;
 	intermediateDesc.DepthOrArraySize = 1;
 	intermediateDesc.MipLevels = 1;
 	intermediateDesc.SampleDesc.Count = 1;
 	intermediateDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	// 中間リソースを作成
-	ID3D12Resource* intermediateResource;
+	Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = nullptr;
 	hr = device->CreateCommittedResource(
-		&GraphicsCommon::gHeapUpload, D3D12_HEAP_FLAG_NONE, &intermediateDesc, D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr, IID_PPV_ARGS(&intermediateResource));
-	MY_ASSERT(SUCCEEDED(hr));
+		&GraphicsCommon::gHeapUpload, D3D12_HEAP_FLAG_NONE, &intermediateDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
+		IID_PPV_ARGS(&intermediateResource));
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	// テクスチャバッファへ転送
 	auto cmdList = gGraphicsEngine->GetCmdList();
-	UpdateSubresources(cmdList, mResource.Get(), intermediateResource, 0, 0, UINT(subresource.size()), subresource.data());
+	UpdateSubresources(
+		cmdList, mBuff.Get(), intermediateResource.Get(), 0, 0, UINT(subresource.size()), subresource.data());
 	D3D12_RESOURCE_BARRIER barrier = {};
-	barrier.Transition.pResource = mResource.Get();
+	barrier.Transition.pResource = mBuff.Get();
 	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
 	cmdList->ResourceBarrier(1, &barrier);
 	gGraphicsEngine->ExecuteCommand();
 	gGraphicsEngine->WaitGpu();
-	intermediateResource->Release();
 
 	// シェーダリソースビューを作成
-	metadata.format = DirectX::MakeSRGB(metadata.format);
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Format = metadata.format;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
-	auto handle = gGraphicsEngine->GetSrvHeap().Alloc();
-	device->CreateShaderResourceView(mResource.Get(), &srvDesc, handle->mCpuHandle);
-	mDescHandle = handle->mGpuHandle;
+	CreateSrv(DirectX::MakeSRGB(metadata.format), uint32_t(metadata.mipLevels));
 
 	return true;
 }
 
-// リソースから作成
-void Texture::Create(ID3D12Resource* resource)
+void Texture::CreateFromBuff(Microsoft::WRL::ComPtr<ID3D12Resource> buff)
 {
-	mResource.Attach(resource);
-	mDesc = mResource->GetDesc();
+	mBuff = buff;
+	auto desc = mBuff->GetDesc();
+	mWidth = uint32_t(desc.Width);
+	mHeight = desc.Height;
 
 	// シェーダリソースビューを作成
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.Texture2D.MipLevels = 1;
-	auto handle = gGraphicsEngine->GetSrvHeap().Alloc();
-	gGraphicsEngine->GetDevice()->CreateShaderResourceView(mResource.Get(), &srvDesc, handle->mCpuHandle);
-	mDescHandle = handle->mGpuHandle;
+	CreateSrv(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, 1);
 }
 
-void Texture::Bind(ID3D12GraphicsCommandList* cmdList, uint32_t rootParamIdx)
+void Texture::Bind(ID3D12GraphicsCommandList* cmdList, uint32_t rootParam)
 {
-	cmdList->SetGraphicsRootDescriptorTable(rootParamIdx, mDescHandle);
+	MY_ASSERT(cmdList);
+	cmdList->SetGraphicsRootDescriptorTable(rootParam, mDescHandle->mGpuHandle);
+}
+
+void Texture::CreateSrv(DXGI_FORMAT format, uint32_t mipLevels)
+{
+	// デスクリプタハンドルを割り当て
+	mDescHandle = gGraphicsEngine->GetSrvHeap().Alloc();
+	// シェーダリソースビューを作成
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Format = format;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Texture2D.MipLevels = mipLevels;
+	gGraphicsEngine->GetDevice()->CreateShaderResourceView(mBuff.Get(), &srvDesc, mDescHandle->mCpuHandle);
 }

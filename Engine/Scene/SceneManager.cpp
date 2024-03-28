@@ -138,7 +138,7 @@ void SceneManager::UpdateForDev()
 		}
 		// シーンアセット
 		ImGui::BeginGroup();
-		ImGui::Image((void*)(intptr_t)mFileTex->GetDescHandle().ptr, size);
+		ImGui::Image((void*)(intptr_t)mFileTex->GetDescHandle()->mGpuHandle.ptr, size);
 		auto& sceneName = mSceneNames[i];
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))// ドラッグ
 		{

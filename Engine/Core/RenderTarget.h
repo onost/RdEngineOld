@@ -1,31 +1,32 @@
 #pragma once
 #include "Color.h"
+#include "DescriptorHeap.h"
 #include "Graphics/Texture.h"
 #include "Window.h"
-#include <d3d12.h>
 #include <memory>
-#include <wrl.h>
 
-class Texture;
-
-// レンダーターゲット
 class RenderTarget
 {
 public:
+	RenderTarget();
+	~RenderTarget();
 	void Create(uint32_t width = Window::kWidth, uint32_t height = Window::kHeight);
+	// レンダリング前後処理
+	void PreRender(ID3D12GraphicsCommandList* cmdList);
+	void PostRender();
 
-	// レンダリング前
-	void PreRendering(ID3D12GraphicsCommandList* cmdList);
-	// レンダリング後
-	void PostRendering(ID3D12GraphicsCommandList* cmdList);
-
-	Texture* GetTexture() const { return mTexture.get(); }
+	std::shared_ptr<Texture> GetRenderTarget() const { return mRenderTarget; }
 
 private:
-	std::unique_ptr<Texture> mTexture;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mRtvHeap;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDsvHeap;
+	ID3D12GraphicsCommandList* mCmdList;
+
+	// レンダーターゲット
+	std::shared_ptr<Texture> mRenderTarget;
+	DescriptorHandle* mRtvHandle;
+	// 深度バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> mDepthBuff;
+	DescriptorHandle* mDsvHandle;
+
 	D3D12_VIEWPORT mViewport;
 	D3D12_RECT mScissor;
 	Color mClearColor;

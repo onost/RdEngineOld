@@ -8,7 +8,7 @@ const std::string ModelCommon::kModelPath = "Assets/Model/";
 
 ID3D12GraphicsCommandList* ModelCommon::mCmdList = nullptr;
 Renderer* ModelCommon::mRenderer = nullptr;
-RootSignature ModelCommon::mRootSignature;
+std::unique_ptr<RootSignature> ModelCommon::mRootSignature;
 PipelineState ModelCommon::mPsos[3];
 PipelineState ModelCommon::mSkinnedPsos[3];
 std::unique_ptr<ConstantBuffer> ModelCommon::mCBuff;
@@ -19,17 +19,18 @@ void ModelCommon::Initialize(Renderer* renderer)
 	mRenderer = renderer;
 
 	// ルートシグネチャ
-	mRootSignature.Initialize(6, 1);
-	mRootSignature.RootParameters(0).InitConstant(0);
-	mRootSignature.RootParameters(1).InitConstant(1);
-	mRootSignature.RootParameters(2).InitConstant(2);
-	mRootSignature.RootParameters(3).InitDescriptorTable(1);
-	mRootSignature.RootParameters(3).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	mRootSignature.RootParameters(4).InitConstant(3);
-	mRootSignature.RootParameters(5).InitDescriptorTable(1);
-	mRootSignature.RootParameters(5).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
-	mRootSignature.Samplers(0) = GraphicsCommon::gSamplerLinearWrap;
-	mRootSignature.Create();
+	//mRootSignature.Initialize(6, 1);
+	mRootSignature = std::make_unique<RootSignature>(6, 1);
+	mRootSignature->RootParameters(0).InitConstant(0);
+	mRootSignature->RootParameters(1).InitConstant(1);
+	mRootSignature->RootParameters(2).InitConstant(2);
+	mRootSignature->RootParameters(3).InitDescriptorTable(1);
+	mRootSignature->RootParameters(3).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	mRootSignature->RootParameters(4).InitConstant(3);
+	mRootSignature->RootParameters(5).InitDescriptorTable(1);
+	mRootSignature->RootParameters(5).InitDescriptorRange(0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
+	mRootSignature->Samplers(0) = GraphicsCommon::gSamplerLinearWrap;
+	mRootSignature->Create();
 
 	// シェーダ
 	Shader* defaultVs = renderer->GetVs("Assets/Shader/Model/DefaultVs.hlsl");
@@ -37,12 +38,12 @@ void ModelCommon::Initialize(Renderer* renderer)
 	Shader* defaultPs = renderer->GetPs("Assets/Shader/Model/DefaultPs.hlsl");
 	Shader* unlightPs = renderer->GetPs("Assets/Shader/Model/UnlightPs.hlsl");
 	// パイプラインステート
-	mPsos[uint32_t(Type::Default)].SetRootSignature(mRootSignature.Get());
-	mPsos[uint32_t(Type::Default)].SetVertexShader(defaultVs->GetBlob());
-	mPsos[uint32_t(Type::Default)].SetPixelShader(defaultPs->GetBlob());
-	mPsos[uint32_t(Type::Default)].SetBlendDesc(GraphicsCommon::gBlendNormal);
-	mPsos[uint32_t(Type::Default)].SetRasterizerDesc(GraphicsCommon::gRasterizerDefault);
-	mPsos[uint32_t(Type::Default)].SetDepthStencilDesc(GraphicsCommon::gDepthEnable);
+	mPsos[uint32_t(Type::Default)].SetRootSignature(mRootSignature.get());
+	mPsos[uint32_t(Type::Default)].SetVertexShader(defaultVs);
+	mPsos[uint32_t(Type::Default)].SetPixelShader(defaultPs);
+	mPsos[uint32_t(Type::Default)].SetBlendState(GraphicsCommon::gBlendNormal);
+	mPsos[uint32_t(Type::Default)].SetRasterizerState(GraphicsCommon::gRasterizerDefault);
+	mPsos[uint32_t(Type::Default)].SetDepthStencilState(GraphicsCommon::gDepthEnable);
 	D3D12_INPUT_ELEMENT_DESC inputLayouts[3] = {};
 	inputLayouts[0].SemanticName = "POSITION";
 	inputLayouts[0].SemanticIndex = 0;
@@ -56,24 +57,24 @@ void ModelCommon::Initialize(Renderer* renderer)
 	inputLayouts[2].SemanticIndex = 0;
 	inputLayouts[2].Format = DXGI_FORMAT_R32G32_FLOAT;
 	inputLayouts[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	mPsos[uint32_t(Type::Default)].SetInputLayout(inputLayouts, _countof(inputLayouts));
+	mPsos[uint32_t(Type::Default)].SetInputLayout(_countof(inputLayouts), inputLayouts);
 
 	mPsos[uint32_t(Type::Unlight)] = mPsos[uint32_t(Type::Default)];
-	mPsos[uint32_t(Type::Unlight)].SetPixelShader(unlightPs->GetBlob());
+	mPsos[uint32_t(Type::Unlight)].SetPixelShader(unlightPs);
 	mPsos[uint32_t(Type::Wireframe)] = mPsos[uint32_t(Type::Default)];
-	mPsos[uint32_t(Type::Wireframe)].SetRasterizerDesc(GraphicsCommon::gRasterizerFillModeWireframe);
+	mPsos[uint32_t(Type::Wireframe)].SetRasterizerState(GraphicsCommon::gRasterizerFillModeWireframe);
 	for (auto& p : mPsos)
 	{
 		p.Create();
 	}
 
 	// スキンアニメーション用
-	mSkinnedPsos[uint32_t(Type::Default)].SetRootSignature(mRootSignature.Get());
-	mSkinnedPsos[uint32_t(Type::Default)].SetVertexShader(skinnedVs->GetBlob());
-	mSkinnedPsos[uint32_t(Type::Default)].SetPixelShader(defaultPs->GetBlob());
-	mSkinnedPsos[uint32_t(Type::Default)].SetBlendDesc(GraphicsCommon::gBlendNormal);
-	mSkinnedPsos[uint32_t(Type::Default)].SetRasterizerDesc(GraphicsCommon::gRasterizerDefault);
-	mSkinnedPsos[uint32_t(Type::Default)].SetDepthStencilDesc(GraphicsCommon::gDepthEnable);
+	mSkinnedPsos[uint32_t(Type::Default)].SetRootSignature(mRootSignature.get());
+	mSkinnedPsos[uint32_t(Type::Default)].SetVertexShader(skinnedVs);
+	mSkinnedPsos[uint32_t(Type::Default)].SetPixelShader(defaultPs);
+	mSkinnedPsos[uint32_t(Type::Default)].SetBlendState(GraphicsCommon::gBlendNormal);
+	mSkinnedPsos[uint32_t(Type::Default)].SetRasterizerState(GraphicsCommon::gRasterizerDefault);
+	mSkinnedPsos[uint32_t(Type::Default)].SetDepthStencilState(GraphicsCommon::gDepthEnable);
 	D3D12_INPUT_ELEMENT_DESC skinnedInputLayouts[5] = {};
 	skinnedInputLayouts[0].SemanticName = "POSITION";
 	skinnedInputLayouts[0].SemanticIndex = 0;
@@ -97,12 +98,12 @@ void ModelCommon::Initialize(Renderer* renderer)
 	skinnedInputLayouts[4].Format = DXGI_FORMAT_R32G32B32A32_SINT;
 	skinnedInputLayouts[4].InputSlot = 1;//
 	skinnedInputLayouts[4].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	mSkinnedPsos[uint32_t(Type::Default)].SetInputLayout(skinnedInputLayouts, _countof(skinnedInputLayouts));
+	mSkinnedPsos[uint32_t(Type::Default)].SetInputLayout(_countof(skinnedInputLayouts), skinnedInputLayouts);
 
 	mSkinnedPsos[uint32_t(Type::Unlight)] = mSkinnedPsos[uint32_t(Type::Default)];
-	mSkinnedPsos[uint32_t(Type::Unlight)].SetPixelShader(unlightPs->GetBlob());
+	mSkinnedPsos[uint32_t(Type::Unlight)].SetPixelShader(unlightPs);
 	mSkinnedPsos[uint32_t(Type::Wireframe)] = mSkinnedPsos[uint32_t(Type::Default)];
-	mSkinnedPsos[uint32_t(Type::Wireframe)].SetRasterizerDesc(GraphicsCommon::gRasterizerFillModeWireframe);
+	mSkinnedPsos[uint32_t(Type::Wireframe)].SetRasterizerState(GraphicsCommon::gRasterizerFillModeWireframe);
 	for (auto& p : mSkinnedPsos)
 	{
 		p.Create();
@@ -117,7 +118,7 @@ void ModelCommon::PreRendering(ID3D12GraphicsCommandList* cmdList)
 {
 	MY_ASSERT(cmdList);
 	mCmdList = cmdList;
-	mRootSignature.Bind(mCmdList);
+	mRootSignature->Bind(mCmdList);
 	mPsos[uint32_t(Type::Default)].Bind(mCmdList);// とりま
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

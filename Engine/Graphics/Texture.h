@@ -1,28 +1,42 @@
 #pragma once
+#include "Core/DescriptorHeap.h"
 #include <d3d12.h>
 #include <DirectXTex/DirectXTex.h>
 #include <string>
 #include <wrl.h>
 
-// テクスチャ
 class Texture
 {
 public:
-	static const std::string kTexturePath;
-
+	Texture();
+	~Texture();
 	bool Create(const std::string& filePath);
-	void Create(ID3D12Resource* resource);
-	void Bind(ID3D12GraphicsCommandList* cmdList, uint32_t rootParamIdx);
+	void CreateFromBuff(Microsoft::WRL::ComPtr<ID3D12Resource> buff);
+	void Bind(ID3D12GraphicsCommandList* cmdList, uint32_t rootParam);
 
-	const std::string& GetPath() const { return mPath; }
-	uint32_t GetWidth() const { return static_cast<uint32_t>(mDesc.Width); }
-	uint32_t GetHeight() const { return mDesc.Height; }
-	ID3D12Resource* GetResource() const { return mResource.Get(); }
-	D3D12_GPU_DESCRIPTOR_HANDLE GetDescHandle() const { return mDescHandle; }
+	// アクセッサ
+	const std::string& GetFilePath() const { return mFilePath; }
+	ID3D12Resource* GetBuff() const { return mBuff.Get(); }
+	DescriptorHandle* GetDescHandle() const { return mDescHandle; }
+	uint32_t GetWidth() const { return mWidth; }
+	uint32_t GetHeight() const { return mHeight; }
 
 private:
-	std::string mPath;
-	D3D12_RESOURCE_DESC mDesc;
-	Microsoft::WRL::ComPtr<ID3D12Resource> mResource;
-	D3D12_GPU_DESCRIPTOR_HANDLE mDescHandle;
+	// シェーダリソースビューを作成
+	void CreateSrv(DXGI_FORMAT format, uint32_t mipLevels);
+
+public:
+	// テクスチャへのパス
+	static const std::string kTexturePath;
+private:
+	std::string mFilePath;
+
+	//D3D12_RESOURCE_DESC mDesc;
+	Microsoft::WRL::ComPtr<ID3D12Resource> mBuff;
+	// デスクリプタハンドル
+	DescriptorHandle* mDescHandle;
+
+	// テクスチャサイズ
+	uint32_t mWidth;
+	uint32_t mHeight;
 };

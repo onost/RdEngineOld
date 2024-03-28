@@ -1,35 +1,38 @@
 #pragma once
+#include <map>
 #include <memory>
 #include <string>
-#include <unordered_map>
+//#include <unordered_map>
 
-template <class TResource>
+template <typename T>
 class ResourceBank
 {
 public:
-	void Add(const std::string& filePath, TResource* resource)
+	ResourceBank()
+		: mResources()
+	{}
+
+	void Add(const std::string& name, std::shared_ptr<T> resource)
 	{
-		auto it = mResources.find(filePath);
+		auto it = mResources.find(name);
 		if (it == mResources.end())
 		{
-			mResources.emplace(filePath, resource);
+			mResources.emplace(name, resource);
 		}
 	}
 
-	TResource* Get(const std::string& filePath)
+	std::shared_ptr<T> Get(const std::string& name)
 	{
-		auto it = mResources.find(filePath);
+		auto it = mResources.find(name);
 		if (it != mResources.end())
 		{
-			return it->second.get();
+			return it->second;
 		}
 		return nullptr;
 	}
 
-	// ゲッター
-	const std::unordered_map<std::string, std::unique_ptr<TResource>>&
-		GetResources() const { return mResources; }
+	const std::map<std::string, std::shared_ptr<T>>& GetResources() const { return mResources; }
 
 private:
-	std::unordered_map<std::string, std::unique_ptr<TResource>> mResources;
+	std::map<std::string, std::shared_ptr<T>> mResources;
 };

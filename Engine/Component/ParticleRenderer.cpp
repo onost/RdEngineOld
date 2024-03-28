@@ -117,7 +117,7 @@ void ParticleRenderer::Save(nlohmann::json& json)
 	auto tex = mat->GetTexture();
 	if (tex)
 	{
-		JsonHelper::SetString(json, "Texture", tex->GetPath());
+		JsonHelper::SetString(json, "Texture", tex->GetFilePath());
 	}
 	JsonHelper::SetBool(json, "Is Billboard", mParticle->GetIsBillboard());
 	// Emitter
@@ -272,6 +272,6 @@ void ParticleRenderer::SetTexture(Texture* texture)
 	{
 		auto mat = mPlane->GetMaterials().find("Effect")->second;
 		mat->SetTexture(texture);
-		mTexturePath = texture->GetPath();
+		mTexturePath = texture->GetFilePath();
 	}
 }
