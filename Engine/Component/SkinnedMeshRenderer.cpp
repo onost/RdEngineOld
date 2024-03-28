@@ -89,6 +89,12 @@ void SkinnedMeshRenderer::Load(const nlohmann::json& json)
 		{
 			mAnimName = mCurrAnim->GetName();
 		}
+		mCurrTime = 0.0f;
+		// メッシュを更新
+		for (auto& mesh : mModel->GetMeshes())
+		{
+			mesh->Update(mCurrAnim, mCurrTime);
+		}
 	}
 }
 
