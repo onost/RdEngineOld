@@ -14,6 +14,7 @@ class Player : public Actor
 public:
 	Player(Scene* scene);
 
+	void Initialize() override;
 	void ActorInput(const InputSystem::State& input) override;
 	void ActorUpdate(float deltaTime) override;
 	void ActorOnCollisionStay(Actor* other, CollisionInfo* info) override;

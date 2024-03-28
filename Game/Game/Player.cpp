@@ -31,24 +31,32 @@ Player::Player(Scene* scene)
 	, mDamage(nullptr)
 	, mRenderer(nullptr)
 {
-	// メッシュ
-	/*auto mr = new MeshRenderer(this);
-	mr->SetModel(mScene->GetRenderer()->GetModel("Player.obj"));
-	for (auto m : mr->GetModel()->GetMaterials())
-	{
-		m.second->SetIsShadowCast(false);
-	}*/
 	// コライダー
 	auto sc = new SphereCollider(this);
 	sc->SetAttribute(CollisionAttr::Allies);// 味方
 	sc->SetSphere({ {0.0f,0.0f,0.0f},mRadius });
 
 	mGravityBody = new GravityBody(this);
+}
 
+void Player::Initialize()
+{
+	// プレイヤーのHP
 	for (uint32_t i = 0; i < 3; ++i)
 	{
 		mHpUI[i] = Instantiate("PlayerLife");
-		mHpUI[i]->mTransform->mPosition = Vector3(20.0f + i * 100.0f, 20.0f, 0.0f);
+		mHpUI[i]->mTransform->mPosition = Vector3(20.0f + i * 80.0f, 20.0f, 0.0f);
+	}
+
+	auto component = GetComponent(Component::Type::SkinnedMeshRenderer);
+	auto renderer = dynamic_cast<SkinnedMeshRenderer*>(component);
+	if (renderer)
+	{
+		auto mat = renderer->GetModel()->GetMaterials();
+		for (auto m : mat)
+		{
+			m.second->SetIsShadowCast(false);
+		}
 	}
 }
 

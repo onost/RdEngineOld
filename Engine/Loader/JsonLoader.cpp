@@ -24,7 +24,7 @@ bool JsonLoader::Load(RdEngine* engine, const std::string& filePath)
 	if (data.contains("Scenes"))
 	{
 		auto sceneManager = engine->GetSceneManager();
-		sceneManager->Load(data["Scenes"]);
+		sceneManager->Load(data);
 	}
 	// -------------------- ここまで --------------------
 
@@ -42,7 +42,7 @@ bool JsonLoader::Save(RdEngine* engine, const std::string& filePath)
 
 	// -------------------- ここから --------------------
 	auto sceneManager = engine->GetSceneManager();
-	sceneManager->Save(data["Scenes"]);
+	sceneManager->Save(data);
 	// -------------------- ここまで --------------------
 
 	file << data.dump(4) << std::endl;

@@ -45,6 +45,7 @@ public:
 	virtual ~Actor();
 
 	// 基本
+	virtual void Initialize() {}
 	void ProcessInput(const InputSystem::State& input);
 	void Update(float deltaTime);
 	void LastUpdate(float deltaTime);

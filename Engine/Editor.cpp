@@ -309,18 +309,21 @@ namespace Editor
 			if (ImGui::ImageButton((void*)(intptr_t)mStartTex->GetDescHandle()->mGpuHandle.ptr, ImVec2(24.0f, 24.0f)))
 			{
 				Editor::gEditorState = Editor::EditorState::kPlay;
+				sceneManager->InitActor();
 				mIsDebugCamera = false;
 			}
 			ImGui::SameLine();
 			if (ImGui::ImageButton((void*)(intptr_t)mPauseTex->GetDescHandle()->mGpuHandle.ptr, ImVec2(24.0f, 24.0f)))
 			{
 				Editor::gEditorState = Editor::EditorState::kStop;
+				sceneManager->InitActor();
 				mIsDebugCamera = false;
 			}
 			ImGui::SameLine();
 			if (ImGui::ImageButton((void*)(intptr_t)mStepTex->GetDescHandle()->mGpuHandle.ptr, ImVec2(24.0f, 24.0f)))
 			{
 				Editor::gEditorState = Editor::EditorState::kStep;
+				sceneManager->InitActor();
 				mIsDebugCamera = false;
 			}
 			break;

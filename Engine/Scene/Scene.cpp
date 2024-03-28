@@ -110,6 +110,10 @@ void Scene::TestCollision()
 
 void Scene::AddActor(Actor* actor)
 {
+	if (Editor::gIsGame && actor)
+	{
+		actor->Initialize();
+	}
 	if (mIsUpdating)
 	{
 		mWaitActors.emplace_back(actor);
@@ -291,6 +295,15 @@ void Scene::RenderForDev(Primitive* prim)
 	if (mActorForDev)
 	{
 		mActorForDev->RenderForDev(prim);
+	}
+}
+
+void Scene::InitActor()
+{
+	auto v = mActors;
+	for (auto& actor : v)
+	{
+		actor->Initialize();
 	}
 }
 

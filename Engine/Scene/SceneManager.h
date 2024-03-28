@@ -34,6 +34,8 @@ public:
 
 	Scene* GetCurrScene() const { return mCurrScene.get(); }
 
+	void InitActor();
+
 private:
 	std::vector<std::string> mSceneNames;
 	std::unique_ptr<Scene> mCurrScene;

@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include "Editor.h"
 #include "RdEngine.h"
+#include "Helper/JsonHelper.h"
 
 void SceneManager::Initialize()
 {
@@ -8,10 +9,10 @@ void SceneManager::Initialize()
 	mFileTex = renderer->GetTexture("Assets/Texture/File.png");
 
 	// 最初のシーン
-	if (!mSceneNames.empty())
+	/*if (!mSceneNames.empty())
 	{
 		ChangeScene(mSceneNames[0]);
-	}
+	}*/
 }
 
 void SceneManager::Terminate()
@@ -97,21 +98,29 @@ void SceneManager::Reset()
 
 void SceneManager::Load(const nlohmann::json& json)
 {
-	for (uint32_t i = 0; i < json.size(); ++i)
+	auto scene = json["Scenes"];
+	for (uint32_t i = 0; i < scene.size(); ++i)
 	{
-		if (json[i].is_string())
+		if (scene[i].is_string())
 		{
-			mSceneNames.emplace_back(json[i].get<std::string>());
+			mSceneNames.emplace_back(scene[i].get<std::string>());
 		}
 	}
+
+	std::string name;
+	JsonHelper::GetString(json, "Curr Scene", name);
+	ChangeScene(name);
 }
 
 void SceneManager::Save(nlohmann::json& json)
 {
+	auto& scene = json["Scenes"];
 	for (uint32_t i = 0; i < mSceneNames.size(); ++i)
 	{
-		json.push_back(mSceneNames[i]);
+		scene.push_back(mSceneNames[i]);
 	}
+
+	json["Curr Scene"] = mCurrScene->GetName();
 }
 
 // ==================================================
@@ -162,5 +171,13 @@ void SceneManager::RenderForDev(Primitive* prim)
 	if (mCurrScene)
 	{
 		mCurrScene->RenderForDev(prim);
+	}
+}
+
+void SceneManager::InitActor()
+{
+	if (mCurrScene)
+	{
+		mCurrScene->InitActor();
 	}
 }

@@ -49,11 +49,14 @@ public:
 	{
 		return new T();
 	}
+	const std::string& GetName() const { return mName; }
 	std::shared_ptr<Renderer> GetRenderer() const { return mRenderer; }
 	std::shared_ptr<CollisionManager> GetCollisionManager() const { return mCollisionManager; }
 	const std::vector<Actor*>& GetActors() const { return mActors; }
 	Actor* GetActorForDev() const { return mActorForDev; }
 	void SetActorForDev(Actor* actor) { mActorForDev = actor; }
+
+	void InitActor();
 
 protected:
 	//std::string& mName;
