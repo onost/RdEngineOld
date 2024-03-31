@@ -58,6 +58,19 @@ void Player::Initialize()
 			m.second->SetIsShadowCast(false);
 		}
 	}
+
+	auto actor = mScene->GetActor("GameOverSprite");
+	if (actor)
+	{
+		component = actor->GetComponent(Component::Type::SpriteRenderer);
+		mGameOverSprite = dynamic_cast<SpriteRenderer*>(component);
+	}
+	actor = mScene->GetActor("GoalSprite");
+	if (actor)
+	{
+		component = actor->GetComponent(Component::Type::SpriteRenderer);
+		mGoalSprite = dynamic_cast<SpriteRenderer*>(component);
+	}
 }
 
 void Player::ActorInput(const InputSystem::State& input)
@@ -187,7 +200,7 @@ void Player::ActorUpdate(float deltaTime)
 
 	if (mHp <= 0)
 	{
-		auto actor = mScene->GetActor("GameOverSprite");
+		/*auto actor = mScene->GetActor("GameOverSprite");
 		if (actor)
 		{
 			auto component = actor->GetComponent(Component::Type::SpriteRenderer);
@@ -196,6 +209,10 @@ void Player::ActorUpdate(float deltaTime)
 			{
 				sprite->SetIsVisible(true);
 			}
+		}*/
+		if (!mGoalSprite->GetIsVisible())
+		{
+			mGameOverSprite->SetIsVisible(true);
 		}
 	}
 
@@ -257,12 +274,16 @@ void Player::ActorOnTriggerEnter(Actor* other)
 	// ゴール！
 	if (other->GetName() == "GoalFlag" && mHp > 0)
 	{
-		auto actor = mScene->GetActor("GoalSprite");
+		/*auto actor = mScene->GetActor("GoalSprite");
 		auto component = actor->GetComponent(Component::Type::SpriteRenderer);
 		SpriteRenderer* sprite = dynamic_cast<SpriteRenderer*>(component);
 		if (sprite)
 		{
 			sprite->SetIsVisible(true);
+		}*/
+		if (!mGameOverSprite->GetIsVisible())
+		{
+			mGoalSprite->SetIsVisible(true);
 		}
 	}
 }

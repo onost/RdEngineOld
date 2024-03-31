@@ -26,6 +26,9 @@ public:
 	void Initialize();
 	//void Terminate();
 
+	void LoadFile(const nlohmann::json& json);
+	void SaveFile(nlohmann::json& json);
+
 	// シーン描画前
 	void PreRendering(ID3D12GraphicsCommandList* cmdList);
 	// シーン描画後

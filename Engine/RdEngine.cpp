@@ -42,9 +42,6 @@ void RdEngine::Initialize()
 	mCollisionManager = std::make_shared<CollisionManager>();
 	mSceneManager = std::make_shared<SceneManager>();
 
-	// ファイルを読み込む
-	LoadFile();
-
 	// 初期化
 	mWindow->Initialize();
 	gGraphicsEngine->Initialize(mWindow.get());
@@ -55,6 +52,9 @@ void RdEngine::Initialize()
 	mSceneManager->Initialize();
 	Random::Initialize();
 	Editor::Initialize(mWindow.get());
+
+	// ファイルを読み込む
+	LoadFile();
 
 	//mWindow->SetTitle("Set Title");
 }

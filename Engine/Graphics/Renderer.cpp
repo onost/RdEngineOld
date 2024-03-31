@@ -542,6 +542,59 @@ void Renderer::RemoveMeshParticle(MeshParticleRenderer* meshParticle)
 	}
 }
 
+void Renderer::LoadFile(const nlohmann::json& json)
+{
+	auto texs = json["Textures"];
+	for (uint32_t i = 0; i < texs.size(); ++i)
+	{
+		if (texs[i].is_string())
+		{
+			GetTexture(texs[i].get<std::string>());
+		}
+	}
+
+	auto models = json["Model"];
+	for (uint32_t i = 0; i < models.size(); ++i)
+	{
+		if (models[i].is_string())
+		{
+			GetModel(models[i].get<std::string>());
+		}
+	}
+
+	auto anims = json["Animations"];
+	for (uint32_t i = 0; i < anims.size(); ++i)
+	{
+		if (anims[i].is_string())
+		{
+			auto name = anims[i].get<std::string>();
+			auto pos = name.rfind('/');
+			ModelLoader::LoadAnimation(name.substr(0, pos));
+		}
+	}
+}
+
+void Renderer::SaveFile(nlohmann::json& json)
+{
+	auto& texs = json["Textures"];
+	for (auto tex : mTextures.GetResources())
+	{
+		texs.push_back(tex.second->GetFilePath());
+	}
+
+	auto& models = json["Model"];
+	for (auto model : mModels.GetResources())
+	{
+		models.push_back(model.second->GetName());
+	}
+
+	auto& anims = json["Animations"];
+	for (auto anim : mAnimations.GetResources())
+	{
+		anims.push_back(anim.second->GetName());
+	}
+}
+
 // ==================================================
 // 開発用
 // ==================================================

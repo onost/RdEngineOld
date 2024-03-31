@@ -59,4 +59,6 @@ private:
 	GravityBody* mGravityBody;
 
 	Actor* mHpUI[3];
+	SpriteRenderer* mGoalSprite;
+	SpriteRenderer* mGameOverSprite;
 };

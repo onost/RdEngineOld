@@ -26,6 +26,8 @@ bool JsonLoader::Load(RdEngine* engine, const std::string& filePath)
 		auto sceneManager = engine->GetSceneManager();
 		sceneManager->Load(data);
 	}
+	auto renderer = engine->GetRenderer();
+	renderer->LoadFile(data["Renderer"]);
 	// -------------------- ここまで --------------------
 
 	return true;
@@ -43,6 +45,8 @@ bool JsonLoader::Save(RdEngine* engine, const std::string& filePath)
 	// -------------------- ここから --------------------
 	auto sceneManager = engine->GetSceneManager();
 	sceneManager->Save(data);
+	auto renderer = engine->GetRenderer();
+	renderer->SaveFile(data["Renderer"]);
 	// -------------------- ここまで --------------------
 
 	file << data.dump(4) << std::endl;

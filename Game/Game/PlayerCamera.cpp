@@ -9,7 +9,7 @@
 PlayerCamera::PlayerCamera(Scene* scene)
 	: Actor(scene)
 	, mTarget(nullptr)
-	, mDistance(15.0f)
+	, mDistance(22.0f)
 	, mRot(MyMath::kPiOver2 * 0.2f)
 	, mRotVel(0.0f)
 	, mRotSpeed(MyMath::kPiOver2)
