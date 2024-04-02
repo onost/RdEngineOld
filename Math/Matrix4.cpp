@@ -211,13 +211,13 @@ Quaternion Matrix4::GetRotation() const
 	Vector3 x = Normalize(Vector3(m[0][0], m[1][0], m[2][0]));
 	Vector3 y = Normalize(Vector3(m[0][1], m[1][1], m[2][1]));
 	Vector3 z = Normalize(Vector3(m[0][2], m[1][2], m[2][2]));
-	float tmp[4][4] =
+	Matrix4 m = Matrix4(
 	{
 		{ x.x, y.x, z.x, 0.0f },
 		{ x.y, y.y, z.y, 0.0f },
 		{ x.z, y.z, z.z, 0.0f },
 		{ 0.0f, 0.0f, 0.0f, 1.0f }
-	};
+	})
 	return ToQuaternion(Matrix4(tmp));
 }
 
