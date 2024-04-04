@@ -45,7 +45,7 @@ void Meteorite::ActorUpdate(float deltaTime)
 	auto light = mScene->GetRenderer()->GetLightManager();
 	auto normal = Normalize(-mVelocity);
 	light->SetCircleShadowDirection(mShadowIndex, -normal);
-	light->SetCircleShadowPosition(mShadowIndex, mTransform->GetWorld().GetTranslation() + normal * 10.0f);
+	light->SetCircleShadowPosition(mShadowIndex, mTransform->GetWorld().GetTranslate() + normal * 10.0f);
 	light->SetCircleShadowRadius(mShadowIndex, 50.0f);
 	light->SetCircleShadowIntensity(mShadowIndex, 0.3f);
 	light->SetCircleShadowDecay(mShadowIndex, 0.8f);

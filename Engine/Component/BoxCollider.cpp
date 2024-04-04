@@ -25,7 +25,7 @@ void BoxCollider::OnUpdateWorld()
 	// ワールドボックスを計算
 	auto world = mOwner->mTransform->GetWorld();
 	mWorld.mCenter *= world;
-	Quaternion rotation = world.GetRotation();
+	Quaternion rotation = world.GetRotate();
 	mWorld.mAxis[0] *= rotation;
 	mWorld.mAxis[1] *= rotation;
 	mWorld.mAxis[2] *= rotation;

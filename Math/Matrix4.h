@@ -222,19 +222,126 @@ public:
 		return Matrix4(tmp);
 	}
 
-
-
-	// Perspective fov
-	static Matrix4 CreatePerspectiveFov(
-		float fovY, float aspectRatio, float nearZ, float farZ);
+	// Perspective
+	static Matrix4 CreatePerspectiveFov(float fovY, float aspectRatio, float nearZ, float farZ)
+	{
+		float yScale = 1.0f / std::tan(fovY / 2.0f);
+		float xScale = yScale / aspectRatio;
+		float tmp[4][4] =
+		{
+			{ xScale,0.0f,0.0f,0.0f },
+			{ 0.0f,yScale,0.0f,0.0f },
+			{ 0.0f,0.0f,farZ / (farZ - nearZ),1.0f },
+			{ 0.0f,0.0f,-(nearZ * farZ) / (farZ - nearZ),0.0f }
+		};
+		return Matrix4(tmp);
+	}
 
 	static const Matrix4 kIdentity;
 };
 
-Matrix4 operator*(const Matrix4& a, const Matrix4& b);
-Vector3 operator*(const Vector3& a, const Matrix4& b);
-Matrix4& operator*=(Matrix4& a, const Matrix4& b);
-Vector3& operator*=(Vector3& a, const Matrix4& b);
-float Determinant(const Matrix4& a);// 行列式
-Matrix4 Inverse(const Matrix4& a);// 逆行列
-Matrix4 Transpose(const Matrix4& a);// 転置
+inline Matrix4 operator*(const Matrix4& a, const Matrix4& b)
+{
+	Matrix4 result = {};
+	result.m[0][0] = a.m[0][0] * b.m[0][0] + a.m[0][1] * b.m[1][0] + a.m[0][2] * b.m[2][0] + a.m[0][3] * b.m[3][0];
+	result.m[0][1] = a.m[0][0] * b.m[0][1] + a.m[0][1] * b.m[1][1] + a.m[0][2] * b.m[2][1] + a.m[0][3] * b.m[3][1];
+	result.m[0][2] = a.m[0][0] * b.m[0][2] + a.m[0][1] * b.m[1][2] + a.m[0][2] * b.m[2][2] + a.m[0][3] * b.m[3][2];
+	result.m[0][3] = a.m[0][0] * b.m[0][3] + a.m[0][1] * b.m[1][3] + a.m[0][2] * b.m[2][3] + a.m[0][3] * b.m[3][3];
+	result.m[1][0] = a.m[1][0] * b.m[0][0] + a.m[1][1] * b.m[1][0] + a.m[1][2] * b.m[2][0] + a.m[1][3] * b.m[3][0];
+	result.m[1][1] = a.m[1][0] * b.m[0][1] + a.m[1][1] * b.m[1][1] + a.m[1][2] * b.m[2][1] + a.m[1][3] * b.m[3][1];
+	result.m[1][2] = a.m[1][0] * b.m[0][2] + a.m[1][1] * b.m[1][2] + a.m[1][2] * b.m[2][2] + a.m[1][3] * b.m[3][2];
+	result.m[1][3] = a.m[1][0] * b.m[0][3] + a.m[1][1] * b.m[1][3] + a.m[1][2] * b.m[2][3] + a.m[1][3] * b.m[3][3];
+	result.m[2][0] = a.m[2][0] * b.m[0][0] + a.m[2][1] * b.m[1][0] + a.m[2][2] * b.m[2][0] + a.m[2][3] * b.m[3][0];
+	result.m[2][1] = a.m[2][0] * b.m[0][1] + a.m[2][1] * b.m[1][1] + a.m[2][2] * b.m[2][1] + a.m[2][3] * b.m[3][1];
+	result.m[2][2] = a.m[2][0] * b.m[0][2] + a.m[2][1] * b.m[1][2] + a.m[2][2] * b.m[2][2] + a.m[2][3] * b.m[3][2];
+	result.m[2][3] = a.m[2][0] * b.m[0][3] + a.m[2][1] * b.m[1][3] + a.m[2][2] * b.m[2][3] + a.m[2][3] * b.m[3][3];
+	result.m[3][0] = a.m[3][0] * b.m[0][0] + a.m[3][1] * b.m[1][0] + a.m[3][2] * b.m[2][0] + a.m[3][3] * b.m[3][0];
+	result.m[3][1] = a.m[3][0] * b.m[0][1] + a.m[3][1] * b.m[1][1] + a.m[3][2] * b.m[2][1] + a.m[3][3] * b.m[3][1];
+	result.m[3][2] = a.m[3][0] * b.m[0][2] + a.m[3][1] * b.m[1][2] + a.m[3][2] * b.m[2][2] + a.m[3][3] * b.m[3][2];
+	result.m[3][3] = a.m[3][0] * b.m[0][3] + a.m[3][1] * b.m[1][3] + a.m[3][2] * b.m[2][3] + a.m[3][3] * b.m[3][3];
+	return result;
+}
+
+inline Vector3 operator*(const Vector3& a, const Matrix4& b)
+{
+	return Vector3(
+		a.x * b.m[0][0] + a.y * b.m[1][0] + a.z * b.m[2][0] + b.m[3][0],
+		a.x * b.m[0][1] + a.y * b.m[1][1] + a.z * b.m[2][1] + b.m[3][1],
+		a.x * b.m[0][2] + a.y * b.m[1][2] + a.z * b.m[2][2] + b.m[3][2]);
+}
+
+inline Matrix4& operator*=(Matrix4& a, const Matrix4& b)
+{
+	a = a * b;
+	return a;
+}
+
+inline Vector3& operator*=(Vector3& a, const Matrix4& b)
+{
+	a = a * b;
+	return a;
+}
+
+
+// 行列式
+inline float Determinant(const Matrix4& a)
+{
+	return
+		a.m[0][0] * ((a.m[1][1] * (a.m[2][2] * a.m[3][3] - a.m[2][3] * a.m[3][2])) + (a.m[1][2] * (a.m[2][3] * a.m[3][1] - a.m[2][1] * a.m[3][3])) + (a.m[1][3] * (a.m[2][1] * a.m[3][2] - a.m[2][2] * a.m[3][1]))) -
+		a.m[0][1] * ((a.m[1][0] * (a.m[2][2] * a.m[3][3] - a.m[2][3] * a.m[3][2])) + (a.m[1][2] * (a.m[2][3] * a.m[3][0] - a.m[2][0] * a.m[3][3])) + (a.m[1][3] * (a.m[2][0] * a.m[3][2] - a.m[2][2] * a.m[3][0]))) +
+		a.m[0][2] * ((a.m[1][0] * (a.m[2][1] * a.m[3][3] - a.m[2][3] * a.m[3][1])) + (a.m[1][1] * (a.m[2][3] * a.m[3][0] - a.m[2][0] * a.m[3][3])) + (a.m[1][3] * (a.m[2][0] * a.m[3][1] - a.m[2][1] * a.m[3][0]))) -
+		a.m[0][3] * ((a.m[1][0] * (a.m[2][1] * a.m[3][2] - a.m[2][2] * a.m[3][1])) + (a.m[1][1] * (a.m[2][2] * a.m[3][0] - a.m[2][0] * a.m[3][2])) + (a.m[1][2] * (a.m[2][0] * a.m[3][1] - a.m[2][1] * a.m[3][0])));
+}
+
+// 逆行列
+inline Matrix4 Inverse(const Matrix4& a)
+{
+	float det =
+		a.m[0][0] * ((a.m[1][1] * (a.m[2][2] * a.m[3][3] - a.m[2][3] * a.m[3][2])) + (a.m[1][2] * (a.m[2][3] * a.m[3][1] - a.m[2][1] * a.m[3][3])) + (a.m[1][3] * (a.m[2][1] * a.m[3][2] - a.m[2][2] * a.m[3][1]))) -
+		a.m[0][1] * ((a.m[1][0] * (a.m[2][2] * a.m[3][3] - a.m[2][3] * a.m[3][2])) + (a.m[1][2] * (a.m[2][3] * a.m[3][0] - a.m[2][0] * a.m[3][3])) + (a.m[1][3] * (a.m[2][0] * a.m[3][2] - a.m[2][2] * a.m[3][0]))) +
+		a.m[0][2] * ((a.m[1][0] * (a.m[2][1] * a.m[3][3] - a.m[2][3] * a.m[3][1])) + (a.m[1][1] * (a.m[2][3] * a.m[3][0] - a.m[2][0] * a.m[3][3])) + (a.m[1][3] * (a.m[2][0] * a.m[3][1] - a.m[2][1] * a.m[3][0]))) -
+		a.m[0][3] * ((a.m[1][0] * (a.m[2][1] * a.m[3][2] - a.m[2][2] * a.m[3][1])) + (a.m[1][1] * (a.m[2][2] * a.m[3][0] - a.m[2][0] * a.m[3][2])) + (a.m[1][2] * (a.m[2][0] * a.m[3][1] - a.m[2][1] * a.m[3][0])));
+	MY_ASSERT(std::abs(det) > MyMath::kEpsilon);
+	float oneOverDet = 1.0f / det;
+	Matrix4 result = {};
+	result.m[0][0] = (a.m[1][1] * a.m[2][2] - a.m[1][2] * a.m[2][1]) * oneOverDet;
+	result.m[0][1] = (a.m[0][2] * a.m[2][1] - a.m[0][1] * a.m[2][2]) * oneOverDet;
+	result.m[0][2] = (a.m[0][1] * a.m[1][2] - a.m[0][2] * a.m[1][1]) * oneOverDet;
+	result.m[0][3] = 0.0f;
+	result.m[1][0] = (a.m[1][2] * a.m[2][0] - a.m[1][0] * a.m[2][2]) * oneOverDet;
+	result.m[1][1] = (a.m[0][0] * a.m[2][2] - a.m[0][2] * a.m[2][0]) * oneOverDet;
+	result.m[1][2] = (a.m[0][2] * a.m[1][0] - a.m[0][0] * a.m[1][2]) * oneOverDet;
+	result.m[1][3] = 0.0f;
+	result.m[2][0] = (a.m[1][0] * a.m[2][1] - a.m[1][1] * a.m[2][0]) * oneOverDet;
+	result.m[2][1] = (a.m[0][1] * a.m[2][0] - a.m[0][0] * a.m[2][1]) * oneOverDet;
+	result.m[2][2] = (a.m[0][0] * a.m[1][1] - a.m[0][1] * a.m[1][0]) * oneOverDet;
+	result.m[2][3] = 0.0f;
+	result.m[3][0] = -(a.m[3][0] * result.m[0][0] + a.m[3][1] * result.m[1][0] + a.m[3][2] * result.m[2][0]);
+	result.m[3][1] = -(a.m[3][0] * result.m[0][1] + a.m[3][1] * result.m[1][1] + a.m[3][2] * result.m[2][1]);
+	result.m[3][2] = -(a.m[3][0] * result.m[0][2] + a.m[3][1] * result.m[1][2] + a.m[3][2] * result.m[2][2]);
+	result.m[3][3] = 1.0f;
+	return result;
+}
+
+// 転置
+inline Matrix4 Transpose(const Matrix4& a)
+{
+	Matrix4 result = {};
+	result.m[0][0] = a.m[0][0];
+	result.m[0][1] = a.m[1][0];
+	result.m[0][2] = a.m[2][0];
+	result.m[0][3] = a.m[3][0];
+	result.m[1][0] = a.m[0][1];
+	result.m[1][1] = a.m[1][1];
+	result.m[1][2] = a.m[2][1];
+	result.m[1][3] = a.m[3][1];
+	result.m[2][0] = a.m[0][2];
+	result.m[2][1] = a.m[1][2];
+	result.m[2][2] = a.m[2][2];
+	result.m[2][3] = a.m[3][2];
+	result.m[3][0] = a.m[0][3];
+	result.m[3][1] = a.m[1][3];
+	result.m[3][2] = a.m[2][3];
+	result.m[3][3] = a.m[3][3];
+	return result;
+}

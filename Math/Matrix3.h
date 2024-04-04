@@ -188,7 +188,7 @@ inline Matrix3 Inverse(const Matrix3& a)
 }
 
 // 転置
-Matrix3 Transpose(const Matrix3& a)
+inline Matrix3 Transpose(const Matrix3& a)
 {
 	Matrix3 result = {};
 	result.m[0][0] = a.m[0][0];

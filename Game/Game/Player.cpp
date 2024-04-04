@@ -195,7 +195,7 @@ void Player::ActorUpdate(float deltaTime)
 	auto light = mScene->GetRenderer()->GetLightManager();
 	auto normal = mGravityBody->GetCurrNormal();
 	light->SetCircleShadowDirection(0, -normal);
-	light->SetCircleShadowPosition(0, mTransform->GetWorld().GetTranslation() + normal * 10.0f);
+	light->SetCircleShadowPosition(0, mTransform->GetWorld().GetTranslate() + normal * 10.0f);
 	light->SetCircleShadowIntensity(0, 0.5f);
 
 	if (mHp <= 0)

@@ -26,7 +26,7 @@ Attractor::~Attractor()
 void Attractor::Attract(GravityBody* actor, float deltaTime)
 {
 	Actor* gravityActor = actor->GetOwner();
-	Vector3 apos = mOwner->mTransform->GetWorld().GetTranslation();
+	Vector3 apos = mOwner->mTransform->GetWorld().GetTranslate();
 	Vector3 bpos = gravityActor->mTransform->mPosition;
 	Vector3 toCenter = apos - bpos;
 	float len = Length(toCenter);

@@ -176,6 +176,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Math\Color.cpp" />
     <ClCompile Include="Math\Matrix3.cpp" />
     <ClCompile Include="Math\Matrix4.cpp" />
+    <ClCompile Include="Math\MyMath.cpp" />
     <ClCompile Include="Math\Quaternion.cpp" />
     <ClCompile Include="Math\Random.cpp" />
     <ClCompile Include="Math\Vector2.cpp" />

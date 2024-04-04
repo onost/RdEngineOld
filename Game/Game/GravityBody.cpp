@@ -66,7 +66,7 @@ void GravityBody::Update(float deltaTime)
 		Vector3 currUp = Vector3(0.0f, 1.0f, 0.0f) * mOwner->mTransform->mRotation;
 		mNormal = Normalize(
 			mOwner->mTransform->mPosition -
-			mAttractor->GetOwner()->mTransform->GetWorld().GetTranslation());
+			mAttractor->GetOwner()->mTransform->GetWorld().GetTranslate());
 
 		if (mIsGround)
 		{

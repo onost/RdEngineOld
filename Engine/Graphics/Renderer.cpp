@@ -186,8 +186,8 @@ void Renderer::PostRendering(ID3D12GraphicsCommandList* cmdList)
 
 					world = Inverse(pm) * world;
 					actor->mTransform->mScale = world.GetScale();
-					actor->mTransform->mRotation = world.GetRotation();
-					actor->mTransform->mPosition = world.GetTranslation();
+					actor->mTransform->mRotation = world.GetRotate();
+					actor->mTransform->mPosition = world.GetTranslate();
 				}
 			}
 		}

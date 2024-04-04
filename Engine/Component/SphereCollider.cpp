@@ -23,7 +23,7 @@ void SphereCollider::OnUpdateWorld()
 	mWorld = mLocal;
 	// ワールド球を計算
 	auto world = mOwner->mTransform->GetWorld();
-	mWorld.mCenter += world.GetTranslation();
+	mWorld.mCenter += world.GetTranslate();
 	Vector3 scale = world.GetScale();
 	// 最大成分
 	float max = MyMath::Min(MyMath::Min(scale.x, scale.y), scale.z);

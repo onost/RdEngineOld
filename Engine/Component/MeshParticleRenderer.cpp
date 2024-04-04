@@ -28,7 +28,7 @@ MeshParticleRenderer::~MeshParticleRenderer()
 
 void MeshParticleRenderer::Update(float deltaTime)
 {
-	auto position = mOwner->mTransform->GetWorld().GetTranslation();
+	auto position = mOwner->mTransform->GetWorld().GetTranslate();
 	mParticle->SetPosition(position);
 	mParticle->Update(deltaTime);
 }
@@ -235,7 +235,7 @@ void MeshParticleRenderer::RenderForDev(Primitive* prim)
 {
 	auto emitter = mParticle->GetEmitter();
 	//auto position = mOwner->mTransform->mPosition;
-	auto position = mOwner->mTransform->GetWorld().GetTranslation();
+	auto position = mOwner->mTransform->GetWorld().GetTranslate();
 	switch (emitter.mShape)
 	{
 	case Emitter::Shape::Point:

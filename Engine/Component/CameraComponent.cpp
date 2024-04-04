@@ -34,8 +34,8 @@ void CameraComponent::OnUpdateWorld()
 	{
 		// オーナーと紐づける
 		Matrix4 world = mOwner->mTransform->GetWorld();
-		mCamera->SetRotation(world.GetRotation());
-		mCamera->SetPosition(world.GetTranslation());
+		mCamera->SetRotation(world.GetRotate());
+		mCamera->SetPosition(world.GetTranslate());
 	}
 }
 

@@ -164,7 +164,7 @@ void SkinnedMeshRenderer::RenderForDev(Primitive* prim)
 			{
 				for (uint32_t i = 0; i < joints.size(); ++i)
 				{
-					positions[i] = (currPoses[i] * mOwner->mTransform->GetWorld()).GetTranslation();
+					positions[i] = (currPoses[i] * mOwner->mTransform->GetWorld()).GetTranslate();
 					prim->DrawSphere(positions[i], 0.2f, Color::kWhite);// radius = 0.2f
 					auto parent = joints[i].mParent;
 					if (parent)

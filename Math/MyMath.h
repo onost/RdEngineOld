@@ -2,6 +2,12 @@
 #include <limits>
 #include <numbers>
 
+// TODO: 行列へ変換
+
+class Matrix4;
+class Quaternion;
+class Vector3;
+
 namespace MyMath
 {
 	const float kPi = std::numbers::pi_v<float>;// π
@@ -51,3 +57,10 @@ namespace MyMath
 		return (a > 0.0f) - (a < 0.0f);
 	}
 }
+
+Vector3 ToEuler(const Matrix4& a);
+Vector3 ToEuler(const Quaternion& a);
+//Matrix4 ToMatrix(const Vector3& a);
+//Matrix4 ToMatrix(const Quaternion& a);
+Quaternion ToQuaternion(const Vector3& a);
+Quaternion ToQuaternion(const Matrix4& a);

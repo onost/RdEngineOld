@@ -310,16 +310,16 @@ void Actor::SetParent(Actor* parent)
 	{
 		auto world = mTransform->GetWorld();
 		mTransform->mScale = world.GetScale();
-		mTransform->mRotation = world.GetRotation();
-		mTransform->mPosition = world.GetTranslation();
+		mTransform->mRotation = world.GetRotate();
+		mTransform->mPosition = world.GetTranslate();
 	}
 	if (parent)
 	{
 		auto world = mTransform->GetWorld();
 		auto local = world * Inverse(parent->mTransform->GetWorld());
 		mTransform->mScale = local.GetScale();
-		mTransform->mRotation = local.GetRotation();
-		mTransform->mPosition = local.GetTranslation();
+		mTransform->mRotation = local.GetRotate();
+		mTransform->mPosition = local.GetTranslate();
 	}
 
 	if (parent)
