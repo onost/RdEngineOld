@@ -1,5 +1,6 @@
 #pragma once
 #include "Component/Component.h"
+#include "Vector3.h"
 
 class GravityBody;
 

@@ -1,6 +1,5 @@
 #pragma once
 #include "Vector2.h"
-#include <cstdint>
 #include <Windows.h>
 #include <Xinput.h>
 
@@ -8,14 +7,21 @@
 class Gamepad
 {
 	friend class InputSystem;
+
 public:
-	bool GetButton(int button) const;
-	bool GetButtonUp(int button) const;
-	bool GetButtonDown(int button) const;
-	Vector2 GetLStick() const;
-	Vector2 GetRStick() const;
-	float GetLTrigger() const;
-	float GetRTrigger() const;
+	Gamepad();
+
+	bool GetButton(uint16_t button) const;
+	bool GetButtonUp(uint16_t button) const;
+	bool GetButtonDown(uint16_t button) const;
+
+	// スティック
+	Vector2 GetLeftStick() const;
+	Vector2 GetRightStick() const;
+	// トリガー
+	float GetLeftTrigger() const;
+	float GetRightTrigger() const;
+
 private:
 	XINPUT_STATE mCurr;
 	XINPUT_STATE mPrev;

@@ -8,6 +8,7 @@
 
 class Window;
 
+// 入力
 class InputSystem
 {
 public:
@@ -19,16 +20,19 @@ public:
 		Gamepad mGamepad;
 	};
 
+	InputSystem();
+
 	void Initialize(Window* window);
 	void Terminate();
+
 	void Update();
 
 	const State& GetState() const { return mState; }
 
 private:
 	HWND mHWnd;
-	Microsoft::WRL::ComPtr<IDirectInput8> mDInput;
-	Microsoft::WRL::ComPtr<IDirectInputDevice8> mKeyboardDev;
-	Microsoft::WRL::ComPtr<IDirectInputDevice8> mMouseDev;
+	Microsoft::WRL::ComPtr<IDirectInput8> mDirectInput;
+	Microsoft::WRL::ComPtr<IDirectInputDevice8> mKeyDevice;
+	Microsoft::WRL::ComPtr<IDirectInputDevice8> mMouseDevice;
 	State mState;
 };

@@ -1,6 +1,11 @@
 #include "Keyboard.h"
 #include "Helper/MyAssert.h"
 
+Keyboard::Keyboard()
+	: mCurr()
+	, mPrev()
+{}
+
 bool Keyboard::GetKey(uint8_t keyCode) const
 {
 	MY_ASSERT(keyCode >= 0 && keyCode < _countof(mCurr));

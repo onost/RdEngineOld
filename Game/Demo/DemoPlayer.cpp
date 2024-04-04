@@ -52,7 +52,7 @@ void DemoPlayer::ActorInput(const InputSystem::State& input)
 	// ==================================================
 
 	// スティック
-	Vector2 move = input.mGamepad.GetLStick();
+	Vector2 move = input.mGamepad.GetLeftStick();
 	// キーボード
 	if (input.mKeyboard.GetKey(DIK_W))
 	{
@@ -79,7 +79,7 @@ void DemoPlayer::ActorInput(const InputSystem::State& input)
 	// ==================================================
 
 	// スティック
-	mRotVel = input.mGamepad.GetRStick().x;
+	mRotVel = input.mGamepad.GetRightStick().x;
 	// キーボード
 	if (input.mKeyboard.GetKey(DIK_LEFT))
 	{
@@ -109,7 +109,7 @@ void DemoPlayer::ActorInput(const InputSystem::State& input)
 	// ==================================================
 	// 弾
 	// ==================================================
-	if (input.mGamepad.GetRTrigger() > 0.0f ||
+	if (input.mGamepad.GetRightTrigger() > 0.0f ||
 		input.mKeyboard.GetKey(DIK_LSHIFT))
 	{
 		if (mCooldown <= 0.0f)

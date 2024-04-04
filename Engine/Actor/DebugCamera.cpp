@@ -16,7 +16,7 @@ void DebugCamera::Input(const InputSystem::State& input)
 {
 	mRotVel = Vector3::kZero;
 	mVelocity = Vector3::kZero;
-	Vector3 move = input.mMouse.GetMove();
+	Vector2 move = input.mMouse.GetMove();
 	// 回転
 	if (input.mMouse.GetButton(1))// 右クリック
 	{
@@ -29,7 +29,7 @@ void DebugCamera::Input(const InputSystem::State& input)
 		mVelocity = Vector3(-move.x * kSpeed, move.y * kSpeed, 0.0f);
 	}
 	// ズームイン、ズームアウト
-	mRotVel.z = move.z * kZoomSpeed;
+	mRotVel.z = input.mMouse.GetWheel() * kZoomSpeed;
 }
 
 void DebugCamera::Update(float /*deltaTime*/)

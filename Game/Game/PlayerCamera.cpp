@@ -21,7 +21,7 @@ PlayerCamera::PlayerCamera(Scene* scene)
 void PlayerCamera::ActorInput(const InputSystem::State& input)
 {
 	// スティック
-	mRotVel = -input.mGamepad.GetRStick().y;
+	mRotVel = -input.mGamepad.GetRightStick().y;
 	// キーボード
 	if (input.mKeyboard.GetKey(DIK_UP))
 	{

@@ -80,7 +80,7 @@ void Player::ActorInput(const InputSystem::State& input)
 	// ==================================================
 
 	// スティック
-	Vector2 move = input.mGamepad.GetLStick();
+	Vector2 move = input.mGamepad.GetLeftStick();
 	// キーボード
 	if (input.mKeyboard.GetKey(DIK_W))
 	{
@@ -107,7 +107,7 @@ void Player::ActorInput(const InputSystem::State& input)
 	// ==================================================
 
 	// スティック
-	mRotVel = input.mGamepad.GetRStick().x;
+	mRotVel = input.mGamepad.GetRightStick().x;
 	// キーボード
 	if (input.mKeyboard.GetKey(DIK_LEFT))
 	{
