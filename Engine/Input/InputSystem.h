@@ -32,7 +32,7 @@ public:
 private:
 	HWND mHWnd;
 	Microsoft::WRL::ComPtr<IDirectInput8> mDirectInput;
-	Microsoft::WRL::ComPtr<IDirectInputDevice8> mKeyDevice;
-	Microsoft::WRL::ComPtr<IDirectInputDevice8> mMouseDevice;
+	Microsoft::WRL::ComPtr<IDirectInputDevice8> mKeyboardDevice;// キーボードデバイス
+	Microsoft::WRL::ComPtr<IDirectInputDevice8> mMouseDevice;// マウスデバイス
 	State mState;
 };

@@ -9,7 +9,7 @@
 InputSystem::InputSystem()
 	: mHWnd(nullptr)
 	, mDirectInput(nullptr)
-	, mKeyDevice(nullptr)
+	, mKeyboardDevice(nullptr)
 	, mMouseDevice(nullptr)
 	, mState()
 {}
@@ -25,11 +25,11 @@ void InputSystem::Initialize(Window* window)
 	MY_ASSERT(SUCCEEDED(hr));
 
 	// キーボード
-	hr = mDirectInput->CreateDevice(GUID_SysKeyboard, &mKeyDevice, nullptr);
+	hr = mDirectInput->CreateDevice(GUID_SysKeyboard, &mKeyboardDevice, nullptr);
 	MY_ASSERT(SUCCEEDED(hr));
-	hr = mKeyDevice->SetDataFormat(&c_dfDIKeyboard);
+	hr = mKeyboardDevice->SetDataFormat(&c_dfDIKeyboard);
 	MY_ASSERT(SUCCEEDED(hr));
-	hr = mKeyDevice->SetCooperativeLevel(mHWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+	hr = mKeyboardDevice->SetCooperativeLevel(mHWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	MY_ASSERT(SUCCEEDED(hr));
 
 	// マウス
@@ -41,7 +41,7 @@ void InputSystem::Initialize(Window* window)
 	MY_ASSERT(SUCCEEDED(hr));
 
 	// 入力開始
-	mKeyDevice->Acquire();
+	mKeyboardDevice->Acquire();
 	mMouseDevice->Acquire();
 }
 
@@ -49,7 +49,7 @@ void InputSystem::Terminate()
 {
 	// 入力終了
 	mMouseDevice->Unacquire();
-	mKeyDevice->Unacquire();
+	mKeyboardDevice->Unacquire();
 }
 
 void InputSystem::Update()
@@ -58,11 +58,11 @@ void InputSystem::Update()
 	auto& keyboard = mState.mKeyboard;
 	memcpy(keyboard.mPrev, keyboard.mCurr, sizeof(keyboard.mCurr));
 	ZeroMemory(keyboard.mCurr, sizeof(keyboard.mCurr));
-	HRESULT hr = mKeyDevice->GetDeviceState(sizeof(keyboard.mCurr), keyboard.mCurr);
+	HRESULT hr = mKeyboardDevice->GetDeviceState(sizeof(keyboard.mCurr), keyboard.mCurr);
 	if (FAILED(hr))
 	{
-		mKeyDevice->Acquire();
-		mKeyDevice->GetDeviceState(sizeof(keyboard.mCurr), keyboard.mCurr);
+		mKeyboardDevice->Acquire();
+		mKeyboardDevice->GetDeviceState(sizeof(keyboard.mCurr), keyboard.mCurr);
 	}
 
 	// マウス
