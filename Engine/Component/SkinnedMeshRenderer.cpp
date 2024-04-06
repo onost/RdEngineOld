@@ -12,6 +12,8 @@ SkinnedMeshRenderer::SkinnedMeshRenderer(Actor* owner)
 	, mCurrAnim(nullptr)
 	, mAnimName()
 	, mIsLoop(true)
+	, mNextAnim(nullptr)
+	, mTransitionTime(0.0f)
 {
 	mOwner->GetScene()->GetRenderer()->AddSkinnedMesh(this);
 }
@@ -27,14 +29,40 @@ void SkinnedMeshRenderer::Update(float deltaTime)
 	{
 		// アニメーションを更新
 		mCurrTime += deltaTime;
+		if (mNextAnim && mTransitionTime <= kTransitionMax)
+		{
+			mTransitionTime = MyMath::Min(mTransitionTime + deltaTime, kTransitionMax);
+		}
+		if (mTransitionTime >= kTransitionMax)
+		{
+			mTransitionTime = 0.0f;
+			mCurrAnim = mNextAnim;
+			mNextAnim = nullptr;
+		}
+
 		if (mCurrTime >= mCurrAnim->GetDuration() && mIsLoop)
 		{
 			mCurrTime -= mCurrAnim->GetDuration();
 		}
+
 		// メッシュを更新
 		for (auto& mesh : mModel->GetMeshes())
 		{
-			mesh->Update(mCurrAnim, mCurrTime);
+			if (mNextAnim)
+			{
+				if (mCurrTime >= mNextAnim->GetDuration() && mIsLoop)
+				{
+					mCurrTime -= mNextAnim->GetDuration();
+				}
+				auto currPoses = mCurrAnim->UpdatePoseAtTime(
+					mesh->GetSkeleton(), mNextAnim, mCurrTime, mTransitionTime, mTransitionTime / kTransitionMax);
+				mesh->Update(currPoses);
+			}
+			else
+			{
+				auto currPoses = mCurrAnim->UpdatePoseAtTime(mesh->GetSkeleton(), mCurrTime);
+				mesh->Update(currPoses);
+			}
 		}
 	}
 }
@@ -67,7 +95,25 @@ void SkinnedMeshRenderer::PlayAnimation(Animation* anim)
 	{
 		return;
 	}
-	mCurrAnim = anim;
+
+	if (anim == mCurrAnim)
+	{
+		if (mNextAnim)
+		{
+			mNextAnim = nullptr;
+		}
+	}
+
+	if (!mCurrAnim)
+	{
+		mCurrAnim = anim;
+	}
+	else
+	{
+		mNextAnim = anim;
+		mTransitionTime = 0.0f;
+	}
+	//mCurrAnim = anim;
 	mCurrTime = 0.0f;
 }
 
@@ -94,7 +140,9 @@ void SkinnedMeshRenderer::Load(const nlohmann::json& json)
 		// メッシュを更新
 		for (auto& mesh : mModel->GetMeshes())
 		{
-			mesh->Update(mCurrAnim, mCurrTime);
+			//mesh->Update(mCurrAnim, mCurrTime);
+			auto currPoses = mCurrAnim->UpdatePoseAtTime(mesh->GetSkeleton(), mCurrTime);
+			mesh->Update(currPoses);
 		}
 	}
 }

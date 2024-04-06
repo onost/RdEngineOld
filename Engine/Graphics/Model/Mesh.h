@@ -33,7 +33,8 @@ public:
 
 	void Create();
 	// スケルトンなどの更新
-	void Update(Animation* animation, float time);
+	//void Update(Animation* animation, float time);
+	void Update(std::vector<Matrix4> mat);
 	// 描画
 	void Draw(ID3D12GraphicsCommandList* cmdList,
 		uint32_t matRootParamIdx, uint32_t texRootParamIdx);

@@ -39,12 +39,14 @@ void Mesh::Create()
 	}
 }
 
-void Mesh::Update(Animation* animation, float time)
+//void Mesh::Update(Animation* animation, float time)
+void Mesh::Update(std::vector<Matrix4> mat)
 {
-	if (mSkeleton && animation)
+	if (mSkeleton)// && animation)
 	{
-		mCurrPoses = animation->UpdatePoseAtTime(mSkeleton, time);
-		mSkinCluster->Update(mCurrPoses);
+		//mCurrPoses = animation->UpdatePoseAtTime(mSkeleton, time);
+		//mSkinCluster->Update(mCurrPoses);
+		mSkinCluster->Update(mat);
 	}
 }
 

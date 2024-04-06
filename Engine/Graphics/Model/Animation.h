@@ -43,6 +43,12 @@ Vector3 UpdateKeyframeAtTime(
 	const std::vector<Keyframe<Vector3>>& key, float time);
 Quaternion UpdateKeyframeAtTime(
 	const std::vector<Keyframe<Quaternion>>& key, float time);
+Vector3 UpdateKeyframeAtTime(
+	const std::vector<Keyframe<Vector3>>& curr,
+	const std::vector<Keyframe<Vector3>>& next, float time, float nextTime);
+Quaternion UpdateKeyframeAtTime(
+	const std::vector<Keyframe<Quaternion>>& key,
+	const std::vector<Keyframe<Quaternion>>& next, float time, float nextTime);
 
 // アニメーション
 class Animation
@@ -50,6 +56,7 @@ class Animation
 	friend class ModelLoader;
 public:
 	std::vector<Matrix4> UpdatePoseAtTime(Skeleton* skeleton, float time);
+	std::vector<Matrix4> UpdatePoseAtTime(Skeleton* skeleton, Animation* next, float time, float nextTime, float t);
 
 	const std::string& GetName() const { return mName; }
 	const std::map<std::string, NodeAnimation>& GetNodeAnimations() const { return mNodeAnimations; }
