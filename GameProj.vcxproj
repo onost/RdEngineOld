@@ -198,6 +198,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Graphics\CircleShadow.h" />
     <ClInclude Include="Engine\Graphics\Model\SkinCluster.h" />
     <ClInclude Include="Engine\Helper\Pool.h" />
+    <ClInclude Include="Engine\Input\ButtonState.h" />
     <ClInclude Include="External\ImGui\ImGuizmo.h" />
     <ClInclude Include="Game\Game\Attractor.h" />
     <ClInclude Include="Engine\Actor\Actor.h" />

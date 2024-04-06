@@ -50,11 +50,12 @@ void MeshRenderer::Load(const nlohmann::json& json)
 	RendererComponent::Load(json);
 	// Shader Type
 	uint32_t shaderType = 0;
-	JsonHelper::GetUint(json, "Shader Type", shaderType);
+	JsonHelper::GetUint32(json, "Shader Type", shaderType);
 	mShaderType = ModelCommon::Type(shaderType);
 	// Model
 	std::string modelName;
-	if (JsonHelper::GetString(json, "Model", modelName))
+	JsonHelper::GetString(json, "Model", modelName);
+	if (!modelName.empty())
 	{
 		auto renderer = mOwner->GetScene()->GetRenderer();
 		auto model = renderer->GetModel(modelName);
@@ -62,7 +63,8 @@ void MeshRenderer::Load(const nlohmann::json& json)
 	}
 	// Texture
 	std::string texturePath;
-	if (JsonHelper::GetString(json, "Texture", texturePath))
+	JsonHelper::GetString(json, "Texture", texturePath);
+	if (!texturePath.empty())
 	{
 		auto renderer = mOwner->GetScene()->GetRenderer();
 		auto texture = renderer->GetTexture(texturePath);
@@ -77,7 +79,7 @@ void MeshRenderer::Load(const nlohmann::json& json)
 void MeshRenderer::Save(nlohmann::json& json)
 {
 	RendererComponent::Save(json);
-	JsonHelper::SetUint(json, "Shader Type", uint32_t(mShaderType));
+	JsonHelper::SetUint32(json, "Shader Type", uint32_t(mShaderType));
 	if (mModel)
 	{
 		JsonHelper::SetString(json, "Model", mModel->GetName());

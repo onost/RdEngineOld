@@ -51,12 +51,12 @@ Component::~Component()
 
 void Component::Load(const nlohmann::json& json)
 {
-	JsonHelper::GetUint(json, "Order", mOrder);
+	JsonHelper::GetUint32(json, "Order", mOrder);
 }
 
 void Component::Save(nlohmann::json& json)
 {
-	JsonHelper::SetUint(json, "Order", mOrder);
+	JsonHelper::SetUint32(json, "Order", mOrder);
 }
 
 void Component::UpdateForDev()

@@ -81,7 +81,8 @@ void SkinnedMeshRenderer::Load(const nlohmann::json& json)
 	// Animation
 	JsonHelper::GetFloat(json, "Curr Time", mCurrTime);
 	std::string animName;
-	if (JsonHelper::GetString(json, "Curr Anim", animName))
+	JsonHelper::GetString(json, "Curr Anim", animName);
+	if (!animName.empty())
 	{
 		auto renderer = mOwner->GetScene()->GetRenderer();
 		mCurrAnim = renderer->GetAnimation(animName);

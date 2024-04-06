@@ -39,14 +39,15 @@ void SpriteRenderer::Load(const nlohmann::json& json)
 {
 	RendererComponent::Load(json);
 	// Draw Order
-	JsonHelper::GetUint(json, "Draw Order", mDrawOrder);
+	JsonHelper::GetUint32(json, "Draw Order", mDrawOrder);
 	// Blend
 	uint32_t blend = 0;
-	JsonHelper::GetUint(json, "Blend", blend);
+	JsonHelper::GetUint32(json, "Blend", blend);
 	mBlend = SpriteCommon::Blend(blend);
 	// Texture
 	std::string texturePath;
-	if (JsonHelper::GetString(json, "Texture", texturePath))
+	JsonHelper::GetString(json, "Texture", texturePath);
+	if (!texturePath.empty())
 	{
 		auto renderer = mOwner->GetScene()->GetRenderer();
 		auto texture = renderer->GetTexture(texturePath);
@@ -82,8 +83,8 @@ void SpriteRenderer::Load(const nlohmann::json& json)
 void SpriteRenderer::Save(nlohmann::json& json)
 {
 	RendererComponent::Save(json);
-	JsonHelper::SetUint(json, "Draw Order", mDrawOrder);
-	JsonHelper::SetUint(json, "Blend", uint32_t(mBlend));
+	JsonHelper::SetUint32(json, "Draw Order", mDrawOrder);
+	JsonHelper::SetUint32(json, "Blend", uint32_t(mBlend));
 	auto texture = mSprite->GetTexture();
 	if (texture)
 	{

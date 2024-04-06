@@ -202,6 +202,7 @@
     <ClInclude Include="Game\Game\MeteoriteEmitter.h" />
     <ClInclude Include="Engine\Collision\CollisionAttr.h" />
     <ClInclude Include="Engine\Helper\Pool.h" />
+    <ClInclude Include="Engine\Input\ButtonState.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="External\ImGui\LICENSE.txt" />

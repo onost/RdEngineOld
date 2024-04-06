@@ -62,7 +62,8 @@ void Animator::Load(const nlohmann::json& json)
 	Component::Load(json);
 
 	std::string animName;
-	if (JsonHelper::GetString(json, "Animation", animName))
+	JsonHelper::GetString(json, "Animation", animName);
+	if (!animName.empty())
 	{
 		auto renderer = mOwner->GetScene()->GetRenderer();
 		mAnimation = renderer->GetAnimation(animName);

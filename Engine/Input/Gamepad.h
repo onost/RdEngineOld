@@ -14,6 +14,7 @@ public:
 	bool GetButton(uint16_t button) const;
 	bool GetButtonUp(uint16_t button) const;
 	bool GetButtonDown(uint16_t button) const;
+	//ButtonState GetState(uint8_t keyCode) const;
 
 	// スティック
 	Vector2 GetLeftStick() const;

@@ -56,11 +56,12 @@ void ParticleRenderer::Load(const nlohmann::json& json)
 	RendererComponent::Load(json);
 	// Blend
 	uint32_t blend = 0;
-	JsonHelper::GetUint(json, "Blend", blend);
+	JsonHelper::GetUint32(json, "Blend", blend);
 	mBlend = ParticleCommon::Blend(blend);
 	// Particle
 	std::string texturePath;
-	if (JsonHelper::GetString(json, "Texture", texturePath))
+	JsonHelper::GetString(json, "Texture", texturePath);
+	if (!texturePath.empty())
 	{
 		auto renderer = mOwner->GetScene()->GetRenderer();
 		auto texture = renderer->GetTexture(texturePath);
@@ -75,12 +76,12 @@ void ParticleRenderer::Load(const nlohmann::json& json)
 	// Emitter
 	Emitter emitter = mParticle->GetEmitter();
 	JsonHelper::GetFloat(json, "Life", emitter.mLife);
-	JsonHelper::GetUint(json, "Amount", emitter.mAmount);
+	JsonHelper::GetUint32(json, "Amount", emitter.mAmount);
 	JsonHelper::GetFloat(json, "Frequency", emitter.mFrequency);
 	JsonHelper::GetBool(json, "Is Loop", emitter.mIsLoop);
 	JsonHelper::GetFloat(json, "Delay", emitter.mDelay);
 	uint32_t shape = 0;
-	JsonHelper::GetUint(json, "Shape", shape);
+	JsonHelper::GetUint32(json, "Shape", shape);
 	emitter.mShape = Emitter::Shape(shape);
 	JsonHelper::GetVector3(json, "Box Min", emitter.mBoxMin);
 	JsonHelper::GetVector3(json, "Box Max", emitter.mBoxMax);
@@ -111,7 +112,7 @@ void ParticleRenderer::Save(nlohmann::json& json)
 {
 	RendererComponent::Save(json);
 	// Blend
-	JsonHelper::SetUint(json, "Blend", uint32_t(mBlend));
+	JsonHelper::SetUint32(json, "Blend", uint32_t(mBlend));
 	// Particle
 	auto mat = mPlane->GetMaterials().find("Effect")->second;
 	auto tex = mat->GetTexture();
@@ -123,11 +124,11 @@ void ParticleRenderer::Save(nlohmann::json& json)
 	// Emitter
 	Emitter emitter = mParticle->GetEmitter();
 	JsonHelper::SetFloat(json, "Life", emitter.mLife);
-	JsonHelper::SetUint(json, "Amount", emitter.mAmount);
+	JsonHelper::SetUint32(json, "Amount", emitter.mAmount);
 	JsonHelper::SetFloat(json, "Frequency", emitter.mFrequency);
 	JsonHelper::SetBool(json, "Is Loop", emitter.mIsLoop);
 	JsonHelper::SetFloat(json, "Delay", emitter.mDelay);
-	JsonHelper::SetUint(json, "Shape", uint32_t(emitter.mShape));
+	JsonHelper::SetUint32(json, "Shape", uint32_t(emitter.mShape));
 	JsonHelper::SetVector3(json, "Box Min", emitter.mBoxMin);
 	JsonHelper::SetVector3(json, "Box Max", emitter.mBoxMax);
 	JsonHelper::SetFloat(json, "Radius", emitter.mSphereRadius);

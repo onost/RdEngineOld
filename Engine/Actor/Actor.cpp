@@ -243,17 +243,17 @@ void Actor::RemoveDeadActor()
 void Actor::Load(const nlohmann::json& json)
 {
 	JsonHelper::GetString(json, "Name", mName);
-	JsonHelper::GetUint(json, "Order", mOrder);
+	JsonHelper::GetUint32(json, "Order", mOrder);
 	uint32_t state = 0;
-	JsonHelper::GetUint(json, "State", state);
+	JsonHelper::GetUint32(json, "State", state);
 	mState = State(state);
 }
 
 void Actor::Save(nlohmann::json& json)
 {
 	JsonHelper::SetString(json, "Name", mName);
-	JsonHelper::SetUint(json, "Order", mOrder);
-	JsonHelper::SetUint(json, "State", uint32_t(mState));
+	JsonHelper::SetUint32(json, "Order", mOrder);
+	JsonHelper::SetUint32(json, "State", uint32_t(mState));
 }
 
 // ==================================================

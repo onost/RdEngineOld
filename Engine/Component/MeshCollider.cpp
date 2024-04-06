@@ -97,7 +97,8 @@ void MeshCollider::Load(const nlohmann::json& json)
 	Collider::Load(json);
 	// Model
 	std::string modelName;
-	if (JsonHelper::GetString(json, "Model", modelName))
+	JsonHelper::GetString(json, "Model", modelName);
+	if (!modelName.empty())
 	{
 		auto renderer = mOwner->GetScene()->GetRenderer();
 		auto model = renderer->GetModel(modelName);

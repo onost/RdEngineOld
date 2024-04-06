@@ -29,13 +29,13 @@ void Collider::Load(const nlohmann::json& json)
 {
 	Component::Load(json);
 	uint32_t attr;
-	if (JsonHelper::GetUint(json, "Attribute", attr))
+	JsonHelper::GetUint32(json, "Attribute", attr);
 	{
 		//mAttribute = Attribute(attr);
 		mAttribute = CollisionAttr(attr);
 	}
 	uint32_t responseAttr;
-	if (JsonHelper::GetUint(json, "Response Attr", responseAttr))
+	JsonHelper::GetUint32(json, "Response Attr", responseAttr);
 	{
 		//mResponse = Attribute(responseAttr);
 		mResponse = CollisionAttr(responseAttr);
@@ -46,8 +46,8 @@ void Collider::Load(const nlohmann::json& json)
 void Collider::Save(nlohmann::json& json)
 {
 	Component::Load(json);
-	JsonHelper::SetUint(json, "Attribute", uint32_t(mAttribute));
-	JsonHelper::SetUint(json, "Response Attr", uint32_t(mResponse));
+	JsonHelper::SetUint32(json, "Attribute", uint32_t(mAttribute));
+	JsonHelper::SetUint32(json, "Response Attr", uint32_t(mResponse));
 	JsonHelper::SetBool(json, "Is Trigger", mIsTrigger);
 }
 

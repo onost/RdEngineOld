@@ -2,282 +2,325 @@
 
 namespace JsonHelper
 {
-	bool GetBool(const nlohmann::json& json, const char* name, bool& out)
+	void GetBool(const nlohmann::json& json, const char* name, bool& out)
 	{
-		auto it = json.find(name);
-		if (it != json.end())
+		if (json.find(name) != json.end())
 		{
-			auto v = json.at(name);
-			if (v.is_boolean())
+			auto item = json.at(name);
+			if (item.is_boolean())
 			{
-				out = v.get<bool>();
-				return true;
+				out = item.get<bool>();
+				return;
 			}
 		}
-		return false;
+		out = false;
 	}
 
-	bool GetInt(const nlohmann::json& json, const char* name, int32_t& out)
+	/*
+	void GetInt16(const nlohmann::json& json, const char* name, int16_t& out)
 	{
-		auto it = json.find(name);
-		if (it != json.end())
+		if (json.find(name) != json.end())
 		{
-			auto v = json.at(name);
-			if (v.is_number_integer())
+			auto item = json.at(name);
+			if (item.is_number_integer())
 			{
-				out = v.get<int32_t>();
-				return true;
+				out = item.get<int16_t>();
+				return;
 			}
 		}
-		return false;
+		out = 0;
 	}
+	*/
 
-	bool GetUint(const nlohmann::json& json, const char* name, uint32_t& out)
+	void GetInt32(const nlohmann::json& json, const char* name, int32_t& out)
 	{
-		auto it = json.find(name);
-		if (it != json.end())
+		if (json.find(name) != json.end())
 		{
-			auto v = json.at(name);
-			if (v.is_number_unsigned())
+			auto item = json.at(name);
+			if (item.is_number_integer())
 			{
-				out = v.get<uint32_t>();
-				return true;
+				out = item.get<int32_t>();
+				return;
 			}
 		}
-		return false;
+		out = 0;
 	}
 
-	bool GetFloat(const nlohmann::json& json, const char* name, float& out)
+	/*
+	void GetUint16(const nlohmann::json& json, const char* name, uint16_t& out)
 	{
-		auto it = json.find(name);
-		if (it != json.end())
+		if (json.find(name) != json.end())
 		{
-			auto v = json.at(name);
-			if (v.is_number_float())
+			auto item = json.at(name);
+			if (item.is_number_unsigned())
 			{
-				out = v.get<float>();
-				return true;
+				out = item.get<uint16_t>();
+				return;
 			}
 		}
-		return false;
+		out = 0;
 	}
+	*/
 
-	bool GetString(const nlohmann::json& json, const char* name, std::string& out)
+	void GetUint32(const nlohmann::json& json, const char* name, uint32_t& out)
 	{
-		auto it = json.find(name);
-		if (it != json.end())
+		if (json.find(name) != json.end())
 		{
-			auto v = json.at(name);
-			if (v.is_string())
+			auto item = json.at(name);
+			if (item.is_number_unsigned())
 			{
-				out = v.get<std::string>();
-				return true;
+				out = item.get<uint32_t>();
+				return;
 			}
 		}
-		return false;
+		out = 0;
 	}
 
-	bool GetColor(const nlohmann::json& json, const char* name, Color& out)
+	void GetFloat(const nlohmann::json& json, const char* name, float& out)
 	{
-		auto it = json.find(name);
-		if (it != json.end())
+		if (json.find(name) != json.end())
 		{
-			auto v = json.at(name);
-			if (v.is_array() && v.size() == 4)
+			auto item = json.at(name);
+			if (item.is_number_float())
 			{
-				for (int i = 0; i < 4; ++i)
+				out = item.get<float>();
+				return;
+			}
+		}
+		out = 0.0f;
+	}
+
+	void GetString(const nlohmann::json& json, const char* name, std::string& out)
+	{
+		if (json.find(name) != json.end())
+		{
+			auto item = json.at(name);
+			if (item.is_string())
+			{
+				out = item.get<std::string>();
+				return;
+			}
+		}
+		out = std::string();
+	}
+
+	void GetColor(const nlohmann::json& json, const char* name, Color& out)
+	{
+		if (json.find(name) != json.end())
+		{
+			auto items = json.at(name);
+			if (items.is_array() && items.size() == 4)
+			{
+				for (auto& item : items)
 				{
-					if (!v[i].is_number_float())
+					if (!item.is_number_float())
 					{
-						return false;
+						out = Color();
+						return;
 					}
 				}
-				out.r = v[0].get<float>();
-				out.g = v[1].get<float>();
-				out.b = v[2].get<float>();
-				out.a = v[3].get<float>();
-				return true;
+				out = Color(
+					items[0].get<float>(),
+					items[1].get<float>(),
+					items[2].get<float>(),
+					items[3].get<float>());
+				return;
 			}
 		}
-		return false;
+		out = Color();
 	}
 
-	bool GetQuaternion(const nlohmann::json& json, const char* name, Quaternion& out)
+	void GetQuaternion(const nlohmann::json& json, const char* name, Quaternion& out)
 	{
-		auto it = json.find(name);
-		if (it != json.end())
+		if (json.find(name) != json.end())
 		{
-			auto v = json.at(name);
-			if (v.is_array() && v.size() == 4)
+			auto items = json.at(name);
+			if (items.is_array() && items.size() == 4)
 			{
-				for (int i = 0; i < 4; ++i)
+				for (auto& item : items)
 				{
-					if (!v[i].is_number_float())
+					if (!item.is_number_float())
 					{
-						return false;
+						out = Quaternion();
+						return;
 					}
 				}
-				out.w = v[0].get<float>();
-				out.x = v[1].get<float>();
-				out.y = v[2].get<float>();
-				out.z = v[3].get<float>();
-				return true;
+				out = Quaternion(
+					items[0].get<float>(),
+					items[1].get<float>(),
+					items[2].get<float>(),
+					items[3].get<float>());
+				return;
 			}
 		}
-		return false;
+		out = Quaternion();
 	}
 
-	bool GetVector2(const nlohmann::json& json, const char* name, Vector2& out)
+	void GetVector2(const nlohmann::json& json, const char* name, Vector2& out)
 	{
-		auto it = json.find(name);
-		if (it != json.end())
+		if (json.find(name) != json.end())
 		{
-			auto v = json.at(name);
-			if (v.is_array() && v.size() == 2)
+			auto items = json.at(name);
+			if (items.is_array() && items.size() == 2)
 			{
-				for (int i = 0; i < 2; ++i)
+				for (auto& item : items)
 				{
-					if (!v[i].is_number_float())
+					if (!item.is_number_float())
 					{
-						return false;
+						out = Vector2();
+						return;
 					}
 				}
-				out.x = v[0].get<float>();
-				out.y = v[1].get<float>();
-				return true;
+				out = Vector2(
+					items[0].get<float>(),
+					items[1].get<float>());
+				return;
 			}
 		}
-		return false;
+		out = Vector2();
 	}
 
-	bool GetVector3(const nlohmann::json& json, const char* name, Vector3& out)
+	void GetVector3(const nlohmann::json& json, const char* name, Vector3& out)
 	{
-		auto it = json.find(name);
-		if (it != json.end())
+		if (json.find(name) != json.end())
 		{
-			auto v = json.at(name);
-			if (v.is_array() && v.size() == 3)
+			auto items = json.at(name);
+			if (items.is_array() && items.size() == 3)
 			{
-				for (int i = 0; i < 3; ++i)
+				for (auto& item : items)
 				{
-					if (!v[i].is_number_float())
+					if (!item.is_number_float())
 					{
-						return false;
+						out = Vector3();
+						return;
 					}
 				}
-				out.x = v[0].get<float>();
-				out.y = v[1].get<float>();
-				out.z = v[2].get<float>();
-				return true;
+				out = Vector3(
+					items[0].get<float>(),
+					items[1].get<float>(),
+					items[2].get<float>());
+				return;
 			}
 		}
-		return false;
+		out = Vector3();
 	}
 
-	bool GetVector4(const nlohmann::json& json, const char* name, Vector4& out)
+	void GetVector4(const nlohmann::json& json, const char* name, Vector4& out)
 	{
-		auto it = json.find(name);
-		if (it != json.end())
+		if (json.find(name) != json.end())
 		{
-			auto v = json.at(name);
-			if (v.is_array() && v.size() == 4)
+			auto items = json.at(name);
+			if (items.is_array() && items.size() == 4)
 			{
-				for (int i = 0; i < 4; ++i)
+				for (auto& item : items)
 				{
-					if (!v[i].is_number_float())
+					if (!item.is_number_float())
 					{
-						return false;
+						out = Vector4();
+						return;
 					}
 				}
-				out.x = v[0].get<float>();
-				out.y = v[1].get<float>();
-				out.z = v[2].get<float>();
-				out.w = v[3].get<float>();
-				return true;
+				out = Vector4(
+					items[0].get<float>(),
+					items[1].get<float>(),
+					items[2].get<float>(),
+					items[3].get<float>());
+				return;
 			}
 		}
-		return false;
-	}
-
-	int GetInt(const nlohmann::json& data, const char* name)
-	{
-		return data[name].get<int>();
+		out = Vector4();
 	}
 
 	void SetBool(nlohmann::json& json, const char* name, bool in)
 	{
-		nlohmann::json v(in);
-		json[name] = v;
+		nlohmann::json item(in);
+		json[name] = item;
 	}
 
-	void SetInt(nlohmann::json& json, const char* name, int32_t in)
+	/*
+	void SetInt16(nlohmann::json& json, const char* name, int16_t in)
 	{
-		nlohmann::json v(in);
-		json[name] = v;
+		nlohmann::json item(in);
+		json[name] = item;
+	}
+	*/
+
+	void SetInt32(nlohmann::json& json, const char* name, int32_t in)
+	{
+		nlohmann::json item(in);
+		json[name] = item;
 	}
 
-	void SetUint(nlohmann::json& json, const char* name, uint32_t in)
+	/*
+	void SetUint16(nlohmann::json& json, const char* name, uint16_t in)
 	{
-		nlohmann::json v(in);
-		json[name] = v;
+		nlohmann::json item(in);
+		json[name] = item;
+	}
+	*/
+
+	void SetUint32(nlohmann::json& json, const char* name, uint32_t in)
+	{
+		nlohmann::json item(in);
+		json[name] = item;
 	}
 
 	void SetFloat(nlohmann::json& json, const char* name, float in)
 	{
-		nlohmann::json v(in);
-		json[name] = v;
+		nlohmann::json item(in);
+		json[name] = item;
 	}
 
-	void SetString(nlohmann::json& json, const char* name, const std::string& in)
+	void SetString(nlohmann::json& json, const char* name, std::string in)
 	{
-		nlohmann::json v(in);
-		json[name] = v;
+		nlohmann::json item(in);
+		json[name] = item;
 	}
 
-	void SetColor(nlohmann::json& json, const char* name, const Color& in)
+	void SetColor(nlohmann::json& json, const char* name, Color in)
 	{
-		nlohmann::json v;
-		v.push_back(in.r);
-		v.push_back(in.g);
-		v.push_back(in.b);
-		v.push_back(in.a);
-		json[name] = v;
+		nlohmann::json items;
+		items.push_back(in.r);
+		items.push_back(in.g);
+		items.push_back(in.b);
+		items.push_back(in.a);
+		json[name] = items;
 	}
 
-	void SetQuaternion(nlohmann::json& json, const char* name, const Quaternion& in)
+	void SetQuaternion(nlohmann::json& json, const char* name, Quaternion in)
 	{
-		nlohmann::json v;
-		v.push_back(in.w);
-		v.push_back(in.x);
-		v.push_back(in.y);
-		v.push_back(in.z);
-		json[name] = v;
+		nlohmann::json items;
+		items.push_back(in.w);
+		items.push_back(in.x);
+		items.push_back(in.y);
+		items.push_back(in.z);
+		json[name] = items;
 	}
 
-	void SetVector2(nlohmann::json& json, const char* name, const Vector2& in)
+	void SetVector2(nlohmann::json& json, const char* name, Vector2 in)
 	{
-		nlohmann::json v;
-		v.push_back(in.x);
-		v.push_back(in.y);
-		json[name] = v;
+		nlohmann::json items;
+		items.push_back(in.x);
+		items.push_back(in.y);
+		json[name] = items;
 	}
 
-	void SetVector3(nlohmann::json& json, const char* name, const Vector3& in)
+	void SetVector3(nlohmann::json& json, const char* name, Vector3 in)
 	{
-		nlohmann::json v;
-		v.push_back(in.x);
-		v.push_back(in.y);
-		v.push_back(in.z);
-		json[name] = v;
+		nlohmann::json items;
+		items.push_back(in.x);
+		items.push_back(in.y);
+		items.push_back(in.z);
+		json[name] = items;
 	}
 
-	void SetVector4(nlohmann::json& json, const char* name, const Vector4& in)
+	void SetVector4(nlohmann::json& json, const char* name, Vector4 in)
 	{
-		nlohmann::json v;
-		v.push_back(in.x);
-		v.push_back(in.y);
-		v.push_back(in.z);
-		v.push_back(in.w);
-		json[name] = v;
+		nlohmann::json items;
+		items.push_back(in.x);
+		items.push_back(in.y);
+		items.push_back(in.z);
+		items.push_back(in.w);
+		json[name] = items;
 	}
 }

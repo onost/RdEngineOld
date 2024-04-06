@@ -121,7 +121,7 @@ Actor* JsonLoader::LoadPrefab(Scene* scene, const std::string& filePath)
 	// -------------------- ここから --------------------
 
 	uint32_t type = 0;
-	JsonHelper::GetUint(data, "Type", type);
+	JsonHelper::GetUint32(data, "Type", type);
 	// アクターを作成
 	Actor* actor = Actor::kCreateFuncs[type](scene);
 	actor->Load(data);
@@ -154,7 +154,7 @@ bool JsonLoader::SavePrefab(Actor* actor, const std::string& filePath)
 	// -------------------- ここから --------------------
 
 	uint32_t type = static_cast<uint32_t>(actor->GetType());
-	JsonHelper::SetUint(data, "Type", type);
+	JsonHelper::SetUint32(data, "Type", type);
 	// セーブ
 	actor->Save(data);
 	// 子アクター
@@ -189,7 +189,7 @@ void JsonLoader::LoadActors(const nlohmann::json& json, Scene* scene)
 	{
 		const nlohmann::json& data = json[i];
 		uint32_t type = 0;
-		JsonHelper::GetUint(data, "Type", type);
+		JsonHelper::GetUint32(data, "Type", type);
 		if (type >= Actor::kCreateFuncs.size())
 		{
 			continue;
@@ -219,7 +219,7 @@ void JsonLoader::LoadChildren(const nlohmann::json& json, Actor* parent)
 	{
 		const nlohmann::json& data = json[i];
 		uint32_t type = 0;
-		JsonHelper::GetUint(data, "Type", type);
+		JsonHelper::GetUint32(data, "Type", type);
 		if (type >= Actor::kCreateFuncs.size())
 		{
 			continue;
@@ -258,7 +258,7 @@ void JsonLoader::LoadComponents(const nlohmann::json& json, Actor* owner)
 	{
 		const nlohmann::json& data = json[i];
 		uint32_t type = 0;
-		JsonHelper::GetUint(data, "Type", type);
+		JsonHelper::GetUint32(data, "Type", type);
 		if (type >= Component::kCreateFuncs.size())
 		{
 			continue;
@@ -293,7 +293,7 @@ void JsonLoader::SaveActors(nlohmann::json& json, Scene* scene)
 	{
 		nlohmann::json data;
 		uint32_t type = static_cast<uint32_t>(actor->GetType());
-		JsonHelper::SetUint(data, "Type", type);
+		JsonHelper::SetUint32(data, "Type", type);
 		// セーブ
 		actor->Save(data);
 		// 子アクター
@@ -315,7 +315,7 @@ void JsonLoader::SaveChildren(nlohmann::json& json, Actor* parent)
 	{
 		nlohmann::json data;
 		uint32_t type = static_cast<uint32_t>(actor->GetType());
-		JsonHelper::SetUint(data, "Type", type);
+		JsonHelper::SetUint32(data, "Type", type);
 		// セーブ
 		actor->Save(data);
 		// 子アクター
@@ -337,7 +337,7 @@ void JsonLoader::SaveComponents(nlohmann::json& json, Actor* owner)
 	{
 		nlohmann::json data;
 		uint32_t type = static_cast<uint32_t>(comp->GetType());
-		JsonHelper::SetUint(data, "Type", type);
+		JsonHelper::SetUint32(data, "Type", type);
 		// セーブ
 		comp->Save(data);
 		json.push_back(data);
