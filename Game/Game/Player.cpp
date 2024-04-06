@@ -33,7 +33,7 @@ Player::Player(Scene* scene)
 {
 	// コライダー
 	auto sc = new SphereCollider(this);
-	sc->SetAttribute(CollisionAttr::Allies);// 味方
+	sc->SetAttribute(CollisionAttribute::kAllies);// 味方
 	sc->SetSphere({ {0.0f,0.0f,0.0f},mRadius });
 
 	mGravityBody = new GravityBody(this);

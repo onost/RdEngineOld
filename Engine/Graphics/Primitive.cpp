@@ -284,15 +284,15 @@ void Primitive::DrawBox3(const AABB& aabb, const Color& col)
 void Primitive::DrawBox3(const OBB& obb, const Color& col)
 {
 	Matrix4 r;
-	r.m[0][0] = obb.mAxis[0].x;
-	r.m[0][1] = obb.mAxis[0].y;
-	r.m[0][2] = obb.mAxis[0].z;
-	r.m[1][0] = obb.mAxis[1].x;
-	r.m[1][1] = obb.mAxis[1].y;
-	r.m[1][2] = obb.mAxis[1].z;
-	r.m[2][0] = obb.mAxis[2].x;
-	r.m[2][1] = obb.mAxis[2].y;
-	r.m[2][2] = obb.mAxis[2].z;
+	r.m[0][0] = obb.mAxes[0].x;
+	r.m[0][1] = obb.mAxes[0].y;
+	r.m[0][2] = obb.mAxes[0].z;
+	r.m[1][0] = obb.mAxes[1].x;
+	r.m[1][1] = obb.mAxes[1].y;
+	r.m[1][2] = obb.mAxes[1].z;
+	r.m[2][0] = obb.mAxes[2].x;
+	r.m[2][1] = obb.mAxes[2].y;
+	r.m[2][2] = obb.mAxes[2].z;
 	Matrix4 m =
 		Matrix4::CreateScale(obb.mSize * 2.0f) *
 		r *

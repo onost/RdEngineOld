@@ -2,7 +2,7 @@
 #include "Collision/Collision.h"
 #include "Color.h"
 #include "Component.h"
-#include "Collision/CollisionAttr.h"
+#include "CollisionAttribute.h"
 
 class SphereCollider;
 class BoxCollider;
@@ -58,18 +58,18 @@ public:
 	void RemoveResponse(Attribute attr) { mResponse = Attribute(uint32_t(mResponse) & uint32_t(~attr)); }*/
 	//void SetColor(const Color& color) { mColor = color; }
 
-	void SetAttribute(CollisionAttr attr) { mAttribute = attr; }
-	void AddAttribute(CollisionAttr attr) { mAttribute = CollisionAttr(uint32_t(mAttribute) | uint32_t(attr)); }
-	void RemoveAttribute(CollisionAttr attr) { mAttribute = CollisionAttr(uint32_t(mAttribute) & ~uint32_t(attr)); }
-	void SetResponse(CollisionAttr attr) { mResponse = attr; }
-	void AddResponse(CollisionAttr attr) { mResponse = CollisionAttr(uint32_t(mResponse) | uint32_t(attr)); }
-	void RemoveResponse(CollisionAttr attr) { mResponse = CollisionAttr(uint32_t(mResponse) & ~uint32_t(attr)); }
+	void SetAttribute(CollisionAttribute attr) { mAttribute = attr; }
+	void AddAttribute(CollisionAttribute attr) { mAttribute = CollisionAttribute(uint32_t(mAttribute) | uint32_t(attr)); }
+	void RemoveAttribute(CollisionAttribute attr) { mAttribute = CollisionAttribute(uint32_t(mAttribute) & ~uint32_t(attr)); }
+	void SetResponse(CollisionAttribute attr) { mResponse = attr; }
+	void AddResponse(CollisionAttribute attr) { mResponse = CollisionAttribute(uint32_t(mResponse) | uint32_t(attr)); }
+	void RemoveResponse(CollisionAttribute attr) { mResponse = CollisionAttribute(uint32_t(mResponse) & ~uint32_t(attr)); }
 
 protected:
 	//Attribute mAttribute;
 	//Attribute mResponse;
-	CollisionAttr mAttribute;
-	CollisionAttr mResponse;
+	CollisionAttribute mAttribute;
+	CollisionAttribute mResponse;
 	bool mIsTrigger;
 protected:
 	//Color mColor;// 開発用

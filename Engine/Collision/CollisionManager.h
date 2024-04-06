@@ -1,6 +1,6 @@
 #pragma once
 #include "Collision.h"
-#include "CollisionAttr.h"
+#include "CollisionAttribute.h"
 #include <vector>
 
 class Collider;
@@ -19,7 +19,7 @@ public:
 	void TestAllCollider();
 	// レイキャスト
 	bool Raycast(
-		const Ray& ray, RaycastInfo& info, CollisionAttr attr = CollisionAttr::All);
+		const Ray& ray, RaycastInfo& info, CollisionAttribute attr = CollisionAttribute::kAll);
 
 	// コライダーを追加、削除
 	void AddCollider(Collider* collider);

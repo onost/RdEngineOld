@@ -15,7 +15,8 @@ void CollisionManager::TestAllCollider()
 		Collider* a = pair.mCollider1;
 		Collider* b = pair.mCollider2;
 		// Aの属性とBの反応属性が一致かつBの属性とAの反応属性が一致
-		if ((a->mAttribute & b->mResponse) && (b->mAttribute & a->mResponse))
+		if ((a->mAttribute & b->mResponse) != CollisionAttribute::kNone &&
+			(b->mAttribute & a->mResponse) != CollisionAttribute::kNone)
 		{
 			CollisionInfo info = {};
 			if (a->Dispatch(b, info))
@@ -43,7 +44,8 @@ void CollisionManager::TestAllCollider()
 			Collider* a = mColliders[i];
 			Collider* b = mColliders[j];
 			// Aの属性とBの反応属性が一致かつBの属性とAの反応属性が一致
-			if ((a->mAttribute & b->mResponse) && (b->mAttribute & a->mResponse))
+			if ((a->mAttribute & b->mResponse) != CollisionAttribute::kNone &&
+				(b->mAttribute & a->mResponse) != CollisionAttribute::kNone)
 			{
 				CollisionInfo info = {};
 				if (a->Dispatch(b, info))
@@ -123,13 +125,13 @@ void CollisionManager::TestAllCollider()
 }
 
 // レイキャスト
-bool CollisionManager::Raycast(const Ray& ray, RaycastInfo& info, CollisionAttr attr)
+bool CollisionManager::Raycast(const Ray& ray, RaycastInfo& info, CollisionAttribute attr)
 {
 	bool isHit = false;
 	float minT = MyMath::kInfinity;
 	for (auto& c : mColliders)
 	{
-		if (!(c->mAttribute & attr) ||
+		if ((c->mAttribute & attr) == CollisionAttribute::kNone ||
 			c->mIsTrigger)//
 		{
 			continue;

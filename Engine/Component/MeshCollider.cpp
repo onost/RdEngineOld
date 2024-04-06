@@ -13,7 +13,7 @@ MeshCollider::MeshCollider(Actor* owner)
 	, mModel(nullptr)
 	, mModelName()
 {
-	SetAttribute(CollisionAttr::Terrain);
+	SetAttribute(CollisionAttribute::kTerrain);
 }
 
 MeshCollider::~MeshCollider()
@@ -37,7 +37,8 @@ bool MeshCollider::Raycast(const Ray& ray, float& outT, Vector3& normal)
 	for (; it != mTriangles.end(); ++it)
 	{
 		float t;
-		if (Intersect(localRay, *it, t))
+		Vector3 n;
+		if (Intersect(localRay, *it, t, n))
 		{
 			if (t < minT)
 			{
@@ -49,7 +50,7 @@ bool MeshCollider::Raycast(const Ray& ray, float& outT, Vector3& normal)
 	}
 	if (isHit)
 	{
-		normal = hitTri->GetNormal();
+		normal = hitTri->mNormal;
 		normal *= Transpose(mInverseWorld);
 		normal.Normalize();
 		outT = minT;

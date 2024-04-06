@@ -1,388 +1,282 @@
 #include "Collision.h"
 
-// 点とAABB
-Vector3 Closest(const Vector3& a, const AABB& b)
+// ==================================================
+// Closest
+// ==================================================
+
+Vector3 Closest(const Vector3& _a, const AABB& _b)
 {
 	return Vector3(
-		MyMath::Clamp(a.x, b.mMin.x, b.mMax.x),
-		MyMath::Clamp(a.y, b.mMin.y, b.mMax.y),
-		MyMath::Clamp(a.z, b.mMin.z, b.mMax.z));
+		std::clamp(_a.x, _b.mMin.x, _b.mMax.x),
+		std::clamp(_a.y, _b.mMin.y, _b.mMax.y),
+		std::clamp(_a.z, _b.mMin.z, _b.mMax.z));
 }
 
-// 線と線
-float Distance(const Line& a, const Line& b, float* outT1, float* outT2)
+// ==================================================
+// Distance
+// ==================================================
+
+float Distance(const Line& _a, const Line& _b, float& _t1, float& _t2)
 {
-	Vector3 v1 = a.mEnd - a.mStart;
-	Vector3 v2 = b.mEnd - b.mStart;
+	Vector3 v1 = _a.mEnd - _a.mStart;
+	Vector3 v2 = _b.mEnd - _b.mStart;
 	float v2v2 = Dot(v2, v2);
 	float v1v2 = Dot(v1, v2);
 	float d = Dot(v1, v1) * v2v2 - v1v2 * v1v2;
-	float t1 = 0.0f;
-	float t2 = 0.0f;
-	if (fabs(d) <= MyMath::kEpsilon)
+	if (std::abs(d) <= MyMath::kEpsilon)// 平行か？
 	{
-		float dist = Distance(a.mStart, b, &t2);
-		if (outT1)
-		{
-			*outT1 = 0.0f;
-		}
-		if (outT2)
-		{
-			*outT2 = t2;
-		}
-		return dist;
+		_t1 = 0.0f;
+		return Distance(_a.mStart, _b, _t2);
 	}
-	Vector3 stos = a.mStart - b.mStart;
-	t1 = v1v2 * Dot(v2, stos) - v2v2 * Dot(v1, stos) / d;
-	Vector3 p1 = a.GetPoint(t1);
-	t2 = Dot(v2, p1 - b.mStart) / v2v2;
-	Vector3 p2 = b.GetPoint(t2);
-	if (outT1)
-	{
-		*outT1 = t1;
-	}
-	if (outT2)
-	{
-		*outT2 = t2;
-	}
-	return Length(p2 - p1);
+	Vector3 diff = _a.mStart - _b.mStart;
+	_t1 = v1v2 * Dot(v2, diff) - v2v2 * Dot(v1, diff) / d;
+	Vector3 point1 = _a.GetPoint(_t1);
+	_t2 = Dot(v2, point1 - _b.mStart) / v2v2;
+	Vector3 point2 = _b.GetPoint(_t2);
+	return Length(point2 - point1);
 }
 
-// 線分と線分
-float Distance(const Segment& a, const Segment& b, float* outT1, float* outT2)
+float Distance(const Segment& _a, const Segment& _b, float& _t1, float& _t2)
 {
-	Vector3 v1 = a.mEnd - a.mStart;
-	Vector3 v2 = b.mEnd - b.mStart;
-	Line l1 = { a.mStart,a.mEnd };
-	Line l2 = { b.mStart,b.mEnd };
-	float t1 = 0.0f;
-	float t2 = 0.0f;
-	if (fabs(1.0f - Dot(v1, v2)) < MyMath::kEpsilon)
+	Vector3 v1 = _a.mEnd - _a.mStart;
+	Vector3 v2 = _b.mEnd - _b.mStart;
+	Line line1(_a.mStart, _a.mEnd);
+	Line line2(_b.mStart, _b.mEnd);
+	if (std::abs(1.0f - Dot(v1, v2)) < MyMath::kEpsilon)// 平行か？
 	{
-		float dist = Distance(a.mStart, l2, &t2);
-		if (t2 >= 0.0f && t2 <= 1.0f)
+		float dist = Distance(_a.mStart, line2, _t2);
+		if (_t2 >= 0.0f && _t2 <= 1.0f)
 		{
-			if (outT1)
-			{
-				*outT1 = 0.0f;
-			}
-			if (outT2)
-			{
-				*outT2 = t2;
-			}
+			_t1 = 0.0f;
 			return dist;
 		}
 	}
 	else
 	{
-		float dist = Distance(l1, l2, &t1, &t2);
-		if (t1 >= 0.0f && t1 <= 1.0f &&
-			t2 >= 0.0f && t2 <= 1.0f)
+		float dist = Distance(line1, line2, _t1, _t2);
+		if (_t1 >= 0.0f && _t1 <= 1.0f &&
+			_t2 >= 0.0f && _t2 <= 1.0f)
 		{
-			if (outT1)
-			{
-				*outT1 = 0.0f;
-			}
-			if (outT2)
-			{
-				*outT2 = t2;
-			}
 			return dist;
 		}
 	}
-	t1 = MyMath::Clamp(t1, Segment::kMinT, Segment::kMaxT);
-	Vector3 p1 = a.GetPoint(t1);
-	float dist = Distance(p1, l2, &t2);
-	if (t2 >= 0.0f && t2 <= 1.0f)
+	_t1 = std::clamp(_t1, 0.0f, 1.0f);
+	Vector3 point1 = _a.GetPoint(_t1);
+	float dist = Distance(point1, line2, _t2);
+	if (_t2 >= 0.0f && _t2 <= 1.0f)
 	{
-		if (outT1)
-		{
-			*outT1 = t1;
-		}
-		if (outT2)
-		{
-			*outT2 = t2;
-		}
 		return dist;
 	}
-	t2 = MyMath::Clamp(t2, Segment::kMinT, Segment::kMaxT);
-	Vector3 p2 = b.GetPoint(t2);
-	dist = Distance(p2, l1, &t1);
-	if (t1 >= 0.0f && t1 <= 1.0f)
+	_t2 = std::clamp(_t2, 0.0f, 1.0f);
+	Vector3 point2 = _b.GetPoint(_t2);
+	dist = Distance(point2, line1, _t1);
+	if (_t1 >= 0.0f && _t1 <= 1.0f)
 	{
-		if (outT1)
-		{
-			*outT1 = t1;
-		}
-		if (outT2)
-		{
-			*outT2 = t2;
-		}
 		return dist;
 	}
-	t1 = MyMath::Clamp(t1, Segment::kMinT, Segment::kMaxT);
-	p1 = a.GetPoint(t1);
-	if (outT1)
-	{
-		*outT1 = t1;
-	}
-	if (outT2)
-	{
-		*outT2 = t2;
-	}
-	return Length(p2 - p1);
+	_t1 = std::clamp(_t1, 0.0f, 1.0f);
+	point1 = _a.GetPoint(_t1);
+	return Length(point2 - point1);
 }
 
-// 点と平面
-float Distance(const Vector3& a, const Plane& b)
+float Distance(const Vector3& _a, const Plane& _b)
 {
-	return Dot(b.mNormal, a) - b.mDistance;
+	return Dot(_a, _b.mNormal) - _b.mDistance;
 }
 
-// 線分と平面
-float Distance(const Segment& a, const Plane& b)
+float Distance(const Segment& _a, const Plane& _b)
 {
-	float d1 = Dot(a.mStart, b.mNormal) - b.mDistance;
-	float d2 = Dot(a.mEnd, b.mNormal) - b.mDistance;
-	if (d1 * d2 <= 0.0f)
+	float dist1 = Dot(_a.mStart, _b.mNormal) - _b.mDistance;
+	float dist2 = Dot(_a.mEnd, _b.mNormal) - _b.mDistance;
+	if (dist1 * dist2 <= 0.0f)
 	{
 		return 0.0f;
 	}
-	if (fabs(d1) < fabs(d2))
+	if (std::abs(dist1) < std::abs(dist2))
 	{
-		return d1;
+		return dist1;
 	}
 	else
 	{
-		return d2;
+		return dist2;
 	}
 }
 
-// 点とカプセル
-bool Contain(const Vector3& a, const Capsule& b)
-{
-	float d = Distance(a, b.mSegment);
-	return d <= b.mRadius;
-}
-
 // ==================================================
+// Intersect
+// ==================================================
+
 // Plane
-// ==================================================
 
-bool Intersect(const Plane& a, const Sphere& b)
+bool Intersect(const Plane& _a, const Sphere& _b)
 {
-	float d = Distance(b.mCenter, a);
-	return d * d <= b.mRadius * b.mRadius;
+	float dist = Distance(_b.mCenter, _a);
+	return dist * dist <= _b.mRadius * _b.mRadius;
 }
 
-bool Intersect(const Plane& a, const Capsule& b)
-{
-	float d = Distance(b.mSegment, a);
-	return d * d <= b.mRadius * b.mRadius;
-}
-
-// ==================================================
 // Sphere
-// ==================================================
 
-// 球と球
-bool Intersect(const Sphere& a, const Sphere& b, CollisionInfo& info)
+bool Intersect(const Sphere& _a, const Sphere& _b, CollisionInfo& _info)
 {
-	Vector3 d = a.mCenter - b.mCenter;
-	float r = a.mRadius + b.mRadius;
-	float len = Length(d);
-	if (len != 0.0f)
+	Vector3 diff = _a.mCenter - _b.mCenter;
+	float radius = _a.mRadius + _b.mRadius;
+	float dist = Length(diff);
+	if (dist >= MyMath::kEpsilon)
 	{
-		info.mNormal = d / len;
+		_info.mNormal = Normalize(diff);
 	}
 	else
 	{
-		info.mNormal = Vector3::kZero;
+		_info.mNormal = Vector3::kZero;
 	}
-	info.mDepth = r - len;
-	return LengthSq(d) <= r * r;
+	_info.mDepth = radius - dist;
+	return dist * dist <= radius * radius;
 }
 
-// 球とAABB
-bool Intersect(const Sphere& a, const AABB& b, CollisionInfo& info)
+bool Intersect(const Sphere& _a, const AABB& _b, CollisionInfo& _info)
 {
-	Vector3 p = Vector3(
-		MyMath::Clamp(a.mCenter.x, b.mMin.x, b.mMax.x),
-		MyMath::Clamp(a.mCenter.y, b.mMin.y, b.mMax.y),
-		MyMath::Clamp(a.mCenter.z, b.mMin.z, b.mMax.z));
-	float d = Length(p - a.mCenter);
-	if (d <= a.mRadius)
+	Vector3 point = Vector3(
+		std::clamp(_a.mCenter.x, _b.mMin.x, _b.mMax.x),
+		std::clamp(_a.mCenter.y, _b.mMin.y, _b.mMax.y),
+		std::clamp(_a.mCenter.z, _b.mMin.z, _b.mMax.z));
+	float dist = Length(point - _a.mCenter);
+	if (dist <= _a.mRadius)
 	{
-		info.mNormal = Normalize(a.mCenter - p);
-		info.mDepth = a.mRadius - d;
+		_info.mNormal = Normalize(_a.mCenter - point);
+		_info.mDepth = _a.mRadius - dist;
 		return true;
 	}
 	return false;
 }
 
-// 球とOBB
-bool Intersect(const Sphere& a, const OBB& b, CollisionInfo& info)
+bool Intersect(const Sphere& _a, const OBB& _b, CollisionInfo& _info)
 {
-	Matrix4 inverse = b.CreateInverse();
-	Sphere sphere = { a.mCenter * inverse, a.mRadius };
-	AABB aabb = { -b.mSize,b.mSize };
-	if (Intersect(sphere, aabb, info))
+	Matrix4 inv = _b.GetInverse();
+	Sphere a(_a.mCenter * inv, _a.mRadius);
+	AABB b(-_b.mSize, _b.mSize);
+	if (Intersect(a, b, _info))
 	{
-		Matrix4 m = Inverse(inverse);
-		m.m[3][0] = m.m[3][1] = m.m[3][2] = 0.0f;
-		info.mNormal *= m;
+		inv = Inverse(inv);
+		inv.m[3][0] = 0.0f;
+		inv.m[3][1] = 0.0f;
+		inv.m[3][2] = 0.0f;
+		_info.mNormal *= inv;
 		return true;
 	}
 	return false;
 }
 
-// 球とカプセル
-bool Intersect(const Sphere& a, const Capsule& b)
-{
-	float d = Distance(a.mCenter, b.mSegment);
-	if (d <= a.mRadius + b.mRadius)
-	{
-		return true;
-	}
-	return false;
-}
-
-// ==================================================
 // AABB
-// ==================================================
 
-// AABBとAABB
-bool Intersect(const AABB& a, const AABB& b, CollisionInfo& info)
+bool Intersect(const AABB& _a, const AABB& _b, CollisionInfo& _info)
 {
-	if (a.mMin.x <= b.mMax.x &&
-		a.mMax.x >= b.mMin.x &&
-		a.mMin.y <= b.mMax.y &&
-		a.mMax.y >= b.mMin.y &&
-		a.mMin.z <= b.mMax.z &&
-		a.mMax.z >= b.mMin.z)
+	if (_a.mMin.x <= _b.mMax.x &&
+		_a.mMax.x >= _b.mMin.x &&
+		_a.mMin.y <= _b.mMax.y &&
+		_a.mMax.y >= _b.mMin.y &&
+		_a.mMin.z <= _b.mMax.z &&
+		_a.mMax.z >= _b.mMin.z)
 	{
-		float x = MyMath::Min(a.mMax.x - b.mMin.x, b.mMax.x - a.mMin.x);
-		float y = MyMath::Min(a.mMax.y - b.mMin.y, b.mMax.y - a.mMin.y);
-		float z = MyMath::Min(a.mMax.z - b.mMin.z, b.mMax.z - a.mMin.z);
-		float minOverlap = MyMath::kInfinity;
-		if (x < minOverlap)
+		float x1 = _a.mMax.x - _b.mMin.x;
+		float x2 = _b.mMax.x - _a.mMin.x;
+		float y1 = _a.mMax.y - _b.mMin.y;
+		float y2 = _b.mMax.y - _a.mMin.y;
+		float z1 = _a.mMax.z - _b.mMin.z;
+		float z2 = _b.mMax.z - _a.mMin.z;
+		float x = (std::min)(x1, x2);
+		float y = (std::min)(y1, y2);
+		float z = (std::min)(z1, z2);
+		float min = std::numeric_limits<float>::max();
+		if (x < min)
 		{
-			minOverlap = x;
-			if (a.mMax.x - b.mMin.x < b.mMax.x - a.mMin.x)
-			{
-				info.mNormal = Vector3(-1.0f, 0.0f, 0.0f);
-			}
-			else
-			{
-				info.mNormal = Vector3(1.0f, 0.0f, 0.0f);
-			}
+			min = x;
+			_info.mNormal = Vector3(x1 > x2 ? 1.0f : -1.0f, 0.0f, 0.0f);
 		}
-		if (y < minOverlap)
+		if (y < min)
 		{
-			minOverlap = y;
-			if (a.mMax.y - b.mMin.y < b.mMax.y - a.mMin.y)
-			{
-				info.mNormal = Vector3(0.0f, -1.0f, 0.0f);
-			}
-			else
-			{
-				info.mNormal = Vector3(0.0f, 1.0f, 0.0f);
-			}
+			min = y;
+			_info.mNormal = Vector3(0.0f, y1 > y2 ? 1.0f : -1.0f, 0.0f);
 		}
-		if (z < minOverlap)
+		if (z < min)
 		{
-			minOverlap = z;
-			if (a.mMax.z - b.mMin.z < b.mMax.z - a.mMin.z)
-			{
-				info.mNormal = Vector3(0.0f, 0.0f, -1.0f);
-			}
-			else
-			{
-				info.mNormal = Vector3(0.0f, 0.0f, 1.0f);
-			}
+			min = z;
+			_info.mNormal = Vector3(0.0f, 0.0f, z1 > z2 ? 1.0f : -1.0f);
 		}
-		info.mDepth = minOverlap;
+		_info.mDepth = min;
 		return true;
 	}
 	return false;
 }
 
-// AABBとOBB
-bool Intersect(const AABB& a, const OBB& b, CollisionInfo& info)
+bool Intersect(const AABB& _a, const OBB& _b, CollisionInfo& _info)
 {
-	Vector3 size = (a.mMax - a.mMin) / 2.0f;
-	OBB obb;
-	obb.mCenter = a.mMin + size;
-	//obb.mAxis;
-	obb.mSize = size;
-	if (Intersect(obb, b, info))
+	Vector3 center = (_a.mMax + _a.mMin) * 0.5f;
+	Vector3 size = (_a.mMax - _a.mMin) * 0.5f;
+	OBB a(center, size);
+	if (Intersect(a, _b, _info))
 	{
 		return true;
 	}
 	return false;
 }
 
-// ==================================================
 // OBB
-// ==================================================
 
-// OBBとOBB
-bool Intersect(const OBB& a, const OBB& b, CollisionInfo& info)
+bool Intersect(const OBB& _a, const OBB& _b, CollisionInfo& _info)
 {
-	// 分離軸
-	Vector3 axes[15];
-	axes[0] = a.mAxis[0];
-	axes[1] = a.mAxis[1];
-	axes[2] = a.mAxis[2];
-	axes[3] = b.mAxis[0];
-	axes[4] = b.mAxis[1];
-	axes[5] = b.mAxis[2];
-	axes[6] = Normalize(Cross(a.mAxis[0], b.mAxis[0]));
-	axes[7] = Normalize(Cross(a.mAxis[0], b.mAxis[1]));
-	axes[8] = Normalize(Cross(a.mAxis[0], b.mAxis[2]));
-	axes[9] = Normalize(Cross(a.mAxis[1], b.mAxis[0]));
-	axes[10] = Normalize(Cross(a.mAxis[1], b.mAxis[1]));
-	axes[11] = Normalize(Cross(a.mAxis[1], b.mAxis[2]));
-	axes[12] = Normalize(Cross(a.mAxis[2], b.mAxis[0]));
-	axes[13] = Normalize(Cross(a.mAxis[2], b.mAxis[1]));
-	axes[14] = Normalize(Cross(a.mAxis[2], b.mAxis[2]));
-	Vector3 d1[3] =
+	Vector3 axes[15];// 分離軸
+	axes[0] = _a.mAxes[0];
+	axes[1] = _a.mAxes[1];
+	axes[2] = _a.mAxes[2];
+	axes[3] = _a.mAxes[0];
+	axes[4] = _a.mAxes[1];
+	axes[5] = _a.mAxes[2];
+	axes[6] = Normalize(Cross(_a.mAxes[0], _b.mAxes[0]));
+	axes[7] = Normalize(Cross(_a.mAxes[0], _b.mAxes[1]));
+	axes[8] = Normalize(Cross(_a.mAxes[0], _b.mAxes[2]));
+	axes[9] = Normalize(Cross(_a.mAxes[1], _b.mAxes[0]));
+	axes[10] = Normalize(Cross(_a.mAxes[1], _b.mAxes[1]));
+	axes[11] = Normalize(Cross(_a.mAxes[1], _b.mAxes[2]));
+	axes[12] = Normalize(Cross(_a.mAxes[2], _b.mAxes[0]));
+	axes[13] = Normalize(Cross(_a.mAxes[2], _b.mAxes[1]));
+	axes[14] = Normalize(Cross(_a.mAxes[2], _b.mAxes[2]));
+	Vector3 dir1[3] =
 	{
-		a.mAxis[0] * a.mSize.x,
-		a.mAxis[1] * a.mSize.y,
-		a.mAxis[2] * a.mSize.z
+		_a.mAxes[0] * _a.mSize.x,
+		_a.mAxes[1] * _a.mSize.y,
+		_a.mAxes[2] * _a.mSize.z
 	};
-	Vector3 d2[3] =
+	Vector3 dir2[3] =
 	{
-		b.mAxis[0] * b.mSize.x,
-		b.mAxis[1] * b.mSize.y,
-		b.mAxis[2] * b.mSize.z
+		_b.mAxes[0] * _b.mSize.x,
+		_b.mAxes[1] * _b.mSize.y,
+		_b.mAxes[2] * _b.mSize.z
 	};
-	Vector3 c1[8] =
+	Vector3 corner1[8] =
 	{
-		a.mCenter + d1[0] + d1[1] + d1[2],
-		a.mCenter + d1[0] + d1[1] - d1[2],
-		a.mCenter + d1[0] - d1[1] + d1[2],
-		a.mCenter + d1[0] - d1[1] - d1[2],
-		a.mCenter - d1[0] + d1[1] + d1[2],
-		a.mCenter - d1[0] + d1[1] - d1[2],
-		a.mCenter - d1[0] - d1[1] + d1[2],
-		a.mCenter - d1[0] - d1[1] - d1[2]
+		_a.mCenter + dir1[0] + dir1[1] + dir1[2],
+		_a.mCenter + dir1[0] + dir1[1] - dir1[2],
+		_a.mCenter + dir1[0] - dir1[1] + dir1[2],
+		_a.mCenter + dir1[0] - dir1[1] - dir1[2],
+		_a.mCenter - dir1[0] + dir1[1] + dir1[2],
+		_a.mCenter - dir1[0] + dir1[1] - dir1[2],
+		_a.mCenter - dir1[0] - dir1[1] + dir1[2],
+		_a.mCenter - dir1[0] - dir1[1] - dir1[2]
 	};
-	Vector3 c2[8] =
+	Vector3 corner2[8] =
 	{
-		b.mCenter + d2[0] + d2[1] + d2[2],
-		b.mCenter + d2[0] + d2[1] - d2[2],
-		b.mCenter + d2[0] - d2[1] + d2[2],
-		b.mCenter + d2[0] - d2[1] - d2[2],
-		b.mCenter - d2[0] + d2[1] + d2[2],
-		b.mCenter - d2[0] + d2[1] - d2[2],
-		b.mCenter - d2[0] - d2[1] + d2[2],
-		b.mCenter - d2[0] - d2[1] - d2[2]
+		_b.mCenter + dir2[0] + dir2[1] + dir2[2],
+		_b.mCenter + dir2[0] + dir2[1] - dir2[2],
+		_b.mCenter + dir2[0] - dir2[1] + dir2[2],
+		_b.mCenter + dir2[0] - dir2[1] - dir2[2],
+		_b.mCenter - dir2[0] + dir2[1] + dir2[2],
+		_b.mCenter - dir2[0] + dir2[1] - dir2[2],
+		_b.mCenter - dir2[0] - dir2[1] + dir2[2],
+		_b.mCenter - dir2[0] - dir2[1] - dir2[2]
 	};
-	float minOverlap = MyMath::kInfinity;
-	Vector3 minAxis;
-	for (const auto& axis : axes)
+	Vector3 minNormal;
+	float minDepth = std::numeric_limits<float>::max();
+	for (auto& axis : axes)
 	{
 		if (axis.x > -MyMath::kEpsilon && axis.x < MyMath::kEpsilon &&
 			axis.y > -MyMath::kEpsilon && axis.y < MyMath::kEpsilon &&
@@ -390,68 +284,35 @@ bool Intersect(const OBB& a, const OBB& b, CollisionInfo& info)
 		{
 			continue;
 		}
-		float min1 = (std::numeric_limits<float>::max)();
+		float min1 = std::numeric_limits<float>::max();
 		float max1 = std::numeric_limits<float>::lowest();
 		float min2 = min1;
 		float max2 = max1;
 		for (uint32_t i = 0; i < 8; ++i)
 		{
-			float dist1 = Dot(c1[i], axis);
-			min1 = MyMath::Min(dist1, min1);
-			max1 = MyMath::Max(dist1, max1);
-			float dist2 = Dot(c2[i], axis);
-			min2 = MyMath::Min(dist2, min2);
-			max2 = MyMath::Max(dist2, max2);
+			float dist1 = Dot(corner1[i], axis);
+			min1 = std::min(dist1, min1);
+			max1 = std::max(dist1, max1);
+			float dist2 = Dot(corner2[i], axis);
+			min2 = std::min(dist2, min2);
+			max2 = std::max(dist2, max2);
 		}
-		float overlap = (max1 - min1) + (max2 - min2) - (MyMath::Max(max1, max2) - MyMath::Min(min1, min2));
-		if (overlap < 0.0f)
+		float min = (max1 - min1) + (max2 - min2) - (std::max(max1, max2) - std::min(min1, min2));
+		if (min < 0.0f)
 		{
 			return false;
 		}
-		if (overlap < minOverlap)
+		if (min < minDepth)
 		{
-			minOverlap = overlap;
-			minAxis = axis;
+			minNormal = axis;
+			minDepth = min;
 		}
 	}
-	info.mNormal = Normalize(minAxis);
-	if (Dot(a.mCenter - b.mCenter, info.mNormal) < 0.0f)
+	_info.mNormal = Normalize(minNormal);
+	if (Dot(_a.mCenter - _b.mCenter, _info.mNormal) < 0.0f)
 	{
-		info.mNormal = -info.mNormal;
+		_info.mNormal = -_info.mNormal;
 	}
-	info.mDepth = minOverlap;
+	_info.mDepth = minDepth;
 	return true;
-}
-
-/*
-// OBBとカプセル
-bool Intersect(const OBB& a, const Capsule& b)
-{
-	Matrix4 inverse = a.CreateInverse();
-	AABB aabb = { -a.mSize,a.mSize };
-	Capsule capsule;
-	capsule.mSegment.mStart = b.mSegment.mStart * inverse;
-	capsule.mSegment.mEnd = b.mSegment.mEnd * inverse;
-	capsule.mRadius = b.mRadius;
-	if (Intersect(aabb, capsule))
-	{
-		return true;
-	}
-	return false;
-}
-*/
-
-// ==================================================
-// Capsule
-// ==================================================
-
-// カプセルとカプセル
-bool Intersect(const Capsule& a, const Capsule& b)
-{
-	float d = Distance(a.mSegment, b.mSegment);
-	if (d < a.mRadius + b.mRadius)
-	{
-		return true;
-	}
-	return false;
 }

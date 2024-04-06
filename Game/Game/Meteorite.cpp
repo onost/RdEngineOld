@@ -23,9 +23,9 @@ Meteorite::Meteorite(Scene* scene)
 	}
 	// コライダー
 	auto sc = new SphereCollider(this);
-	sc->SetAttribute(CollisionAttr::Enemies);// 味方
+	sc->SetAttribute(CollisionAttribute::kEnemies);// 味方
 	sc->SetSphere({ {0.0f,0.0f,0.0f},2.0f });
-	sc->SetResponse(CollisionAttr::All);
+	sc->SetResponse(CollisionAttribute::kAll);
 
 	mTransform->mScale *= 3.0f;
 

@@ -26,9 +26,9 @@ void BoxCollider::OnUpdateWorld()
 	auto world = mOwner->mTransform->GetWorld();
 	mWorld.mCenter *= world;
 	Quaternion rotation = world.GetRotate();
-	mWorld.mAxis[0] *= rotation;
-	mWorld.mAxis[1] *= rotation;
-	mWorld.mAxis[2] *= rotation;
+	mWorld.mAxes[0] *= rotation;
+	mWorld.mAxes[1] *= rotation;
+	mWorld.mAxes[2] *= rotation;
 	mWorld.mSize *= world.GetScale();
 }
 
@@ -62,9 +62,9 @@ void BoxCollider::Load(const nlohmann::json& json)
 {
 	Collider::Load(json);
 	JsonHelper::GetVector3(json, "Center", mLocal.mCenter);
-	JsonHelper::GetVector3(json, "Axis X", mLocal.mAxis[0]);
-	JsonHelper::GetVector3(json, "Axis Y", mLocal.mAxis[1]);
-	JsonHelper::GetVector3(json, "Axis Z", mLocal.mAxis[2]);
+	JsonHelper::GetVector3(json, "Axis X", mLocal.mAxes[0]);
+	JsonHelper::GetVector3(json, "Axis Y", mLocal.mAxes[1]);
+	JsonHelper::GetVector3(json, "Axis Z", mLocal.mAxes[2]);
 	JsonHelper::GetVector3(json, "Size", mLocal.mSize);
 }
 
@@ -72,9 +72,9 @@ void BoxCollider::Save(nlohmann::json& json)
 {
 	Collider::Save(json);
 	JsonHelper::SetVector3(json, "Center", mLocal.mCenter);
-	JsonHelper::SetVector3(json, "Axis X", mLocal.mAxis[0]);
-	JsonHelper::SetVector3(json, "Axis Y", mLocal.mAxis[1]);
-	JsonHelper::SetVector3(json, "Axis Z", mLocal.mAxis[2]);
+	JsonHelper::SetVector3(json, "Axis X", mLocal.mAxes[0]);
+	JsonHelper::SetVector3(json, "Axis Y", mLocal.mAxes[1]);
+	JsonHelper::SetVector3(json, "Axis Z", mLocal.mAxes[2]);
 	JsonHelper::SetVector3(json, "Size", mLocal.mSize);
 }
 

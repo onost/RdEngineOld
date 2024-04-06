@@ -56,7 +56,7 @@ void DemoCamera::ActorUpdate(float deltaTime)
 		// カメラが埋まらないように
 		Ray ray = Ray(mTarget->mTransform->mPosition + corrPos, mTransform->mPosition + b * mLeeway);// 少し長め
 		RaycastInfo info = {};
-		if (mScene->GetCollisionManager()->Raycast(ray, info, CollisionAttr::Terrain))
+		if (mScene->GetCollisionManager()->Raycast(ray, info, CollisionAttribute::kTerrain))
 		{
 			float dist = Length(info.mPoint - ray.mStart);
 			if (dist <= mDistance + mLeeway)
