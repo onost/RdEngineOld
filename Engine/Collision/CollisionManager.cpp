@@ -4,6 +4,80 @@
 #include "Component/MeshCollider.h"
 #include "Component/SphereCollider.h"
 
+CollisionManager::CollisionManager()
+	: mColliders()
+	, mCurrPairs()
+	, mEnterPairs()
+	, mStayPairs()
+	, mExitPairs()
+{
+
+}
+
+CollisionManager::~CollisionManager()
+{
+
+}
+
+// すべてのコライダーをテスト
+void CollisionManager::ProcessCollision()
+{
+	mStayPairs.clear();
+	mExitPairs.clear();
+	for (auto& pair : mCurrPairs)
+	{
+		Collider* collider1 = pair.mCollider1;
+		Collider* collider2 = pair.mCollider2;
+		// 属性と応答属性が同じか
+		if ((collider1->mAttribute & collider2->mResponse) != CollisionAttribute::kNone &&
+			(collider2->mAttribute & collider1->mResponse) != CollisionAttribute::kNone)
+		{
+			CollisionInfo info = {};
+			if (collider1->Dispatch(collider2, info))
+			{
+				// まだ衝突している
+				pair.mInfo = info;
+				mStayPairs.emplace_back(pair);
+			}
+			else
+			{
+				pair.mInfo = info;
+				mExitPairs.emplace_back(pair);
+			}
+			uniquePairs.insert({ collider1,collider2 });
+		}
+	}
+
+	mCurrPairs.clear();
+	mEnterPairs.clear();
+	// すべてのコライダーをテスト
+	for (uint32_t i = 0; i < mColliders.size(); ++i)
+	{
+		for (uint32_t j = i + 1; j < mColliders.size(); ++j)
+		{
+			Collider* collider1 = mColliders[i].get();
+			Collider* collider2 = mColliders[j].get();
+			if (uniquePairs.find({ collider1,collider2 }) == uniquePairs.end())
+			{
+				// 属性と応答属性が同じか
+				if ((collider1->mAttribute & collider2->mResponse) != CollisionAttribute::kNone &&
+					(collider2->mAttribute & collider1->mResponse) != CollisionAttribute::kNone)
+				{
+					CollisionInfo info = {};
+					if (collider1->Dispatch(collider2, info))
+					{
+						CollisionPair pair = {};
+						pair.mCollider1 = collider1;
+						pair.mCollider2 = collider2;
+						pair.mInfo = info;
+						mEnterPairs.emplace_back(pair);
+					}
+				}
+			}
+		}
+	}
+}
+
 // すべてのコライダーをテスト
 void CollisionManager::TestAllCollider()
 {

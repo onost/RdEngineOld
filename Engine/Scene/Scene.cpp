@@ -105,7 +105,7 @@ void Scene::UpdateWorld()
 void Scene::TestCollision()
 {
 	// すべてのコライダーをテスト
-	mCollisionManager->TestAllCollider();
+	mCollisionManager->ProcessCollision();
 }
 
 void Scene::AddActor(Actor* actor)

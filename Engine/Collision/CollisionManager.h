@@ -1,41 +1,61 @@
 #pragma once
 #include "Collision.h"
 #include "CollisionAttribute.h"
+#include "Component/Collider.h"
+#include <unordered_set>
 #include <vector>
 
-class Collider;
+// 衝突ペア
+struct CollisionPair
+{
+	Collider* mCollider1;
+	Collider* mCollider2;
+	CollisionInfo mInfo;
+
+	struct Hash
+	{
+		size_t operator()(const CollisionPair& pair) const
+		{
+			size_t h1 = std::hash<Collider*>()(pair.mCollider1);
+			size_t h2 = std::hash<Collider*>()(pair.mCollider2);
+			return h1 ^ (h2 << 1);
+		}
+	};
+
+	struct Equal
+	{
+		size_t operator()(const CollisionPair& a, const CollisionPair& b) const
+		{
+			return
+				(a.mCollider1 == b.mCollider1 && a.mCollider2 == b.mCollider2) ||
+				(a.mCollider1 == b.mCollider2 && a.mCollider2 == b.mCollider1);
+		}
+	};
+};
 
 class CollisionManager
 {
 public:
-	struct CollisionPair
-	{
-		Collider* mCollider1;
-		Collider* mCollider2;
-		CollisionInfo mInfo;
-	};
+	CollisionManager();
+	~CollisionManager();
 
 	// すべてのコライダーをテスト
-	void TestAllCollider();
+	void ProcessCollision();
+
 	// レイキャスト
 	bool Raycast(
-		const Ray& ray, RaycastInfo& info, CollisionAttribute attr = CollisionAttribute::kAll);
+		const Ray& ray, RaycastInfo& info,
+		CollisionAttribute attribute = CollisionAttribute::kAll);
 
 	// コライダーを追加、削除
-	void AddCollider(Collider* collider);
-	void RemoveCollider(Collider* collider);
+	void AddCollider(std::shared_ptr<Collider> collider);
+	void RemoveCollider(std::shared_ptr<Collider> collider);
 
 private:
-	// StayPairに属しているか
-	bool IsStayPair(Collider* a, Collider* b);
-	// 全ペアに、あるコライダーが含まれているペアを削除
-	void RemoveFromAllPairs(Collider* collider);
-
-private:
-	std::vector<Collider*> mColliders;
-	// ペア
-	std::vector<CollisionPair> mAllPairs;// 全ペア
-	std::vector<CollisionPair> mEnterPairs;// Enter
-	std::vector<CollisionPair> mStayPairs;// Stay
-	std::vector<CollisionPair> mExitPairs;// Exit
+	std::vector<std::shared_ptr<Collider>> mColliders;
+	// 衝突ペア
+	std::unordered_set<CollisionPair, CollisionPair::Hash, CollisionPair::Equal> mCurrPairs;
+	std::vector<CollisionPair> mEnterPairs;
+	std::vector<CollisionPair> mStayPairs;
+	std::vector<CollisionPair> mExitPairs;
 };
