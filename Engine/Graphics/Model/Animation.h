@@ -61,6 +61,8 @@ public:
 	const std::string& GetName() const { return mName; }
 	const std::map<std::string, NodeAnimation>& GetNodeAnimations() const { return mNodeAnimations; }
 	float GetDuration() const { return mDuration; }
+	bool GetIsLoop() const { return mIsLoop; }
+	void SetIsLoop(bool isLoop) { mIsLoop = isLoop; }
 
 private:
 	std::string mName;
@@ -68,4 +70,5 @@ private:
 	// NodeAnimation: アニメーション
 	std::map<std::string, NodeAnimation> mNodeAnimations;
 	float mDuration;
+	bool mIsLoop = false;
 };

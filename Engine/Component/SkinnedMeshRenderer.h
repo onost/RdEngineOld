@@ -40,16 +40,17 @@ public:
 		if (mNextAnim) { return mNextAnim; }
 		else return mCurrAnim;
 	}
-	void SetIsLoop(bool isLoop) { mIsLoop = isLoop; }
+	//void SetIsLoop(bool isLoop) { mIsLoop = isLoop; }
 
 private:
 	// アニメーション
 	float mCurrTime;
 	Animation* mCurrAnim;
 	std::string mAnimName;
-	bool mIsLoop;
+	//bool mIsLoop;
+	std::vector<Matrix4> mPose;
 
 	Animation* mNextAnim;
-	const float kTransitionMax = 0.5f;
+	const float kTransitionMax = 1.0f;
 	float mTransitionTime;
 };

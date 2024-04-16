@@ -5,13 +5,14 @@
 #include "Helper/JsonHelper.h"
 #include "Scene/Scene.h"
 #include "Graphics/Model/SkinCluster.h"
+#include <format>
 
 SkinnedMeshRenderer::SkinnedMeshRenderer(Actor* owner)
 	: MeshRenderer(owner)
 	, mCurrTime(0.0f)
 	, mCurrAnim(nullptr)
 	, mAnimName()
-	, mIsLoop(true)
+	//, mIsLoop(true)
 	, mNextAnim(nullptr)
 	, mTransitionTime(0.0f)
 {
@@ -31,8 +32,17 @@ void SkinnedMeshRenderer::Update(float deltaTime)
 		mCurrTime += deltaTime;
 		if (mNextAnim && mTransitionTime <= kTransitionMax)
 		{
-			mTransitionTime = MyMath::Min(mTransitionTime + deltaTime, kTransitionMax);
+			mTransitionTime += deltaTime;
+			/*if (mTransitionTime >= mNextAnim->GetDuration() && mNextAnim->GetIsLoop())
+			{
+				mTransitionTime -= mNextAnim->GetDuration();
+			}*/
+			if (kTransitionMax > mTransitionTime)
+			{
+				mCurrTime = mTransitionTime;
+			}
 		}
+
 		if (mTransitionTime >= kTransitionMax)
 		{
 			mTransitionTime = 0.0f;
@@ -40,7 +50,7 @@ void SkinnedMeshRenderer::Update(float deltaTime)
 			mNextAnim = nullptr;
 		}
 
-		if (mCurrTime >= mCurrAnim->GetDuration() && mIsLoop)
+		if (mCurrTime >= mCurrAnim->GetDuration() && mCurrAnim->GetIsLoop())
 		{
 			mCurrTime -= mCurrAnim->GetDuration();
 		}
@@ -50,18 +60,15 @@ void SkinnedMeshRenderer::Update(float deltaTime)
 		{
 			if (mNextAnim)
 			{
-				if (mCurrTime >= mNextAnim->GetDuration() && mIsLoop)
-				{
-					mCurrTime -= mNextAnim->GetDuration();
-				}
-				auto currPoses = mCurrAnim->UpdatePoseAtTime(
-					mesh->GetSkeleton(), mNextAnim, mCurrTime, mTransitionTime, mTransitionTime / kTransitionMax);
-				mesh->Update(currPoses);
+				float nextTime = mNextAnim->GetIsLoop() ? (std::min)(mTransitionTime, kTransitionMax) : std::fmod(mTransitionTime, kTransitionMax);
+				mPose = mCurrAnim->UpdatePoseAtTime(
+					mesh->GetSkeleton(), mNextAnim, mCurrTime, nextTime, mTransitionTime / kTransitionMax);
+				mesh->Update(mPose);
 			}
 			else
 			{
-				auto currPoses = mCurrAnim->UpdatePoseAtTime(mesh->GetSkeleton(), mCurrTime);
-				mesh->Update(currPoses);
+				mPose = mCurrAnim->UpdatePoseAtTime(mesh->GetSkeleton(), mCurrTime);
+				mesh->Update(mPose);
 			}
 		}
 	}
@@ -196,6 +203,8 @@ void SkinnedMeshRenderer::UpdateForDev()
 				mCurrAnim = anim;
 			}
 		}
+
+		ImGui::Text(std::format("{}", mTransitionTime / kTransitionMax).c_str());
 		ImGui::TreePop();
 	}
 }
@@ -208,12 +217,12 @@ void SkinnedMeshRenderer::RenderForDev(Primitive* prim)
 		{
 			auto& joints = mModel->GetMeshes()[0]->GetSkeleton()->GetJoints();
 			std::vector<Vector3> positions(joints.size());
-			auto currPoses = mModel->GetMeshes()[0]->GetCurrPoses();
-			if (currPoses.size() > 0)
+			//auto currPoses = mModel->GetMeshes()[0]->GetCurrPoses();
+			if (mPose.size() > 0)
 			{
 				for (uint32_t i = 0; i < joints.size(); ++i)
 				{
-					positions[i] = (currPoses[i] * mOwner->mTransform->GetWorld()).GetTranslate();
+					positions[i] = (mPose[i] * mOwner->mTransform->GetWorld()).GetTranslate();
 					prim->DrawSphere(positions[i], 0.2f, Color::kWhite);// radius = 0.2f
 					auto parent = joints[i].mParent;
 					if (parent)

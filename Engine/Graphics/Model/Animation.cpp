@@ -195,10 +195,12 @@ std::vector<Matrix4> Animation::UpdatePoseAtTime(Skeleton* skeleton, Animation* 
 			auto scale2 = UpdateKeyframeAtTime(nextAnim.mScale, nextTime);
 			auto rotate2 = UpdateKeyframeAtTime(nextAnim.mRotate, nextTime);
 			auto translate2 = UpdateKeyframeAtTime(nextAnim.mTranslate, nextTime);
-			scale1 = MyMath::Lerp(scale1, scale2, t);
-			rotate1 = Slerp(rotate1, rotate2, t);
-			translate1 = MyMath::Lerp(translate1, translate2, t);
- 			poses.emplace_back(Matrix4::CreateAffine(scale1, rotate1, translate1));
+			auto scale3 = MyMath::Lerp(scale1, scale2, t);
+			auto rotate3 = Slerp(rotate1, rotate2, t);
+			auto translate3 = MyMath::Lerp(translate1, translate2, t);
+			poses.emplace_back(Matrix4::CreateAffine(scale3, rotate3, translate3));
+			//poses.emplace_back(Matrix4::CreateAffine(scale1, rotate1, translate1));
+			//poses.emplace_back(Matrix4::CreateAffine(scale2, rotate2, translate2));
 		}
 		else
 		{

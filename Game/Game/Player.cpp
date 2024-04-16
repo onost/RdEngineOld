@@ -170,24 +170,30 @@ void Player::ActorUpdate(float deltaTime)
 		{
 			if (mRenderer->GetAnimation()->GetName() != "Jump.gltf/Armature|mixamo.com|Layer0.001")
 			{
-				mRenderer->PlayAnimation(mScene->GetRenderer()->GetAnimation("Jump.gltf/Armature|mixamo.com|Layer0.001"));
-				mRenderer->SetIsLoop(false);
+				auto anim = mScene->GetRenderer()->GetAnimation("Jump.gltf/Armature|mixamo.com|Layer0.001");
+				mRenderer->PlayAnimation(anim);
+				anim->SetIsLoop(false);
+				//mRenderer->SetIsLoop(false);
 			}
 		}
 		else if (Length(mVelocity) > 0.0f && mIsGround)
 		{
 			if (mRenderer->GetAnimation()->GetName() != "Astronaut.gltf/Armature|mixamo.com|Layer0")
 			{
-				mRenderer->PlayAnimation(mScene->GetRenderer()->GetAnimation("Astronaut.gltf/Armature|mixamo.com|Layer0"));
-				mRenderer->SetIsLoop(true);
+				auto anim = mScene->GetRenderer()->GetAnimation("Astronaut.gltf/Armature|mixamo.com|Layer0");
+				mRenderer->PlayAnimation(anim);
+				anim->SetIsLoop(true);
+				//mRenderer->SetIsLoop(true);
 			}
 		}
 		else
 		{
 			if (mRenderer->GetAnimation()->GetName() != "Idle.gltf/Armature|mixamo.com|Layer0")
 			{
-				mRenderer->PlayAnimation(mScene->GetRenderer()->GetAnimation("Idle.gltf/Armature|mixamo.com|Layer0"));
-				mRenderer->SetIsLoop(true);
+				auto anim = mScene->GetRenderer()->GetAnimation("Idle.gltf/Armature|mixamo.com|Layer0");
+				mRenderer->PlayAnimation(anim);
+				anim->SetIsLoop(true);
+				//mRenderer->SetIsLoop(true);
 			}
 		}
 	}
