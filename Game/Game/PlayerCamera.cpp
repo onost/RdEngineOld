@@ -63,6 +63,7 @@ void PlayerCamera::ActorUpdate(float deltaTime)
 		mRot += mRotVel * mRotSpeed * deltaTime;
 		mRot = MyMath::Clamp(mRot, kRotMin, kRotMax);
 		Quaternion rot = Quaternion(r, mRot);
+		rot.Normalize();
 		// Position
 		Vector3 corrPos = Vector3(0.0f, 2.0f, 0.0f) * rotation;
 		Vector3 position = mTarget->mTransform->mPosition + corrPos + b * mDistance * rot;

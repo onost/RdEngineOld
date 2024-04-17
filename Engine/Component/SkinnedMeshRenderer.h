@@ -37,8 +37,7 @@ public:
 	Type GetType() const override { return Type::SkinnedMeshRenderer; }
 	float GetCurrTime() const { return mCurrTime; }
 	Animation* GetAnimation() const {
-		if (mNextAnim) { return mNextAnim; }
-		else return mCurrAnim;
+		return mCurrAnim;
 	}
 	//void SetIsLoop(bool isLoop) { mIsLoop = isLoop; }
 
@@ -50,7 +49,7 @@ private:
 	//bool mIsLoop;
 	std::vector<Matrix4> mPose;
 
-	Animation* mNextAnim;
-	const float kTransitionMax = 1.0f;
-	float mTransitionTime;
+	//Animation* mNextAnim;
+	//const float kTransitionMax = 1.0f;
+	//float mTransitionTime;
 };

@@ -13,8 +13,8 @@ SkinnedMeshRenderer::SkinnedMeshRenderer(Actor* owner)
 	, mCurrAnim(nullptr)
 	, mAnimName()
 	//, mIsLoop(true)
-	, mNextAnim(nullptr)
-	, mTransitionTime(0.0f)
+	//, mNextAnim(nullptr)
+	//, mTransitionTime(0.0f)
 {
 	mOwner->GetScene()->GetRenderer()->AddSkinnedMesh(this);
 }
@@ -30,25 +30,25 @@ void SkinnedMeshRenderer::Update(float deltaTime)
 	{
 		// アニメーションを更新
 		mCurrTime += deltaTime;
-		if (mNextAnim && mTransitionTime <= kTransitionMax)
-		{
-			mTransitionTime += deltaTime;
-			/*if (mTransitionTime >= mNextAnim->GetDuration() && mNextAnim->GetIsLoop())
-			{
-				mTransitionTime -= mNextAnim->GetDuration();
-			}*/
-			if (kTransitionMax > mTransitionTime)
-			{
-				mCurrTime = mTransitionTime;
-			}
-		}
+		//if (mNextAnim && mTransitionTime <= kTransitionMax)
+		//{
+		//	mTransitionTime += deltaTime;
+		//	/*if (mTransitionTime >= mNextAnim->GetDuration() && mNextAnim->GetIsLoop())
+		//	{
+		//		mTransitionTime -= mNextAnim->GetDuration();
+		//	}*/
+		//	if (kTransitionMax > mTransitionTime)
+		//	{
+		//		mCurrTime = mTransitionTime;
+		//	}
+		//}
 
-		if (mTransitionTime >= kTransitionMax)
-		{
-			mTransitionTime = 0.0f;
-			mCurrAnim = mNextAnim;
-			mNextAnim = nullptr;
-		}
+		//if (mTransitionTime >= kTransitionMax)
+		//{
+		//	mTransitionTime = 0.0f;
+		//	mCurrAnim = mNextAnim;
+		//	mNextAnim = nullptr;
+		//}
 
 		if (mCurrTime >= mCurrAnim->GetDuration() && mCurrAnim->GetIsLoop())
 		{
@@ -58,14 +58,14 @@ void SkinnedMeshRenderer::Update(float deltaTime)
 		// メッシュを更新
 		for (auto& mesh : mModel->GetMeshes())
 		{
-			if (mNextAnim)
+			/*if (mNextAnim)
 			{
 				float nextTime = mNextAnim->GetIsLoop() ? (std::min)(mTransitionTime, kTransitionMax) : std::fmod(mTransitionTime, kTransitionMax);
 				mPose = mCurrAnim->UpdatePoseAtTime(
 					mesh->GetSkeleton(), mNextAnim, mCurrTime, nextTime, mTransitionTime / kTransitionMax);
 				mesh->Update(mPose);
 			}
-			else
+			else*/
 			{
 				mPose = mCurrAnim->UpdatePoseAtTime(mesh->GetSkeleton(), mCurrTime);
 				mesh->Update(mPose);
@@ -103,23 +103,20 @@ void SkinnedMeshRenderer::PlayAnimation(Animation* anim)
 		return;
 	}
 
-	if (anim == mCurrAnim)
+	/*if (anim == mCurrAnim)
 	{
 		if (mNextAnim)
 		{
 			mNextAnim = nullptr;
 		}
-	}
+	}*/
 
-	if (!mCurrAnim)
-	{
-		mCurrAnim = anim;
-	}
-	else
+	mCurrAnim = anim;
+	/*else
 	{
 		mNextAnim = anim;
 		mTransitionTime = 0.0f;
-	}
+	}*/
 	//mCurrAnim = anim;
 	mCurrTime = 0.0f;
 }
@@ -204,7 +201,7 @@ void SkinnedMeshRenderer::UpdateForDev()
 			}
 		}
 
-		ImGui::Text(std::format("{}", mTransitionTime / kTransitionMax).c_str());
+		//ImGui::Text(std::format("{}", mTransitionTime / kTransitionMax).c_str());
 		ImGui::TreePop();
 	}
 }
