@@ -155,7 +155,9 @@ void Player::ActorUpdate(float deltaTime)
 	// ==================================================
 	Vector3 upDir = Vector3(0.0f, 1.0f, 0.0f) * mTransform->mRotation;// up
 	Quaternion rot = Quaternion(upDir, mRotVel * mRotSpeed * deltaTime);
+	rot.Normalize();
 	mTransform->mRotation *= rot;
+	mTransform->mRotation.Normalize();
 
 	// ==================================================
 	// 移動

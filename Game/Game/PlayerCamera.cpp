@@ -70,6 +70,7 @@ void PlayerCamera::ActorUpdate(float deltaTime)
 
 		const float kSpeed = 0.2f;
 		mTransform->mRotation = Slerp(mTransform->mRotation, rotation * rot, kSpeed);
+		mTransform->mRotation.Normalize();
 		mTransform->mPosition = MyMath::Lerp(mTransform->mPosition, position, kSpeed);
 
 		// カメラが埋まらないように
